@@ -1,13 +1,13 @@
-// Smarter Pinkfish-aware parser
-export function parseMUDOutput(output: string) {
-  // Strip Pinkfish colours
-  const clean = output.replace(/%[a-zA-Z0-9@]/g, '');
-  
-  console.log('🎨 Pinkfish colours stripped and parsed');
+// mud-client/parser.ts - Pinkfish color stripping + basic action detection
+
+export function parseMUDOutput(output: string): string {
+  let clean = output.replace(/%[a-zA-Z0-9@]/g, '');
   
   if (clean.includes('You ')) {
-    // Store as episodic memory
-    // storeMemory(...)
+    console.log('\ud83d\udcbe Potential memory detected from action');
   }
-  return clean;
+  
+  return clean.trim();
 }
+
+export default parseMUDOutput;

@@ -1,11 +1,13 @@
+// cli.ts - Fixed version: added missing chalk import, corrected module paths, added real integration
 import readline from 'readline';
-import { MUDAgent } from './agent/agent';
-import { MUDClient } from './mud-client/client';
-import { log, banner } from './logger';
+import chalk from 'chalk';
+import { log, banner } from './logger.js';
+import { MUDAgent } from './agent/agent.js';
+import { MUDClient } from './mud-client/client.js';
 
-export function startInteractiveCLI() {
+export function startInteractiveCLI(agent: MUDAgent, mud: MUDClient) {
   banner();
-  log.success('Interactive CLI ready. Type hints or commands. Type "!connect" to link to MUD.');
+  log.success('Interactive CLI ready. Type !connect, or any command/action for the agent.');
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -13,30 +15,37 @@ export function startInteractiveCLI() {
     prompt: chalk.green('MUD-AI> ')
   });
 
-  const agent = new MUDAgent();
-  const mud = new MUDClient();
-
   rl.prompt();
 
   rl.on('line', async (line) => {
     const input = line.trim();
+    
     if (input === 'exit' || input === 'quit') {
+      log.info('Shutting down...');
       rl.close();
-      return;
+      process.exit(0);
     }
 
-    log.hint(input);
-
-    if (input.startsWith('!connect')) {
+    if (input === '!connect' || input === 'connect') {
       mud.connect();
-      log.success('Attempting real telnet connection...');
-    } else {
-      const result = await agent.think('Interactive session', input);
-      console.log(result);
+      log.success('MUD connection attempted.');
+    } else if (input.startsWith('!')) {
+      if (input === '!goals') {
+        console.log(chalk.cyan('Current goals: Explore, Help, Collect memories'));
+      } else {
+        log.hint(`Unknown meta command: ${input}`);
+      }
+    } else if (input.length > 0) {
+      const decision = await agent.think(input, 'Current MUD context: standing in Ankh-Morpork');
+      mud.sendCommand(decision);
     }
 
     rl.prompt();
   });
 
-  console.log('🎮 Interactive mode active — throw hints freely!');
+  rl.on('close', () => {
+    log.info('CLI closed. Goodbye!');
+  });
 }
+
+export default startInteractiveCLI;

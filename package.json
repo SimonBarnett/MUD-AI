@@ -1,23 +1,26 @@
 {
   "name": "mud-ai",
-  "version": "0.1.0",
-  "description": "Chaotic Good MUD-playing AI with persistent memory (Grok + Supabase + pgvector)",
+  "version": "0.1.1",
+  "description": "Discworld MUD Grok AI Agent with persistent memory (Supabase + pgvector) - Fixed per scan",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "echo 'Tests coming soon - add vitest/jest in next iteration'"
   },
   "keywords": ["mud", "discworld", "ai", "rag", "supabase", "pgvector", "grok"],
   "author": "Simon Barnett + Grok",
   "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "openai": "^4.0.0",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.4.0"
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.5.0"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.45.0",
-    "openai": "^4.0.0"
   }
 }
