@@ -8,25 +8,16 @@ let openaiEmbeddingsClient: OpenAI | null = null;
 
 function getXAI() {
   if (!xaiClient) {
-    if (!process.env.XAI_API_KEY) {
-      throw new Error('Missing XAI_API_KEY in .env file');
-    }
-    xaiClient = new OpenAI({
-      apiKey: process.env.XAI_API_KEY,
-      baseURL: "https://api.x.ai/v1",
-    });
+    if (!process.env.XAI_API_KEY) throw new Error('Missing XAI_API_KEY in .env');
+    xaiClient = new OpenAI({ apiKey: process.env.XAI_API_KEY, baseURL: "https://api.x.ai/v1" });
   }
   return xaiClient;
 }
 
 function getOpenAIForEmbeddings() {
   if (!openaiEmbeddingsClient) {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error('Missing OPENAI_API_KEY in .env file');
-    }
-    openaiEmbeddingsClient = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    if (!process.env.OPENAI_API_KEY) throw new Error('Missing OPENAI_API_KEY in .env');
+    openaiEmbeddingsClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   }
   return openaiEmbeddingsClient;
 }
@@ -36,7 +27,7 @@ export async function ingestEvent(rawEvent: string, parsedState: any = {}) {
 
   try {
     const classifyResponse = await getXAI().chat.completions.create({
-      model: 'grok-beta',
+      model: 'grok-4.3',
       messages: [{
         role: 'user',
         content: `Classify this MUD event into relevant memory types. Return STRICT JSON array of objects: [{type, desc, entities: [], importance: 0-1}].
@@ -72,9 +63,9 @@ Parsed state: ${JSON.stringify(parsedState)}`
     return { success: true, memoriesCreated: classified.length };
 
   } catch (e) {
-    log.error('Ingestion robustness fallback: ' + e);
-    await storeMemory(rawEvent, 0.7, ['player'], [0.1, 0.2, 0.3], new Date().toISOString());
-    return { success: true, memoriesCreated: 1, fallback: true };
+    log.error('Ingestion error: ' + e.message);
+    // No mock — just log and continue
+    return { success: false, error: e.message };
   }
 }
 
