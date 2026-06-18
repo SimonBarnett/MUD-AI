@@ -77,7 +77,7 @@ Respond with STRICT JSON:
 }`;
 
       const completion = await getXAI().chat.completions.create({
-        model: 'grok-beta',
+        model: 'grok-4.3',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }

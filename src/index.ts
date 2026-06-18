@@ -7,6 +7,12 @@ import { MUDClient } from './mud-client/client.js';
 import { ingestEvent } from './context-engine/ingestion.js';
 import { log, banner } from './logger.js';
 
+// ──────────────────────────────────────────────
+// Polyfill WebSocket for Node 20 (required for realtime clients)
+import ws from 'ws';
+(global as any).WebSocket = ws;
+// ──────────────────────────────────────────────
+
 banner();
 log.success('MUD-AI clean playable demo starting...');
 

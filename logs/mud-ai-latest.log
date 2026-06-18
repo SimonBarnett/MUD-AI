@@ -18,3 +18,35 @@
 Suggested solution: For Node.js < 22, install "ws" package and provide it via the transport option:
 import ws from "ws"
 new RealtimeClient(url, { transport: ws })
+
+=== NEW RUN: 2026-06-18T12:18:37.930Z ===
+[2026-06-18T12:18:37.931Z] [SUCCESS] MUD-AI clean playable demo starting...
+[2026-06-18T12:18:37.933Z] [INFO] Initializing clean real end-to-end...
+[2026-06-18T12:18:37.933Z] [INFO] Auto mode starting as: ON
+[2026-06-18T12:18:37.934Z] [INFO] 🧠 LLM classification started for event: Boot - Grok enters Discworld...
+[2026-06-18T12:18:38.179Z] [ERROR] Ingestion robustness fallback: Error: 400 "Model not found: grok-beta"
+[2026-06-18T12:18:38.197Z] [ERROR] Robust boot fallback: Error: Node.js 20 detected without native WebSocket support.
+
+Suggested solution: For Node.js < 22, install "ws" package and provide it via the transport option:
+import ws from "ws"
+new RealtimeClient(url, { transport: ws })
+
+=== NEW RUN: 2026-06-18T12:20:06.985Z ===
+[2026-06-18T12:20:06.986Z] [SUCCESS] MUD-AI clean playable demo starting...
+[2026-06-18T12:20:06.988Z] [INFO] Initializing clean real end-to-end...
+[2026-06-18T12:20:06.988Z] [INFO] Auto mode starting as: ON
+[2026-06-18T12:20:06.989Z] [INFO] 🧠 LLM classification started for event: Boot - Grok enters Discworld...
+[2026-06-18T12:20:07.241Z] [ERROR] Ingestion robustness fallback: Error: 400 "Model not found: grok-beta"
+[2026-06-18T12:20:07.261Z] [ERROR] Robust boot fallback: Error: Node.js 20 detected without native WebSocket support.
+
+Suggested solution: For Node.js < 22, install "ws" package and provide it via the transport option:
+import ws from "ws"
+new RealtimeClient(url, { transport: ws })
+
+=== NEW RUN: 2026-06-18T12:25:15.019Z ===
+[2026-06-18T12:25:15.020Z] [SUCCESS] MUD-AI clean playable demo starting...
+[2026-06-18T12:25:15.024Z] [INFO] Initializing clean real end-to-end...
+[2026-06-18T12:25:15.028Z] [INFO] Auto mode starting as: ON
+[2026-06-18T12:25:15.033Z] [INFO] 🧠 LLM classification started for event: Boot - Grok enters Discworld...
+[2026-06-18T12:25:15.293Z] [ERROR] Ingestion robustness fallback: Error: 400 "Model not found: grok-beta"
+[2026-06-18T12:25:15.683Z] [ERROR] Robust boot fallback: [object Object]
