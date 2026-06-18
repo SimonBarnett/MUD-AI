@@ -60,22 +60,31 @@ export class MUDAgent {
   async think(input: string, parsedState: any = {}): Promise<AgentDecision> {
     try {
       const memories = await retrieveContext(input);
+      const currentState = parsedState.state || 'unknown';
 
       const systemPrompt = `You are ${this.personality}.
 Your current goals: ${this.goals.join(' | ')}
 Recent actions: ${this.recentActions.slice(-6).join(' → ')}
 Recent reflections: ${this.recentReflections.slice(-3).join(' | ')}
 
+CURRENT STATE: ${currentState}
+
 You must respond with STRICT JSON in this format:
 {
   "action": "send_command" | "press_enter",
-  "command": "short valid MUD command (only include if action is send_command)",
+  "command": "short valid input (only include if action is send_command)",
   "third_thoughts": "1-2 sentence reflection on whether this aligns with your goals"
 }
 
-Rules:
-- Use "press_enter" when the game is showing a menu or waiting for Enter.
-- Use "send_command" + a normal command otherwise.
+STATE-SPECIFIC RULES:
+
+- If state is "login_menu": Choose "G" for Guest character (preferred) or "N" for new character.
+- If state is "character_prompt": Use a simple guest name like "groktest" or "explorer".
+- If state is "press_enter": Use action "press_enter".
+- If state is "in_game": Use normal MUD commands (look, movement, examine, etc.).
+- Never use normal exploration commands on login screens.
+
+GENERAL RULES:
 - Keep commands short (1-6 words ideal).
 - Never output free text outside the JSON.`;
 
@@ -92,7 +101,7 @@ Respond with the JSON object above.`;
           { role: 'user', content: userPrompt }
         ],
         temperature: 0.4,
-        max_tokens: 160,
+        max_tokens: 180,
         response_format: { type: "json_object" }
       });
 
@@ -109,12 +118,12 @@ Respond with the JSON object above.`;
       let command = (typeof parsed.command === 'string') ? parsed.command.trim() : '';
       const thirdThoughts = (typeof parsed.third_thoughts === 'string') ? parsed.third_thoughts.trim() : "Decision made.";
 
-      // Validation for normal commands
+      // Validation
       if (action === 'send_command' && !isPlausibleCommand(command)) {
         log.hint('Agent produced questionable command → using fallback');
-        command = parsedState.entities?.length > 0 
-          ? `examine ${parsedState.entities[0]}` 
-          : "look around";
+        if (currentState === 'login_menu') command = 'g';
+        else if (currentState === 'character_prompt') command = 'groktest';
+        else command = parsedState.entities?.length > 0 ? `examine ${parsedState.entities[0]}` : "look";
       }
 
       this.recentReflections.push(thirdThoughts);
@@ -138,17 +147,8 @@ Respond with the JSON object above.`;
 
     } catch (e) {
       log.error('Agent robustness fallback: ' + e);
-      const smartFallback = (parsedState.entities?.includes('troll') || parsedState.status === 'combat') 
-        ? 'flee' 
-        : 'look around';
-
-      await ingestEvent('Agent fallback: ' + smartFallback, parsedState);
-      this.recentActions.push(smartFallback);
-      if (this.recentActions.length > 8) this.recentActions.shift();
-
       return {
-        action: 'send_command',
-        command: smartFallback,
+        action: 'press_enter',
         third_thoughts: 'Used safe fallback due to error.'
       };
     }

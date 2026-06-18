@@ -22,6 +22,26 @@ const agent = new MUDAgent();
 const mud = new MUDClient();
 let autoMode = true;
 
+// Simple state detection for Discworld MUD
+function detectMUDState(rawOutput: string): string {
+  const text = rawOutput.toLowerCase();
+
+  if (text.includes('press enter to continue')) {
+    return 'press_enter';
+  }
+  if (text.includes("or, enter your current character's name")) {
+    return 'character_prompt';
+  }
+  if (text.includes('q - quit') && text.includes('n - new character')) {
+    return 'login_menu';
+  }
+  // Basic detection for being in-game
+  if (text.includes('>') || text.match(/\byou (are|stand|see)\b/)) {
+    return 'in_game';
+  }
+  return 'unknown';
+}
+
 async function launch() {
   log.info('Initializing clean real end-to-end...');
   log.info(`Auto mode starting as: ${autoMode ? 'ON' : 'OFF'}`);
@@ -43,8 +63,13 @@ async function launch() {
 
     try {
       await ingestEvent(rawOutput, parsed);
-      const decision = await agent.think(rawOutput, parsed);
-      mud.sendCommand(decision);           // ← Much cleaner now
+
+      const state = detectMUDState(rawOutput);
+      const enrichedState = { ...parsed, state };
+
+      const decision = await agent.think(rawOutput, enrichedState);
+      mud.sendCommand(decision);
+
     } catch (e) {
       log.error('Data processing error: ' + e);
     }
