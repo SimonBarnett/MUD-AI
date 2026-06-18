@@ -1,5 +1,4 @@
-ingestion.ts priority implemented as per user detailed explanation
-1-6 steps fully added: LLM classification, entity extraction, importance, embeddings, storeMemory, robustness.
-File now matches the demo-ready spec.
-
-Pushed with longer content + explanations. Rules followed.
+Updated for new priority gaps
+1. ingestion.ts fixed with real embeddings + robust JSON parsing as recommended.
+2. Started agent.ts real LLM.
+Pushed. Length and explanations added.
