@@ -1,48 +1,55 @@
-// src/index.ts - STABLE LOOP WITH NO MOCKS + ROBUSTNESS
+// src/index.ts - ALL REMAINING MINOR ISSUES FIXED (startup log, rate limiting only for auto)
 import chalk from 'chalk';
 import dotenv from 'dotenv';
 import { startInteractiveCLI } from './cli.js';
 import { MUDAgent } from './agent/agent.js';
 import { MUDClient } from './mud-client/client.js';
 import { ingestEvent } from './context-engine/ingestion.js';
+import { log, banner } from './logger.js';
 
 dotenv.config();
 
-console.log(chalk.bold.green('\n🚀 MUD-AI FULL DEMO - No mocks!'));
+banner();
+log.success('MUD-AI clean playable demo starting...');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
+let autoMode = true;
 
 async function launch() {
-  console.log(chalk.cyan('🔧 Starting real end-to-end loop...'));
+  log.info('Initializing clean real end-to-end...');
+  log.info(`Auto mode starting as: ${autoMode ? 'ON' : 'OFF'}`); // Startup log
   
   await ingestEvent('Boot - Grok enters Discworld', { source: 'boot' });
 
   mud.connect();
 
-  startInteractiveCLI(agent, mud);
+  startInteractiveCLI(agent, mud, (mode) => {
+    autoMode = mode;
+    log.info(`Auto mode switched to: ${autoMode ? 'ON' : 'OFF'}`);
+  });
 
-  let tick = 0;
-  const loop = setInterval(async () => {
-    tick++;
+  // Rate limiting only for auto mode
+  let lastAutoProcess = 0;
+  mud.on('data', async (rawOutput, parsed) => {
+    if (!autoMode) return;
+    if (Date.now() - lastAutoProcess < 800) return;
+    lastAutoProcess = Date.now();
     try {
-      const rawOutput = 'You see a troll blocking the path.';
-      const parsed = { room: 'Ankh-Morpork', entities: ['troll'], status: 'alert' };
       await ingestEvent(rawOutput, parsed);
       const decision = await agent.think(rawOutput, parsed);
       mud.sendCommand(decision);
-      console.log(chalk.green('✅ Real loop tick', tick));
-      if (tick > 6) clearInterval(loop);
+      log.success('✅ Real MUD data processed - decision: ' + decision);
     } catch (e) {
-      console.error('Loop robustness:', e);
+      log.error('Data processing robustness: ' + e);
     }
-  }, 2000);
+  });
 
-  console.log(chalk.green('\n✅ FULL REAL LOOP RUNNING!'));
+  log.success('✅ CLEAN REAL END-TO-END ACTIVE! Type !auto to toggle autonomous mode.');
 }
 
 launch().catch(err => {
-  console.error('Robust boot fallback:', err);
+  log.error('Robust boot fallback: ' + err);
   process.exit(1);
 });
 
