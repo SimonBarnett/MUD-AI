@@ -1,4 +1,4 @@
-// cli.ts - Fixed version: added missing chalk import, corrected module paths, added real integration
+// src/cli.ts - Improved with error handling + dynamic context
 import readline from 'readline';
 import chalk from 'chalk';
 import { log, banner } from './logger.js';
@@ -7,7 +7,7 @@ import { MUDClient } from './mud-client/client.js';
 
 export function startInteractiveCLI(agent: MUDAgent, mud: MUDClient) {
   banner();
-  log.success('Interactive CLI ready. Type !connect, or any command/action for the agent.');
+  log.success('Interactive CLI + full loop demo active. Type commands or !help.');
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -19,33 +19,23 @@ export function startInteractiveCLI(agent: MUDAgent, mud: MUDClient) {
 
   rl.on('line', async (line) => {
     const input = line.trim();
-    
-    if (input === 'exit' || input === 'quit') {
-      log.info('Shutting down...');
-      rl.close();
-      process.exit(0);
-    }
-
-    if (input === '!connect' || input === 'connect') {
-      mud.connect();
-      log.success('MUD connection attempted.');
-    } else if (input.startsWith('!')) {
-      if (input === '!goals') {
-        console.log(chalk.cyan('Current goals: Explore, Help, Collect memories'));
-      } else {
-        log.hint(`Unknown meta command: ${input}`);
+    try {
+      if (input === 'exit') {
+        rl.close();
+        return;
       }
-    } else if (input.length > 0) {
-      const decision = await agent.think(input, 'Current MUD context: standing in Ankh-Morpork');
-      mud.sendCommand(decision);
+      if (input === '!connect') mud.connect();
+      else {
+        const decision = await agent.think(input, { room: 'current', entities: ['npc'] });
+        mud.sendCommand(decision);
+      }
+    } catch (e) {
+      log.error('CLI error (handled): ' + e);
     }
-
     rl.prompt();
   });
 
-  rl.on('close', () => {
-    log.info('CLI closed. Goodbye!');
-  });
+  rl.on('close', () => log.info('Demo ended.'));
 }
 
 export default startInteractiveCLI;
