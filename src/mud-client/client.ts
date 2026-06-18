@@ -1,9 +1,9 @@
-// src/mud-client/client.ts - FULL CLEAN + RATE LIMIT + NO DUPLICATE PARSING
+// src/mud-client/client.ts - FULL CLEAN + RATE LIMIT + STRUCTURED SUPPORT
 import * as net from 'net';
 import { parseMUDOutput } from './parser.js';
-import chalk from 'chalk';
 import { log } from '../logger.js';
 import { EventEmitter } from 'events';
+import { AgentDecision } from '../agent/agent.js';
 
 export class MUDClient extends EventEmitter {
   private socket: net.Socket | null = null;
@@ -28,7 +28,7 @@ export class MUDClient extends EventEmitter {
       for (const line of lines) {
         if (line.trim()) {
           const parsed = parseMUDOutput(line);
-          this.emit('data', line, parsed); // Pass both raw and parsed once
+          this.emit('data', line, parsed);
           log.info('📥 MUD: ' + parsed.clean);
         }
       }
@@ -45,20 +45,54 @@ export class MUDClient extends EventEmitter {
     });
   }
 
-  sendCommand(cmd: string) {
-    if (Date.now() - this.lastSendTime < 500) return; // Rate limiting
+  /**
+   * Send a command to the MUD.
+   * Accepts either a plain string or an AgentDecision object.
+   */
+  sendCommand(input: string | AgentDecision) {
+    if (!this.socket || !this.connected) {
+      log.error('Cannot send - not connected');
+      return;
+    }
+
+    // Rate limiting
+    if (Date.now() - this.lastSendTime < 500) return;
     this.lastSendTime = Date.now();
-    this.socket?.write(cmd + '\n');
-    log.success('📤 Sent: ' + cmd);
+
+    let commandToSend = '';
+    let displayText = '';
+
+    if (typeof input === 'string') {
+      commandToSend = input;
+      displayText = input || '[press enter]';
+    } else {
+      // Structured decision from the agent
+      if (input.action === 'press_enter') {
+        commandToSend = '';
+        displayText = '[press enter]';
+      } else if (input.action === 'send_command' && input.command) {
+        commandToSend = input.command;
+        displayText = input.command;
+      } else {
+        return; // Invalid decision, do nothing
+      }
+    }
+
+    this.socket.write(commandToSend + '\n');
+    log.success('✅ Sent: ' + displayText);
   }
 
   private reconnect() {
     setTimeout(() => this.connect(), 3000);
   }
 
-  disconnect() { this.socket?.end(); }
+  disconnect() {
+    this.socket?.end();
+  }
 
-  setAutoMode(mode: boolean) { this.autoMode = mode; }
+  setAutoMode(mode: boolean) {
+    this.autoMode = mode;
+  }
 }
 
 export default MUDClient;

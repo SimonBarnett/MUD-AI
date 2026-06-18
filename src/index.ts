@@ -1,20 +1,17 @@
-// ====================== NUCLEAR DEBUG SUPPRESSION ======================
+// src/index.ts
 import debug from 'debug';
-debug.disable();                    // ← This is the real killer
+debug.disable();
 process.env.DEBUG = '';
 process.env.OPENAI_LOG = 'none';
 process.env.FORCE_COLOR = '1';
-// ======================================================================
 
 import 'dotenv/config';
-import chalk from 'chalk';
 import { startInteractiveCLI } from './cli.js';
-import { MUDAgent, AgentDecision } from './agent/agent.js';
+import { MUDAgent } from './agent/agent.js';
 import { MUDClient } from './mud-client/client.js';
 import { ingestEvent } from './context-engine/ingestion.js';
 import { log, banner } from './logger.js';
 
-// Polyfill WebSocket for Node 20
 import ws from 'ws';
 (global as any).WebSocket = ws;
 
@@ -46,25 +43,10 @@ async function launch() {
 
     try {
       await ingestEvent(rawOutput, parsed);
-
-      const decision: AgentDecision = await agent.think(rawOutput, parsed);
-
-      if (decision.action === 'press_enter') {
-        mud.sendCommand(''); // Send actual newline (CRLF)
-        log.success('✅ Sent: [press enter]');
-      } 
-      else if (decision.action === 'send_command' && decision.command) {
-        mud.sendCommand(decision.command);
-        log.success('✅ Sent: ' + decision.command);
-      }
-
-      // Optional: show third thoughts in logs
-      if (decision.third_thoughts) {
-        log.info('🌀 Third thoughts: ' + decision.third_thoughts);
-      }
-
+      const decision = await agent.think(rawOutput, parsed);
+      mud.sendCommand(decision);           // ← Much cleaner now
     } catch (e) {
-      log.error('Data processing robustness: ' + e);
+      log.error('Data processing error: ' + e);
     }
   });
 
