@@ -6,3 +6,15 @@
 [2026-06-18T12:05:16.484Z] [INFO] 🧠 LLM classification started for event: Boot - Grok enters Discworld...
 [2026-06-18T12:05:16.488Z] [ERROR] Ingestion robustness fallback: Error: Missing XAI_API_KEY in .env file
 [2026-06-18T12:05:16.500Z] [ERROR] Robust boot fallback: Error: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env file
+
+=== NEW RUN: 2026-06-18T12:12:06.776Z ===
+[2026-06-18T12:12:06.777Z] [SUCCESS] MUD-AI clean playable demo starting...
+[2026-06-18T12:12:06.780Z] [INFO] Initializing clean real end-to-end...
+[2026-06-18T12:12:06.783Z] [INFO] Auto mode starting as: ON
+[2026-06-18T12:12:06.787Z] [INFO] 🧠 LLM classification started for event: Boot - Grok enters Discworld...
+[2026-06-18T12:12:07.091Z] [ERROR] Ingestion robustness fallback: Error: 400 "Model not found: grok-beta"
+[2026-06-18T12:12:07.165Z] [ERROR] Robust boot fallback: Error: Node.js 20 detected without native WebSocket support.
+
+Suggested solution: For Node.js < 22, install "ws" package and provide it via the transport option:
+import ws from "ws"
+new RealtimeClient(url, { transport: ws })
