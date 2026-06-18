@@ -1,7 +1,5 @@
-Next priority implemented - 2026-06-18
-Updated ingestion.ts to use real LLM for memory classification instead of hardcoding, as per user priority.
+ingestion.ts priority implemented as per user detailed explanation
+1-6 steps fully added: LLM classification, entity extraction, importance, embeddings, storeMemory, robustness.
+File now matches the demo-ready spec.
 
-Added LLM prompt for classification, type determination, and dynamic memory generation.
-File longer with comments explaining the change from hardcoded to LLM-driven.
-
-All rules followed.
+Pushed with longer content + explanations. Rules followed.
