@@ -1,12 +1,15 @@
-// src/agent/agent.ts - BALANCED VALIDATION (structure + flexibility for dynamic verbs)
+// src/agent/agent.ts - ONLY USES xAI / GROK (chat + decisions)
 import { retrieveContext } from '../context-engine/retrieval.js';
 import { ingestEvent } from '../context-engine/ingestion.js';
 import { log } from '../logger.js';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY });
+// === xAI Client (Grok) ===
+const xai = new OpenAI({
+  apiKey: process.env.XAI_API_KEY,
+  baseURL: "https://api.x.ai/v1",
+});
 
-// Core verbs that should almost always be valid
 const CORE_VERBS = [
   'north','south','east','west','up','down','n','s','e','w','u','d',
   'look','examine','l','ex','get','take','drop','put','give','say','tell','ask',
@@ -17,24 +20,13 @@ const CORE_VERBS = [
 function isPlausibleCommand(cmd: string): boolean {
   if (!cmd || typeof cmd !== 'string') return false;
   const trimmed = cmd.trim();
-
-  // Reject obvious bad output
   if (trimmed.length < 1 || trimmed.length > 80) return false;
   if (trimmed.includes('.') || trimmed.includes('?')) return false;
   if (trimmed.toLowerCase().includes('because') || trimmed.toLowerCase().includes('i think')) return false;
 
   const firstWord = trimmed.split(/\s+/)[0].toLowerCase();
-
-  // Accept if it starts with a core verb, OR if it's a reasonable multi-word command
-  if (CORE_VERBS.includes(firstWord)) {
-    return true;
-  }
-
-  // Allow other multi-word commands (for newly learned spells/skills) as long as they look clean
-  if (trimmed.includes(' ') && trimmed.split(' ').length <= 6) {
-    return true;
-  }
-
+  if (CORE_VERBS.includes(firstWord)) return true;
+  if (trimmed.includes(' ') && trimmed.split(' ').length <= 6) return true;
   return false;
 }
 
@@ -75,8 +67,8 @@ Respond with STRICT JSON:
   "third_thoughts": "1-2 sentence reflection: does this align with my goals and recent reflections?"
 }`;
 
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+      const completion = await xai.chat.completions.create({
+        model: 'grok-beta',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -97,7 +89,6 @@ Respond with STRICT JSON:
       let decision = (typeof parsed.command === 'string') ? parsed.command.trim() : "look around";
       const thirdThoughts = (typeof parsed.third_thoughts === 'string') ? parsed.third_thoughts.trim() : "Decision made.";
 
-      // Balanced validation (core verbs + reasonable multi-word commands)
       if (!isPlausibleCommand(decision)) {
         log.hint('Agent produced questionable command → smart fallback used');
         decision = parsedState.entities?.length > 0 
@@ -105,7 +96,6 @@ Respond with STRICT JSON:
           : "look around";
       }
 
-      // Store reflection so it influences future decisions
       this.recentReflections.push(thirdThoughts);
       if (this.recentReflections.length > 6) this.recentReflections.shift();
 

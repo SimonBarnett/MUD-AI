@@ -1,3 +1,4 @@
+// src/context-engine/retrieval.ts - OpenAI used ONLY for embeddings
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
 
@@ -6,6 +7,7 @@ const supabase: SupabaseClient = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+// OpenAI client - used ONLY for embeddings (xAI does not offer embeddings yet)
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -20,10 +22,6 @@ export interface RetrievedMemory {
   entities: string[];
 }
 
-/**
- * Retrieve relevant memories using multi-stage retrieval
- * (current scene + entity boost + semantic + importance + recency)
- */
 export async function retrieveContext(
   currentScene: string,
   recentDialogue: string,
@@ -41,7 +39,7 @@ export async function retrieveContext(
 
   const queryText = `${currentScene}\n${recentDialogue}`.slice(0, 8000);
 
-  // Generate query embedding
+  // Generate query embedding using OpenAI
   const embeddingResponse = await openai.embeddings.create({
     model: 'text-embedding-3-small',
     input: queryText,
@@ -49,7 +47,6 @@ export async function retrieveContext(
 
   const queryEmbedding = embeddingResponse.data[0].embedding;
 
-  // Call the SQL function we created
   const { data, error } = await supabase.rpc('match_mud_memories', {
     query_embedding: queryEmbedding,
     match_threshold: threshold,
@@ -65,9 +62,6 @@ export async function retrieveContext(
   return (data as RetrievedMemory[]) || [];
 }
 
-/**
- * Convenience helper: get memories relevant to current situation
- */
 export async function getRelevantMemories(
   scene: string,
   dialogue: string,

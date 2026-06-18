@@ -1,16 +1,26 @@
-// src/context-engine/ingestion.ts - NOW USING PERSISTENT LOGGER (all console.log replaced)
+// src/context-engine/ingestion.ts - xAI for classification + OpenAI only for embeddings
 import { storeMemory } from './memory.js';
 import { log } from '../logger.js';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY });
+// xAI client for chat/classification
+const xai = new OpenAI({
+  apiKey: process.env.XAI_API_KEY,
+  baseURL: "https://api.x.ai/v1",
+});
+
+// OpenAI client - used ONLY for embeddings
+const openaiEmbeddings = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function ingestEvent(rawEvent: string, parsedState: any = {}) {
   log.info('🧠 LLM classification started for event: ' + rawEvent.substring(0, 100) + '...');
 
   try {
-    const classifyResponse = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+    // Classification uses xAI (Grok)
+    const classifyResponse = await xai.chat.completions.create({
+      model: 'grok-beta',
       messages: [{
         role: 'user',
         content: `Classify this MUD event into relevant memory types. Return STRICT JSON array of objects: [{type, desc, entities: [], importance: 0-1}].
@@ -31,8 +41,9 @@ Parsed state: ${JSON.stringify(parsedState)}`
       classified = [{type: "episodic", desc: rawEvent, entities: ["player"], importance: 0.8}];
     }
 
+    // Embeddings still require OpenAI (xAI does not offer embeddings)
     for (const mem of classified) {
-      const embeddingResponse = await openai.embeddings.create({
+      const embeddingResponse = await openaiEmbeddings.embeddings.create({
         model: 'text-embedding-3-small',
         input: mem.desc || rawEvent
       });
