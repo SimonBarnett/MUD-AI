@@ -1,6 +1,6 @@
 // src/index.ts - ALL REMAINING MINOR ISSUES FIXED (startup log, rate limiting only for auto)
-import chalk from 'chalk';
 import dotenv from 'dotenv';
+import chalk from 'chalk';
 import { startInteractiveCLI } from './cli.js';
 import { MUDAgent } from './agent/agent.js';
 import { MUDClient } from './mud-client/client.js';

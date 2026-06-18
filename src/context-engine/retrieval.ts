@@ -1,16 +1,34 @@
-// src/context-engine/retrieval.ts - OpenAI used ONLY for embeddings
+// src/context-engine/retrieval.ts - LAZY Supabase client (fixes env loading issue)
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
 
-const supabase: SupabaseClient = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+let supabase: SupabaseClient | null = null;
+let openai: OpenAI | null = null;
 
-// OpenAI client - used ONLY for embeddings (xAI does not offer embeddings yet)
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function getSupabase() {
+  if (!supabase) {
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env');
+    }
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+  }
+  return supabase;
+}
+
+function getOpenAIForEmbeddings() {
+  if (!openai) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('Missing OPENAI_API_KEY in .env (needed for embeddings)');
+    }
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openai;
+}
 
 export interface RetrievedMemory {
   id: string;
@@ -39,15 +57,14 @@ export async function retrieveContext(
 
   const queryText = `${currentScene}\n${recentDialogue}`.slice(0, 8000);
 
-  // Generate query embedding using OpenAI
-  const embeddingResponse = await openai.embeddings.create({
+  const embeddingResponse = await getOpenAIForEmbeddings().embeddings.create({
     model: 'text-embedding-3-small',
     input: queryText,
   });
 
   const queryEmbedding = embeddingResponse.data[0].embedding;
 
-  const { data, error } = await supabase.rpc('match_mud_memories', {
+  const { data, error } = await getSupabase().rpc('match_mud_memories', {
     query_embedding: queryEmbedding,
     match_threshold: threshold,
     match_count: topK,
