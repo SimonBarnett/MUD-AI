@@ -1,14 +1,23 @@
-// src/agent/agent.ts - ONLY USES xAI / GROK (chat + decisions)
+// src/agent/agent.ts
 import { retrieveContext } from '../context-engine/retrieval.js';
 import { ingestEvent } from '../context-engine/ingestion.js';
 import { log } from '../logger.js';
 import OpenAI from 'openai';
 
-// === xAI Client (Grok) ===
-const xai = new OpenAI({
-  apiKey: process.env.XAI_API_KEY,
-  baseURL: "https://api.x.ai/v1",
-});
+let xaiClient: OpenAI | null = null;
+
+function getXAI() {
+  if (!xaiClient) {
+    if (!process.env.XAI_API_KEY) {
+      throw new Error('Missing XAI_API_KEY in .env file');
+    }
+    xaiClient = new OpenAI({
+      apiKey: process.env.XAI_API_KEY,
+      baseURL: "https://api.x.ai/v1",
+    });
+  }
+  return xaiClient;
+}
 
 const CORE_VERBS = [
   'north','south','east','west','up','down','n','s','e','w','u','d',
@@ -67,7 +76,7 @@ Respond with STRICT JSON:
   "third_thoughts": "1-2 sentence reflection: does this align with my goals and recent reflections?"
 }`;
 
-      const completion = await xai.chat.completions.create({
+      const completion = await getXAI().chat.completions.create({
         model: 'grok-beta',
         messages: [
           { role: 'system', content: systemPrompt },

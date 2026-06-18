@@ -1,25 +1,41 @@
-// src/context-engine/ingestion.ts - xAI for classification + OpenAI only for embeddings
+// src/context-engine/ingestion.ts
 import { storeMemory } from './memory.js';
 import { log } from '../logger.js';
 import OpenAI from 'openai';
 
-// xAI client for chat/classification
-const xai = new OpenAI({
-  apiKey: process.env.XAI_API_KEY,
-  baseURL: "https://api.x.ai/v1",
-});
+let xaiClient: OpenAI | null = null;
+let openaiEmbeddingsClient: OpenAI | null = null;
 
-// OpenAI client - used ONLY for embeddings
-const openaiEmbeddings = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function getXAI() {
+  if (!xaiClient) {
+    if (!process.env.XAI_API_KEY) {
+      throw new Error('Missing XAI_API_KEY in .env file');
+    }
+    xaiClient = new OpenAI({
+      apiKey: process.env.XAI_API_KEY,
+      baseURL: "https://api.x.ai/v1",
+    });
+  }
+  return xaiClient;
+}
+
+function getOpenAIForEmbeddings() {
+  if (!openaiEmbeddingsClient) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('Missing OPENAI_API_KEY in .env file');
+    }
+    openaiEmbeddingsClient = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openaiEmbeddingsClient;
+}
 
 export async function ingestEvent(rawEvent: string, parsedState: any = {}) {
   log.info('🧠 LLM classification started for event: ' + rawEvent.substring(0, 100) + '...');
 
   try {
-    // Classification uses xAI (Grok)
-    const classifyResponse = await xai.chat.completions.create({
+    const classifyResponse = await getXAI().chat.completions.create({
       model: 'grok-beta',
       messages: [{
         role: 'user',
@@ -41,9 +57,8 @@ Parsed state: ${JSON.stringify(parsedState)}`
       classified = [{type: "episodic", desc: rawEvent, entities: ["player"], importance: 0.8}];
     }
 
-    // Embeddings still require OpenAI (xAI does not offer embeddings)
     for (const mem of classified) {
-      const embeddingResponse = await openaiEmbeddings.embeddings.create({
+      const embeddingResponse = await getOpenAIForEmbeddings().embeddings.create({
         model: 'text-embedding-3-small',
         input: mem.desc || rawEvent
       });
