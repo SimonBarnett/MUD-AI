@@ -39,6 +39,12 @@ function isPlausibleCommand(cmd: string): boolean {
   return false;
 }
 
+export interface AgentDecision {
+  action: 'send_command' | 'press_enter';
+  command?: string;
+  third_thoughts?: string;
+}
+
 export class MUDAgent {
   private personality = "Chaotic Good Grok - helpful, witty, slightly mischievous MUD player who loves the Discworld";
   private goals: string[] = [
@@ -51,7 +57,7 @@ export class MUDAgent {
   private recentActions: string[] = [];
   private recentReflections: string[] = [];
 
-  async think(input: string, parsedState: any = {}) {
+  async think(input: string, parsedState: any = {}): Promise<AgentDecision> {
     try {
       const memories = await retrieveContext(input);
 
@@ -60,21 +66,24 @@ Your current goals: ${this.goals.join(' | ')}
 Recent actions: ${this.recentActions.slice(-6).join(' → ')}
 Recent reflections: ${this.recentReflections.slice(-3).join(' | ')}
 
+You must respond with STRICT JSON in this format:
+{
+  "action": "send_command" | "press_enter",
+  "command": "short valid MUD command (only include if action is send_command)",
+  "third_thoughts": "1-2 sentence reflection on whether this aligns with your goals"
+}
+
 Rules:
-- Output ONLY a short, valid MUD command (1-6 words ideal).
-- Never explain or add reasoning in the command.
-- You can use newly learned spells, skills, or commands.
-- Prioritize survival in dangerous situations.`;
+- Use "press_enter" when the game is showing a menu or waiting for Enter.
+- Use "send_command" + a normal command otherwise.
+- Keep commands short (1-6 words ideal).
+- Never output free text outside the JSON.`;
 
       const userPrompt = `Current situation: ${JSON.stringify(parsedState)}
 Recent memories: ${memories}
 What just happened: ${input}
 
-Respond with STRICT JSON:
-{
-  "command": "short valid MUD command (can be multi-word)",
-  "third_thoughts": "1-2 sentence reflection: does this align with my goals and recent reflections?"
-}`;
+Respond with the JSON object above.`;
 
       const completion = await getXAI().chat.completions.create({
         model: 'grok-4.3',
@@ -83,24 +92,27 @@ Respond with STRICT JSON:
           { role: 'user', content: userPrompt }
         ],
         temperature: 0.4,
-        max_tokens: 140,
+        max_tokens: 160,
         response_format: { type: "json_object" }
       });
 
-      const responseText = completion.choices[0].message.content || '{"command":"look around","third_thoughts":"I need more information."}';
-      let parsed;
+      const responseText = completion.choices[0].message.content || '{"action":"press_enter","third_thoughts":"Need more information."}';
+      
+      let parsed: any;
       try {
         parsed = JSON.parse(responseText);
-      } catch (e) {
-        parsed = { command: "look around", third_thoughts: "Fallback decision." };
+      } catch {
+        parsed = { action: "press_enter", third_thoughts: "Fallback decision." };
       }
 
-      let decision = (typeof parsed.command === 'string') ? parsed.command.trim() : "look around";
+      const action = parsed.action === 'press_enter' ? 'press_enter' : 'send_command';
+      let command = (typeof parsed.command === 'string') ? parsed.command.trim() : '';
       const thirdThoughts = (typeof parsed.third_thoughts === 'string') ? parsed.third_thoughts.trim() : "Decision made.";
 
-      if (!isPlausibleCommand(decision)) {
-        log.hint('Agent produced questionable command → smart fallback used');
-        decision = parsedState.entities?.length > 0 
+      // Validation for normal commands
+      if (action === 'send_command' && !isPlausibleCommand(command)) {
+        log.hint('Agent produced questionable command → using fallback');
+        command = parsedState.entities?.length > 0 
           ? `examine ${parsedState.entities[0]}` 
           : "look around";
       }
@@ -110,22 +122,35 @@ Respond with STRICT JSON:
 
       log.info('🌀 Third thoughts: ' + thirdThoughts);
 
-      await ingestEvent('Agent acted: ' + decision, parsedState);
-      this.recentActions.push(decision);
+      const finalDecision = action === 'press_enter' ? '[press enter]' : command;
+      await ingestEvent('Agent acted: ' + finalDecision, parsedState);
+
+      this.recentActions.push(finalDecision);
       if (this.recentActions.length > 8) this.recentActions.shift();
 
-      log.success('💡 Agent decided: ' + decision);
-      return decision;
+      log.success('💡 Agent decided: ' + finalDecision);
+
+      return {
+        action,
+        command: action === 'send_command' ? command : undefined,
+        third_thoughts: thirdThoughts
+      };
 
     } catch (e) {
       log.error('Agent robustness fallback: ' + e);
       const smartFallback = (parsedState.entities?.includes('troll') || parsedState.status === 'combat') 
         ? 'flee' 
         : 'look around';
+
       await ingestEvent('Agent fallback: ' + smartFallback, parsedState);
       this.recentActions.push(smartFallback);
       if (this.recentActions.length > 8) this.recentActions.shift();
-      return smartFallback;
+
+      return {
+        action: 'send_command',
+        command: smartFallback,
+        third_thoughts: 'Used safe fallback due to error.'
+      };
     }
   }
 

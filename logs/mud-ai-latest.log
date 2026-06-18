@@ -984,3 +984,329 @@
 [2026-06-18T13:46:46.537Z] [INFO] 🌀 Third thoughts: This aligns with exploring the Discworld by surveying the unknown room right at the start.
 [2026-06-18T13:46:46.541Z] [INFO] 🧠 LLM classification started for event: Agent acted: look...
 [2026-06-18T13:46:53.631Z] [INFO] Demo ended.
+
+=== NEW RUN: 2026-06-18T13:51:01.795Z ===
+[2026-06-18T13:51:01.796Z] [SUCCESS] MUD-AI clean playable demo starting...
+[2026-06-18T13:51:01.797Z] [INFO] Initializing clean real end-to-end...
+[2026-06-18T13:51:01.798Z] [INFO] Auto mode starting as: ON
+[2026-06-18T13:51:01.799Z] [INFO] 🧠 LLM classification started for event: Boot - Grok enters Discworld...
+[2026-06-18T13:51:10.276Z] [SUCCESS] ✅ Stored: boot
+[2026-06-18T13:51:10.277Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:51:10.278Z] [INFO] Connecting to discworld.starturtle.net:4242...
+[2026-06-18T13:51:10.280Z] [SUCCESS] Interactive CLI active. Type !auto to toggle autonomous mode.
+[2026-06-18T13:51:10.283Z] [SUCCESS] ✅ CLEAN REAL END-TO-END ACTIVE! Type !auto to toggle autonomous mode.
+[2026-06-18T13:51:10.297Z] [SUCCESS] ✅ Connected to Discworld MUD
+[2026-06-18T13:51:10.305Z] [INFO] 🧠 LLM classification started for event: LPmud version : DW OS v1.02 on port 4242....
+[2026-06-18T13:51:10.306Z] [INFO] 📥 MUD: LPmud version : DW OS v1.02 on port 4242.
+[2026-06-18T13:51:10.316Z] [INFO] 📥 MUD: ������V��[��F��]��'���Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:51:10.319Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:51:10.323Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:51:10.325Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:51:10.329Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:51:10.333Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:51:10.337Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:51:10.339Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:51:10.341Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:51:10.343Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:51:10.347Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:51:10.351Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:51:10.354Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:51:10.357Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:51:10.359Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:51:10.364Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:51:10.365Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:51:10.368Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:51:10.371Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:51:10.373Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:51:10.376Z] [INFO] 📥 MUD: Your choice: There is no player by the name login simulation.
+[2026-06-18T13:51:18.743Z] [SUCCESS] ✅ Stored: system_info
+[2026-06-18T13:51:18.747Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:51:24.922Z] [INFO] 🌀 Third thoughts: This aligns with exploring Discworld and discovering new places from an unknown starting room. No conflicts with goals or empty recent reflections.
+[2026-06-18T13:51:24.926Z] [INFO] 🧠 LLM classification started for event: Agent acted: look...
+[2026-06-18T13:51:31.237Z] [SUCCESS] ✅ Stored: action
+[2026-06-18T13:51:31.241Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:51:31.244Z] [SUCCESS] 💡 Agent decided: look
+[2026-06-18T13:51:31.248Z] [SUCCESS] 📤 Sent: look
+[2026-06-18T13:51:31.250Z] [SUCCESS] ✅ Real MUD data processed - decision: look
+[2026-06-18T13:51:31.258Z] [INFO] 🧠 LLM classification started for event: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are ma...
+[2026-06-18T13:51:31.261Z] [INFO] 📥 MUD: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:51:31.264Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:51:31.267Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:51:31.270Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:51:31.273Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:51:31.277Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:51:31.280Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:51:31.283Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:51:31.286Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:51:31.289Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:51:31.294Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:51:31.297Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:51:31.300Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:51:31.303Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:51:31.307Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:51:31.310Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:51:31.313Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:51:31.316Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:51:31.319Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:51:31.325Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:51:36.056Z] [INFO] Demo ended.
+
+=== NEW RUN: 2026-06-18T13:52:57.912Z ===
+[2026-06-18T13:52:57.913Z] [SUCCESS] MUD-AI clean playable demo starting...
+[2026-06-18T13:52:57.913Z] [INFO] Initializing clean real end-to-end...
+[2026-06-18T13:52:57.914Z] [INFO] Auto mode starting as: ON
+[2026-06-18T13:52:57.915Z] [INFO] 🧠 LLM classification started for event: Boot - Grok enters Discworld...
+[2026-06-18T13:53:05.643Z] [SUCCESS] ✅ Stored: memory
+[2026-06-18T13:53:05.644Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:53:05.645Z] [INFO] Connecting to discworld.starturtle.net:4242...
+[2026-06-18T13:53:05.646Z] [SUCCESS] Interactive CLI active. Type !auto to toggle autonomous mode.
+[2026-06-18T13:53:05.649Z] [SUCCESS] ✅ CLEAN REAL END-TO-END ACTIVE! Type !auto to toggle autonomous mode.
+[2026-06-18T13:53:05.696Z] [SUCCESS] ✅ Connected to Discworld MUD
+[2026-06-18T13:53:05.706Z] [INFO] 🧠 LLM classification started for event: LPmud version : DW OS v1.02 on port 4242....
+[2026-06-18T13:53:05.707Z] [INFO] 📥 MUD: LPmud version : DW OS v1.02 on port 4242.
+[2026-06-18T13:53:05.716Z] [INFO] 📥 MUD: ������V��[��F��]��'���Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:53:05.719Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:53:05.723Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:53:05.726Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:53:05.729Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:53:05.732Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:53:05.736Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:53:05.740Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:53:05.743Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:53:05.746Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:53:05.749Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:53:05.753Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:53:05.757Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:53:05.761Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:53:05.764Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:53:05.767Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:53:05.771Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:53:05.774Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:53:05.777Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:53:05.780Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:53:05.784Z] [INFO] 📥 MUD: Your choice: There is no player by the name login simulation.
+[2026-06-18T13:53:11.601Z] [SUCCESS] ✅ Stored: info
+[2026-06-18T13:53:11.604Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:53:20.129Z] [INFO] 🌀 Third thoughts: This aligns with exploring the Discworld and discovering new places since the room is unknown. No recent reflections to contradict.
+[2026-06-18T13:53:20.132Z] [INFO] 🧠 LLM classification started for event: Agent acted: look...
+[2026-06-18T13:53:27.251Z] [SUCCESS] ✅ Stored: action
+[2026-06-18T13:53:27.255Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:53:27.259Z] [SUCCESS] 💡 Agent decided: look
+[2026-06-18T13:53:27.262Z] [SUCCESS] 📤 Sent: look
+[2026-06-18T13:53:27.266Z] [SUCCESS] ✅ Real MUD data processed - decision: look
+[2026-06-18T13:53:27.270Z] [INFO] 🧠 LLM classification started for event: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are ma...
+[2026-06-18T13:53:27.272Z] [INFO] 📥 MUD: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:53:27.275Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:53:27.278Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:53:27.282Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:53:27.286Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:53:27.289Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:53:27.291Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:53:27.293Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:53:27.297Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:53:27.300Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:53:27.304Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:53:27.308Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:53:27.311Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:53:27.314Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:53:27.319Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:53:27.321Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:53:27.323Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:53:27.326Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:53:27.329Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:53:27.332Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:53:37.271Z] [SUCCESS] ✅ Stored: system
+[2026-06-18T13:53:37.275Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:53:44.765Z] [INFO] 🌀 Third thoughts: This aligns with exploring the Discworld and discovering new places since the room is unknown. No recent reflections to contradict.
+[2026-06-18T13:53:44.770Z] [INFO] 🧠 LLM classification started for event: Agent acted: look...
+[2026-06-18T13:53:51.446Z] [SUCCESS] ✅ Stored: action
+[2026-06-18T13:53:51.451Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:53:51.454Z] [SUCCESS] 💡 Agent decided: look
+[2026-06-18T13:53:51.457Z] [SUCCESS] 📤 Sent: look
+[2026-06-18T13:53:51.459Z] [SUCCESS] ✅ Real MUD data processed - decision: look
+[2026-06-18T13:53:51.465Z] [INFO] 🧠 LLM classification started for event: Your choice: ��There is no player by the name look....
+[2026-06-18T13:53:51.468Z] [INFO] 📥 MUD: Your choice: ��There is no player by the name look.
+[2026-06-18T13:53:58.904Z] [SUCCESS] ✅ Stored: error
+[2026-06-18T13:53:58.907Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:54:08.220Z] [INFO] 🌀 Third thoughts: This aligns with exploring the Discworld and discovering new places since the room is unknown. No recent reflections to contradict.
+[2026-06-18T13:54:08.223Z] [INFO] 🧠 LLM classification started for event: Agent acted: look...
+[2026-06-18T13:54:14.426Z] [SUCCESS] ✅ Stored: action
+[2026-06-18T13:54:14.429Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:54:14.432Z] [SUCCESS] 💡 Agent decided: look
+[2026-06-18T13:54:14.435Z] [SUCCESS] 📤 Sent: look
+[2026-06-18T13:54:14.438Z] [SUCCESS] ✅ Real MUD data processed - decision: look
+[2026-06-18T13:54:14.444Z] [INFO] 🧠 LLM classification started for event: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are ma...
+[2026-06-18T13:54:14.446Z] [INFO] 📥 MUD: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:54:14.449Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:54:14.453Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:54:14.456Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:54:14.459Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:54:14.462Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:54:14.465Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:54:14.469Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:54:14.472Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:54:14.475Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:54:14.478Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:54:14.482Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:54:14.485Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:54:14.488Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:54:14.491Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:54:14.494Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:54:14.498Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:54:14.501Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:54:14.504Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:54:14.507Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:54:23.326Z] [SUCCESS] ✅ Stored: prompt
+[2026-06-18T13:54:23.494Z] [SUCCESS] ✅ Stored: welcome
+[2026-06-18T13:54:23.497Z] [SUCCESS] 🎉 Ingestion complete: 2 memories
+[2026-06-18T13:54:36.467Z] [INFO] 🌀 Third thoughts: This aligns with exploring the Discworld and discovering new places since the room is unknown. No recent reflections to contradict.
+[2026-06-18T13:54:36.472Z] [INFO] 🧠 LLM classification started for event: Agent acted: look...
+[2026-06-18T13:54:44.627Z] [SUCCESS] ✅ Stored: action
+[2026-06-18T13:54:44.631Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:54:44.636Z] [SUCCESS] 💡 Agent decided: look
+[2026-06-18T13:54:44.640Z] [SUCCESS] 📤 Sent: look
+[2026-06-18T13:54:44.645Z] [SUCCESS] ✅ Real MUD data processed - decision: look
+[2026-06-18T13:54:44.649Z] [INFO] 🧠 LLM classification started for event: Your choice: ��There is no player by the name look....
+[2026-06-18T13:54:44.654Z] [INFO] 📥 MUD: Your choice: ��There is no player by the name look.
+[2026-06-18T13:54:54.986Z] [SUCCESS] ✅ Stored: error
+[2026-06-18T13:54:54.990Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:55:05.507Z] [INFO] 🌀 Third thoughts: This aligns with exploring the Discworld and discovering new places since the room is unknown. Movement will help uncover new locations as per recent reflections.
+[2026-06-18T13:55:05.512Z] [INFO] 🧠 LLM classification started for event: Agent acted: go north...
+[2026-06-18T13:55:12.002Z] [SUCCESS] ✅ Stored: movement
+[2026-06-18T13:55:12.006Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:55:12.009Z] [SUCCESS] 💡 Agent decided: go north
+[2026-06-18T13:55:12.012Z] [SUCCESS] 📤 Sent: go north
+[2026-06-18T13:55:12.014Z] [SUCCESS] ✅ Real MUD data processed - decision: go north
+[2026-06-18T13:55:12.021Z] [INFO] 🧠 LLM classification started for event: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are ma...
+[2026-06-18T13:55:12.024Z] [INFO] 📥 MUD: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:55:12.027Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:55:12.029Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:55:12.031Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:55:12.034Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:55:12.036Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:55:12.038Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:55:12.040Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:55:12.042Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:55:12.044Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:55:12.045Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:55:12.048Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:55:12.052Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:55:12.055Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:55:12.058Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:55:12.061Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:55:12.065Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:55:12.069Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:55:12.072Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:55:12.075Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:55:22.291Z] [SUCCESS] ✅ Stored: system
+[2026-06-18T13:55:22.295Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:55:26.154Z] [INFO] Demo ended.
+
+=== NEW RUN: 2026-06-18T13:55:39.588Z ===
+[2026-06-18T13:55:39.589Z] [SUCCESS] MUD-AI clean playable demo starting...
+[2026-06-18T13:55:39.590Z] [INFO] Initializing clean real end-to-end...
+[2026-06-18T13:55:39.591Z] [INFO] Auto mode starting as: ON
+[2026-06-18T13:55:39.592Z] [INFO] 🧠 LLM classification started for event: Boot - Grok enters Discworld...
+[2026-06-18T13:55:47.417Z] [SUCCESS] ✅ Stored: login
+[2026-06-18T13:55:47.418Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:55:47.419Z] [INFO] Connecting to discworld.starturtle.net:4242...
+[2026-06-18T13:55:47.420Z] [SUCCESS] Interactive CLI active. Type !auto to toggle autonomous mode.
+[2026-06-18T13:55:47.423Z] [SUCCESS] ✅ CLEAN REAL END-TO-END ACTIVE! Type !auto to toggle autonomous mode.
+[2026-06-18T13:55:47.435Z] [SUCCESS] ✅ Connected to Discworld MUD
+[2026-06-18T13:55:47.445Z] [INFO] 🧠 LLM classification started for event: LPmud version : DW OS v1.02 on port 4242....
+[2026-06-18T13:55:47.446Z] [INFO] 📥 MUD: LPmud version : DW OS v1.02 on port 4242.
+[2026-06-18T13:55:47.455Z] [INFO] 📥 MUD: ������V��[��F��]��'���Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:55:47.457Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:55:47.459Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:55:47.461Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:55:47.463Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:55:47.468Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:55:47.471Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:55:47.473Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:55:47.476Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:55:47.478Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:55:47.483Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:55:47.485Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:55:47.488Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:55:47.491Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:55:47.494Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:55:47.499Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:55:47.501Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:55:47.504Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:55:47.507Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:55:47.509Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:55:47.514Z] [INFO] 📥 MUD: Your choice: There is no player by the name login simulation.
+[2026-06-18T13:55:55.605Z] [SUCCESS] ✅ Stored: server_banner
+[2026-06-18T13:55:55.611Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:56:04.367Z] [INFO] 🌀 Third thoughts: This aligns with exploration goals by revealing the unknown room and starting discovery in Discworld.
+[2026-06-18T13:56:04.372Z] [INFO] 🧠 LLM classification started for event: Agent acted: look...
+[2026-06-18T13:56:11.984Z] [SUCCESS] ✅ Stored: action
+[2026-06-18T13:56:11.988Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:56:11.991Z] [SUCCESS] 💡 Agent decided: look
+[2026-06-18T13:56:11.994Z] [SUCCESS] 📤 Sent: look
+[2026-06-18T13:56:11.997Z] [SUCCESS] ✅ Real MUD data processed - decision: look
+[2026-06-18T13:56:12.003Z] [INFO] 🧠 LLM classification started for event: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are ma...
+[2026-06-18T13:56:12.006Z] [INFO] 📥 MUD: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:56:12.009Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:56:12.012Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:56:12.014Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:56:12.018Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:56:12.021Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:56:12.025Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:56:12.028Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:56:12.031Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:56:12.034Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:56:12.036Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:56:12.038Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:56:12.040Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:56:12.042Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:56:12.044Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:56:12.047Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:56:12.051Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:56:12.054Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:56:12.057Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:56:12.060Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:56:22.351Z] [SUCCESS] ✅ Stored: welcome
+[2026-06-18T13:56:22.355Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:56:31.937Z] [INFO] 🌀 Third thoughts: Pressing enter proceeds past the welcome screen to start exploration in Discworld, directly aligning with my goals and recent reflections on discovery.
+[2026-06-18T13:56:31.941Z] [INFO] 🧠 LLM classification started for event: Agent acted: press enter...
+[2026-06-18T13:56:38.817Z] [SUCCESS] ✅ Stored: action
+[2026-06-18T13:56:38.820Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:56:38.823Z] [SUCCESS] 💡 Agent decided: press enter
+[2026-06-18T13:56:38.827Z] [SUCCESS] 📤 Sent: press enter
+[2026-06-18T13:56:38.830Z] [SUCCESS] ✅ Real MUD data processed - decision: press enter
+[2026-06-18T13:56:38.896Z] [INFO] 🧠 LLM classification started for event: Your choice: ��There is no player by the name press enter....
+[2026-06-18T13:56:38.900Z] [INFO] 📥 MUD: Your choice: ��There is no player by the name press enter.
+[2026-06-18T13:56:47.126Z] [SUCCESS] ✅ Stored: error
+[2026-06-18T13:56:47.130Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:56:53.975Z] [INFO] 🌀 Third thoughts: This aligns with exploration goals by attempting to reveal the unknown room after the failed command. It continues discovery in Discworld as per recent reflections.
+[2026-06-18T13:56:53.979Z] [INFO] 🧠 LLM classification started for event: Agent acted: look...
+[2026-06-18T13:57:01.691Z] [SUCCESS] ✅ Stored: action
+[2026-06-18T13:57:01.692Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:57:01.697Z] [SUCCESS] 💡 Agent decided: look
+[2026-06-18T13:57:01.702Z] [SUCCESS] 📤 Sent: look
+[2026-06-18T13:57:01.704Z] [SUCCESS] ✅ Real MUD data processed - decision: look
+[2026-06-18T13:57:01.709Z] [INFO] 🧠 LLM classification started for event: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are ma...
+[2026-06-18T13:57:01.715Z] [INFO] 📥 MUD: Press enter to continue ��Welcome to Discworld: the stuff of which dreams are made.
+[2026-06-18T13:57:01.718Z] [INFO] 📥 MUD: Silently, slowly and surely, Great A'Tuin paddles through space, its
+[2026-06-18T13:57:01.722Z] [INFO] 📥 MUD: great eyes surveying the dark, empty wastes before and behind it.
+[2026-06-18T13:57:01.726Z] [INFO] 📥 MUD: Standing on A'Tuin's great back are four enormous elephants, straining
+[2026-06-18T13:57:01.732Z] [INFO] 📥 MUD: under the colossal weight of the Discworld itself.  It sparkles with
+[2026-06-18T13:57:01.737Z] [INFO] 📥 MUD: magic, reflects the light of the stars and generally fails to be as
+[2026-06-18T13:57:01.738Z] [INFO] 📥 MUD: unobtrusive as possible.
+[2026-06-18T13:57:01.742Z] [INFO] 📥 MUD: A large, floppy, black hat recedes into the distance, somehow looking
+[2026-06-18T13:57:01.746Z] [INFO] 📥 MUD: satisfied at what it has left behind.
+[2026-06-18T13:57:01.751Z] [INFO] 📥 MUD: Q - Quit
+[2026-06-18T13:57:01.755Z] [INFO] 📥 MUD: M - Print this menu again
+[2026-06-18T13:57:01.760Z] [INFO] 📥 MUD: D - Delete your character
+[2026-06-18T13:57:01.763Z] [INFO] 📥 MUD: R - Request a temporary password
+[2026-06-18T13:57:01.767Z] [INFO] 📥 MUD: U - Short list of who is on-line
+[2026-06-18T13:57:01.770Z] [INFO] 📥 MUD: L - Short list of liaisons on-line
+[2026-06-18T13:57:01.774Z] [INFO] 📥 MUD: P - Uptime
+[2026-06-18T13:57:01.778Z] [INFO] 📥 MUD: F - Finger someone
+[2026-06-18T13:57:01.782Z] [INFO] 📥 MUD: N - New character
+[2026-06-18T13:57:01.785Z] [INFO] 📥 MUD: G - Guest character
+[2026-06-18T13:57:01.788Z] [INFO] 📥 MUD: Or, enter your current character's name
+[2026-06-18T13:57:12.471Z] [SUCCESS] ✅ Stored: welcome
+[2026-06-18T13:57:12.478Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-18T13:57:12.879Z] [INFO] Demo ended.

@@ -9,7 +9,7 @@ process.env.FORCE_COLOR = '1';
 import 'dotenv/config';
 import chalk from 'chalk';
 import { startInteractiveCLI } from './cli.js';
-import { MUDAgent } from './agent/agent.js';
+import { MUDAgent, AgentDecision } from './agent/agent.js';
 import { MUDClient } from './mud-client/client.js';
 import { ingestEvent } from './context-engine/ingestion.js';
 import { log, banner } from './logger.js';
@@ -24,6 +24,7 @@ log.success('MUD-AI clean playable demo starting...');
 const agent = new MUDAgent();
 const mud = new MUDClient();
 let autoMode = true;
+
 async function launch() {
   log.info('Initializing clean real end-to-end...');
   log.info(`Auto mode starting as: ${autoMode ? 'ON' : 'OFF'}`);
@@ -37,6 +38,7 @@ async function launch() {
   });
 
   let lastAutoProcess = 0;
+
   mud.on('data', async (rawOutput, parsed) => {
     if (!autoMode) return;
     if (Date.now() - lastAutoProcess < 800) return;
@@ -44,9 +46,23 @@ async function launch() {
 
     try {
       await ingestEvent(rawOutput, parsed);
-      const decision = await agent.think(rawOutput, parsed);
-      mud.sendCommand(decision);
-      log.success('✅ Real MUD data processed - decision: ' + decision);
+
+      const decision: AgentDecision = await agent.think(rawOutput, parsed);
+
+      if (decision.action === 'press_enter') {
+        mud.sendCommand(''); // Send actual newline (CRLF)
+        log.success('✅ Sent: [press enter]');
+      } 
+      else if (decision.action === 'send_command' && decision.command) {
+        mud.sendCommand(decision.command);
+        log.success('✅ Sent: ' + decision.command);
+      }
+
+      // Optional: show third thoughts in logs
+      if (decision.third_thoughts) {
+        log.info('🌀 Third thoughts: ' + decision.third_thoughts);
+      }
+
     } catch (e) {
       log.error('Data processing robustness: ' + e);
     }
