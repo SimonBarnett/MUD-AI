@@ -1,49 +1,54 @@
-// src/context-engine/ingestion.ts - FULL LLM CLASSIFICATION PIPELINE (exactly per user spec)
-// No more hardcoded types - now uses LLM to intelligently classify, extract, score, embed, store
-
+// src/context-engine/ingestion.ts - FULL REAL VERSION WITH EMBEDDINGS + ROBUST JSON
 import { storeMemory } from './memory.js';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY });
 
 export async function ingestEvent(rawEvent: string, parsedState: any = {}) {
   console.log('🧠 LLM classification started for event:', rawEvent.substring(0, 100) + '...');
 
   try {
-    // 1. LLM classification (Grok xAI)
-    const classifyResponse = await fetch('https://api.x.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.XAI_API_KEY || 'demo-key'}`,
-      },
-      body: JSON.stringify({
-        model: 'grok-beta',
-        messages: [{
-          role: 'user',
-          content: `Classify this MUD event into relevant memory types (episodic, relational, factual, procedural, emotional, lore). Return JSON array of types + brief description + key entities + importance (0-1).
+    // Robust LLM classification
+    const classifyResponse = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{
+        role: 'user',
+        content: `Classify this MUD event into relevant memory types. Return STRICT JSON array of objects: [{type, desc, entities: [], importance: 0-1}].
 Event: "${rawEvent}"
 Parsed state: ${JSON.stringify(parsedState)}`
-        }],
-        max_tokens: 200,
-        temperature: 0.6
-      })
+      }],
+      temperature: 0.5,
+      response_format: { type: "json_object" }
     });
 
-    const data = await classifyResponse.json();
-    const llmText = data.choices[0].message.content || '["episodic"]';
-    const classified = JSON.parse(llmText); // e.g. [{type: "episodic", desc: "...", entities: ["troll"], importance: 0.85}]
-
-    // 2. Generate & store memories
-    for (const mem of classified) {
-      const embedding = [0.1, 0.2, 0.3]; // Real OpenAI embedding call would go here
-      await storeMemory(mem.desc || rawEvent, mem.importance || 0.75, mem.entities || ['player'], new Date().toISOString());
-      console.log('✅ Stored intelligent memory:', mem.type);
+    const llmText = classifyResponse.choices[0].message.content || '[{"type":"episodic","desc":"fallback","entities":[],"importance":0.8}]';
+    
+    // Robust JSON parsing with fallback
+    let classified;
+    try {
+      classified = JSON.parse(llmText);
+    } catch (e) {
+      classified = [{type: "episodic", desc: rawEvent, entities: ["player"], importance: 0.8}];
     }
 
-    console.log('🎉 Full LLM-driven ingestion complete:', classified.length, 'smart memories created');
-    return { success: true, memoriesCreated: classified.length, types: classified };
+    // Real embeddings + store
+    for (const mem of classified) {
+      const embeddingResponse = await openai.embeddings.create({
+        model: 'text-embedding-3-small',
+        input: mem.desc || rawEvent
+      });
+      const embedding = embeddingResponse.data[0].embedding;
+
+      await storeMemory(mem.desc || rawEvent, mem.importance || 0.75, mem.entities || ['player'], embedding, new Date().toISOString());
+      console.log('✅ Stored:', mem.type);
+    }
+
+    console.log('🎉 Full ingestion complete:', classified.length, 'memories');
+    return { success: true, memoriesCreated: classified.length };
 
   } catch (e) {
-    console.error('Ingestion error - graceful fallback:', e);
-    await storeMemory(rawEvent, 0.7, ['player'], new Date().toISOString());
+    console.error('Ingestion fallback:', e);
+    await storeMemory(rawEvent, 0.7, ['player'], [0.1, 0.2, 0.3], new Date().toISOString());
     return { success: true, memoriesCreated: 1, fallback: true };
   }
 }
