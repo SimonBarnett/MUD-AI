@@ -1,11 +1,12 @@
-// src/logger.ts - PERSISTENT FILE + CONSOLE LOGGING (run/crash/push ready)
+// src/logger.ts - APPEND-ONLY + CLEAR SESSION SEPARATOR (no wiping, keeps history)
 import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 
 const LOG_DIR = path.join(process.cwd(), 'logs');
-const LOG_DATE = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-const LOG_FILE = path.join(LOG_DIR, `mud-ai-${LOG_DATE}.log`);
+const LOG_FILE = path.join(LOG_DIR, 'mud-ai-latest.log');
+
+let sessionHeaderWritten = false; // prevents duplicate headers on repeated imports
 
 function ensureLogDir() {
   if (!fs.existsSync(LOG_DIR)) {
@@ -13,9 +14,22 @@ function ensureLogDir() {
   }
 }
 
+function writeSessionHeaderIfNeeded() {
+  if (sessionHeaderWritten) return;
+  try {
+    ensureLogDir();
+    const header = `\n=== NEW RUN: ${new Date().toISOString()} ===\n`;
+    fs.appendFileSync(LOG_FILE, header, 'utf8');
+    sessionHeaderWritten = true;
+  } catch (e) {
+    // Silent fail
+  }
+}
+
 function writeToFile(level: string, message: string) {
   try {
     ensureLogDir();
+    writeSessionHeaderIfNeeded(); // ensures header appears once per process start
     const timestamp = new Date().toISOString();
     const line = `[${timestamp}] [${level}] ${message}\n`;
     fs.appendFileSync(LOG_FILE, line, 'utf8');
@@ -52,6 +66,7 @@ export const log = {
 export const banner = () => {
   console.log(chalk.bold.magenta('\n🏴‍☠️ MUD-AI Interactive CLI'));
   console.log(chalk.gray('Type commands or !connect to start MUD session. Type "exit" to quit.\n'));
+  console.log(chalk.gray('📄 Latest logs → logs/mud-ai-latest.log (append-only, new session header on every run)\n'));
 };
 
 export default { log, banner };
