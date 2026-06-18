@@ -21,7 +21,6 @@ async function launch() {
   log.info(`Auto mode starting as: ${autoMode ? 'ON' : 'OFF'}`); // Startup log
   
   await ingestEvent('Boot - Grok enters Discworld', { source: 'boot' });
-
   mud.connect();
 
   startInteractiveCLI(agent, mud, (mode) => {
@@ -40,17 +39,18 @@ async function launch() {
       const decision = await agent.think(rawOutput, parsed);
       mud.sendCommand(decision);
       log.success('✅ Real MUD data processed - decision: ' + decision);
+      log.success('✅ Real MUD data processed - decision: ' + decision);
     } catch (e) {
+      log.error('Data processing robustness: ' + e);
       log.error('Data processing robustness: ' + e);
     }
   });
 
   log.success('✅ CLEAN REAL END-TO-END ACTIVE! Type !auto to toggle autonomous mode.');
 }
-
 launch().catch(err => {
+  log.error('Robust boot fallback: ' + err);
   log.error('Robust boot fallback: ' + err);
   process.exit(1);
 });
-
 export { agent, mud };
