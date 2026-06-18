@@ -76,13 +76,22 @@ You must respond with STRICT JSON in this format:
   "third_thoughts": "1-2 sentence reflection on whether this aligns with your goals"
 }
 
-STATE-SPECIFIC RULES:
+STATE-SPECIFIC RULES (FOLLOW THESE STRICTLY):
 
-- If state is "login_menu": Choose "G" for Guest character (preferred) or "N" for new character.
-- If state is "character_prompt": Use a simple guest name like "groktest" or "explorer".
-- If state is "press_enter": Use action "press_enter".
-- If state is "in_game": Use normal MUD commands (look, movement, examine, etc.).
-- Never use normal exploration commands on login screens.
+- If state === "login_menu": 
+    You MUST type "G" (for Guest character). This is the fastest and preferred way to enter the game.
+    Do NOT use "press_enter". Do NOT use "look". Just type "G".
+
+- If state === "character_prompt":
+    Type a simple guest name like "groktest" or "explorer".
+
+- If state === "press_enter":
+    Use action: "press_enter"
+
+- If state === "in_game":
+    Use normal MUD commands (look, movement, examine, etc).
+
+- Never use "look" or exploration commands while on any login or character selection screen.
 
 GENERAL RULES:
 - Keep commands short (1-6 words ideal).
@@ -118,12 +127,19 @@ Respond with the JSON object above.`;
       let command = (typeof parsed.command === 'string') ? parsed.command.trim() : '';
       const thirdThoughts = (typeof parsed.third_thoughts === 'string') ? parsed.third_thoughts.trim() : "Decision made.";
 
-      // Validation
+      // Improved state-aware fallback
       if (action === 'send_command' && !isPlausibleCommand(command)) {
-        log.hint('Agent produced questionable command → using fallback');
-        if (currentState === 'login_menu') command = 'g';
-        else if (currentState === 'character_prompt') command = 'groktest';
-        else command = parsedState.entities?.length > 0 ? `examine ${parsedState.entities[0]}` : "look";
+        log.hint('Agent produced questionable command → using state-aware fallback');
+
+        if (currentState === 'login_menu') {
+          command = 'g';
+        } else if (currentState === 'character_prompt') {
+          command = 'groktest';
+        } else {
+          command = parsedState.entities?.length > 0 
+            ? `examine ${parsedState.entities[0]}` 
+            : "look";
+        }
       }
 
       this.recentReflections.push(thirdThoughts);

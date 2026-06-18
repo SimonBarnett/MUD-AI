@@ -18,7 +18,7 @@ export class MUDClient extends EventEmitter {
       this.connected = true;
       log.success('✅ Connected to Discworld MUD');
       this.socket?.write(Buffer.from([255, 251, 1])); // IAC WILL ECHO
-      this.socket?.write('login simulation\n');
+      // "login simulation" line removed as requested
     });
 
     this.socket.on('data', (data) => {

@@ -22,7 +22,6 @@ const agent = new MUDAgent();
 const mud = new MUDClient();
 let autoMode = true;
 
-// Simple state detection for Discworld MUD
 function detectMUDState(rawOutput: string): string {
   const text = rawOutput.toLowerCase();
 
@@ -32,10 +31,13 @@ function detectMUDState(rawOutput: string): string {
   if (text.includes("or, enter your current character's name")) {
     return 'character_prompt';
   }
-  if (text.includes('q - quit') && text.includes('n - new character')) {
+
+  // More robust login menu detection
+  if (text.includes('g - guest character') || 
+      (text.includes('q - quit') && text.includes('n - new character'))) {
     return 'login_menu';
   }
-  // Basic detection for being in-game
+
   if (text.includes('>') || text.match(/\byou (are|stand|see)\b/)) {
     return 'in_game';
   }
