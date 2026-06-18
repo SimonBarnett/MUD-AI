@@ -1,71 +1,91 @@
-// src/context-engine/ingestion.ts
+// ====================== src/context-engine/ingestion.ts ======================
 import { storeMemory } from './memory.js';
 import { log } from '../logger.js';
 import OpenAI from 'openai';
 
+// ====================== SILENT LOGGER ======================
+const silentLogger = {
+  error: () => {},
+  warn: () => {},
+  info: () => {},
+  debug: () => {}
+};
+
+// ====================== CLIENT FACTORIES ======================
 let xaiClient: OpenAI | null = null;
-let openaiEmbeddingsClient: OpenAI | null = null;
+let embeddingsClient: OpenAI | null = null;
 
 function getXAI() {
   if (!xaiClient) {
-    if (!process.env.XAI_API_KEY) throw new Error('Missing XAI_API_KEY in .env');
-    xaiClient = new OpenAI({ apiKey: process.env.XAI_API_KEY, baseURL: "https://api.x.ai/v1" });
+    xaiClient = new OpenAI({
+      apiKey: process.env.XAI_API_KEY,
+      baseURL: "https://api.x.ai/v1",
+      logger: silentLogger,
+      logLevel: 'error'
+    });
   }
   return xaiClient;
 }
 
-function getOpenAIForEmbeddings() {
-  if (!openaiEmbeddingsClient) {
-    if (!process.env.OPENAI_API_KEY) throw new Error('Missing OPENAI_API_KEY in .env');
-    openaiEmbeddingsClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function getEmbeddingsClient() {
+  if (!embeddingsClient) {
+    embeddingsClient = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      logger: silentLogger,
+      logLevel: 'error'
+    });
   }
-  return openaiEmbeddingsClient;
+  return embeddingsClient;
 }
 
+// ====================== MAIN INGEST FUNCTION ======================
 export async function ingestEvent(rawEvent: string, parsedState: any = {}) {
-  log.info('🧠 LLM classification started for event: ' + rawEvent.substring(0, 100) + '...');
+  log.info('🧠 LLM classification started for event: ' + rawEvent.substring(0, 80) + '...');
 
   try {
-    const classifyResponse = await getXAI().chat.completions.create({
+    const classify = await getXAI().chat.completions.create({
       model: 'grok-4.3',
       messages: [{
         role: 'user',
-        content: `Classify this MUD event into relevant memory types. Return STRICT JSON array of objects: [{type, desc, entities: [], importance: 0-1}].
-Event: "${rawEvent}"
-Parsed state: ${JSON.stringify(parsedState)}`
+        content: `Classify this MUD event. Return JSON array: [{type, desc, entities: [], importance: 0-1}]. Event: "${rawEvent}"`
       }],
       temperature: 0.5,
       response_format: { type: "json_object" }
     });
 
-    const llmText = classifyResponse.choices[0].message.content || '[{"type":"episodic","desc":"fallback","entities":[],"importance":0.8}]';
+    const text = classify.choices[0].message.content || `[{"type":"episodic","desc":"${rawEvent}","entities":["player"],"importance":0.8}]`;
     
-    let classified;
+    let classified: any[] = [];
     try {
-      classified = JSON.parse(llmText);
+      classified = JSON.parse(text);
       if (!Array.isArray(classified)) classified = [classified];
-    } catch (e) {
-      classified = [{type: "episodic", desc: rawEvent, entities: ["player"], importance: 0.8}];
+    } catch {
+      classified = [{ type: "episodic", desc: rawEvent, entities: ["player"], importance: 0.8 }];
     }
 
     for (const mem of classified) {
-      const embeddingResponse = await getOpenAIForEmbeddings().embeddings.create({
+      const embeddingResponse = await getEmbeddingsClient().embeddings.create({
         model: 'text-embedding-3-small',
         input: mem.desc || rawEvent
       });
-      const embedding = embeddingResponse.data[0].embedding;
 
-      await storeMemory(mem.desc || rawEvent, mem.importance || 0.75, mem.entities || ['player'], embedding, new Date().toISOString());
-      log.success('✅ Stored: ' + mem.type);
+      await storeMemory(
+        mem.desc || rawEvent,                    // Always goes to `content` column
+        mem.importance || 0.8,
+        mem.entities || [],                      // ← Clean: always pass array (never forces ['player'])
+        embeddingResponse.data[0].embedding,
+        new Date().toISOString()
+      );
+
+      log.success('✅ Stored: ' + (mem.type || 'memory'));
     }
 
-    log.success('🎉 Full ingestion complete: ' + classified.length + ' memories');
-    return { success: true, memoriesCreated: classified.length };
+    log.success('🎉 Ingestion complete: ' + classified.length + ' memories');
+    return { success: true, count: classified.length };
 
-  } catch (e) {
-    log.error('Ingestion error: ' + e.message);
-    // No mock — just log and continue
-    return { success: false, error: e.message };
+  } catch (e: any) {
+    log.error('Ingestion error: ' + (e?.message || e));
+    return { success: false };
   }
 }
 

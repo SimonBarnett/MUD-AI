@@ -1,4 +1,11 @@
-// src/index.ts
+// ====================== NUCLEAR DEBUG SUPPRESSION ======================
+import debug from 'debug';
+debug.disable();                    // ← This is the real killer
+process.env.DEBUG = '';
+process.env.OPENAI_LOG = 'none';
+process.env.FORCE_COLOR = '1';
+// ======================================================================
+
 import 'dotenv/config';
 import chalk from 'chalk';
 import { startInteractiveCLI } from './cli.js';
@@ -7,11 +14,9 @@ import { MUDClient } from './mud-client/client.js';
 import { ingestEvent } from './context-engine/ingestion.js';
 import { log, banner } from './logger.js';
 
-// ──────────────────────────────────────────────
-// Polyfill WebSocket for Node 20 (required for realtime clients)
+// Polyfill WebSocket for Node 20
 import ws from 'ws';
 (global as any).WebSocket = ws;
-// ──────────────────────────────────────────────
 
 banner();
 log.success('MUD-AI clean playable demo starting...');
@@ -19,7 +24,6 @@ log.success('MUD-AI clean playable demo starting...');
 const agent = new MUDAgent();
 const mud = new MUDClient();
 let autoMode = true;
-
 async function launch() {
   log.info('Initializing clean real end-to-end...');
   log.info(`Auto mode starting as: ${autoMode ? 'ON' : 'OFF'}`);

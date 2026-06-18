@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "cross-env OPENAI_LOG=none FORCE_COLOR=1 tsx --no-cache src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts",
@@ -13,22 +13,29 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
-    "dotenv": "^16.4.5",
     "chalk": "^5.3.0",
+    "dotenv": "^16.4.5",
     "openai": "^4.104.0",
-    "ws": "^8.18.0",
-    "tsx": "^4.19.3"
+    "tsx": "^4.19.3",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/node": "^20.16.0",
     "@types/ws": "^8.5.13",
-    "typescript": "^5.6.3",
-    "eslint": "^9.12.0"
+    "cross-env": "^7.0.3",
+    "eslint": "^9.12.0",
+    "typescript": "^5.6.3"
   },
   "engines": {
     "node": ">=20"
   },
-  "keywords": ["mud", "ai", "grok", "supabase", "discworld"],
+  "keywords": [
+    "mud",
+    "ai",
+    "grok",
+    "supabase",
+    "discworld"
+  ],
   "author": "medatech.si",
   "license": "ISC"
 }

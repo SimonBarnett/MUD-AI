@@ -43,12 +43,13 @@ export interface Memory {
 }
 
 /**
- * Store a new memory in the database
+ * Store a new memory.
+ * Always inserts `entities` as a proper text[] array (never jsonb or null).
  */
 export async function storeMemory(
   content: string,
   importance: number = 0.8,
-  entities: string[] = [],
+  entities: string[] = [],           // ← Always defaults to empty array
   embedding?: number[],
   timestamp?: string
 ): Promise<void> {
@@ -57,9 +58,9 @@ export async function storeMemory(
   const { error } = await supabaseClient
     .from('grok_mud_memories')
     .insert({
-      content,
+      content: content,
       importance,
-      entities,
+      entities: entities,                    // ← Always passed as array (text[])
       embedding,
       created_at: timestamp || new Date().toISOString(),
     });
@@ -128,7 +129,7 @@ export async function getMemoryById(id: string): Promise<Memory | null> {
 }
 
 /**
- * Get recent memories (useful for context)
+ * Get recent memories
  */
 export async function getRecentMemories(limit: number = 10): Promise<Memory[]> {
   const supabaseClient = getSupabase();
@@ -148,7 +149,7 @@ export async function getRecentMemories(limit: number = 10): Promise<Memory[]> {
 }
 
 /**
- * Search memories by content (simple text search)
+ * Simple text search on content
  */
 export async function searchMemories(query: string, limit: number = 10): Promise<Memory[]> {
   const supabaseClient = getSupabase();
