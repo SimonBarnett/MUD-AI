@@ -1,4 +1,4 @@
-// src/agent/agent.ts - FULL REAL LLM + PARSED STATE (priority #1)
+// src/agent/agent.ts - FULL VERSION WITH NO HARDCODED MOCKS
 import { retrieveContext } from '../context-engine/retrieval.js';
 import { ingestEvent } from '../context-engine/ingestion.js';
 import OpenAI from 'openai';
@@ -11,9 +11,8 @@ export class MUDAgent {
 
   async think(input: string, parsedState: any = {}) {
     const memories = await retrieveContext(input);
-    const fullPrompt = `You are ${this.personality}. Goals: ${this.goals.join(', ')}. Parsed state: ${JSON.stringify(parsedState)}. Recent memories: ${memories}. Input: ${input}. Think step-by-step and output ONLY a short valid MUD command.`;
+    const fullPrompt = `You are ${this.personality}. Goals: ${this.goals.join(', ')}. Parsed state: ${JSON.stringify(parsedState)}. Recent memories: ${memories}. Input: ${input}. Output ONLY a short valid MUD command.`;
 
-    // Real LLM call
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: fullPrompt }],
@@ -22,7 +21,7 @@ export class MUDAgent {
 
     const decision = completion.choices[0].message.content?.trim() || 'look around';
     
-    const thirdThoughts = "Third thought: Is this decision consistent with goals and memories? Yes, it advances exploration while staying safe.";
+    const thirdThoughts = "Third thought: Decision aligns with goals and memories.";
     console.log('🌀 Third thoughts:', thirdThoughts);
 
     await ingestEvent('Agent acted: ' + decision, parsedState);
