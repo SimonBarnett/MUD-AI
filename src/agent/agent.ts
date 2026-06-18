@@ -1,4 +1,4 @@
-// src/agent/agent.ts - FULL VERSION WITH NO HARDCODED MOCKS
+// src/agent/agent.ts - FINAL POLISHED VERSION (all minor issues fixed)
 import { retrieveContext } from '../context-engine/retrieval.js';
 import { ingestEvent } from '../context-engine/ingestion.js';
 import OpenAI from 'openai';
@@ -8,25 +8,66 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.XA
 export class MUDAgent {
   private personality = "Chaotic Good Grok - helpful, witty, slightly mischievous MUD player";
   private goals: string[] = ["Explore the Discworld", "Help other players", "Collect interesting memories", "Avoid getting killed too often"];
+  private recentActions: string[] = []; // Basic state tracking
 
   async think(input: string, parsedState: any = {}) {
-    const memories = await retrieveContext(input);
-    const fullPrompt = `You are ${this.personality}. Goals: ${this.goals.join(', ')}. Parsed state: ${JSON.stringify(parsedState)}. Recent memories: ${memories}. Input: ${input}. Output ONLY a short valid MUD command.`;
+    try {
+      const memories = await retrieveContext(input);
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: fullPrompt }],
-      max_tokens: 50
-    });
+      // Combined single LLM call for decision + Third Thoughts (structured JSON)
+      const systemPrompt = `You are ${this.personality}. Goals: ${this.goals.join(', ')}. Recent actions: ${this.recentActions.join(', ')}.`;
+      const userPrompt = `Parsed state: ${JSON.stringify(parsedState)}. Recent memories: ${memories}. Input: ${input}.
 
-    const decision = completion.choices[0].message.content?.trim() || 'look around';
-    
-    const thirdThoughts = "Third thought: Decision aligns with goals and memories.";
-    console.log('🌀 Third thoughts:', thirdThoughts);
+Respond with STRICT JSON (command must be a short valid MUD command only):
+{
+  "command": "short valid MUD command",
+  "third_thoughts": "short reflection: does this align with goals and memories?"
+}`;
 
-    await ingestEvent('Agent acted: ' + decision, parsedState);
-    console.log('💡 Agent decided:', decision);
-    return decision;
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.3,
+        max_tokens: 120,
+        response_format: { type: "json_object" }
+      });
+
+      const responseText = completion.choices[0].message.content || '{"command":"look around","third_thoughts":"Fallback decision."}';
+      let parsed;
+      try {
+        parsed = JSON.parse(responseText);
+      } catch (e) {
+        parsed = { command: "look around", third_thoughts: "Fallback decision." };
+      }
+
+      // Robust validation + guards (fixes fragile parsing + type safety)
+      const decision = (typeof parsed.command === 'string' && parsed.command.trim()) 
+        ? parsed.command.trim() 
+        : "look around";
+      const thirdThoughts = (typeof parsed.third_thoughts === 'string' && parsed.third_thoughts.trim()) 
+        ? parsed.third_thoughts.trim() 
+        : "Decision aligns with goals.";
+
+      console.log('🌀 Third thoughts:', thirdThoughts);
+
+      await ingestEvent('Agent acted: ' + decision, parsedState);
+      this.recentActions.push(decision);
+      if (this.recentActions.length > 5) this.recentActions.shift();
+
+      console.log('💡 Agent decided:', decision);
+      return decision;
+
+    } catch (e) {
+      console.error('Agent robustness fallback:', e);
+      const smartFallback = parsedState.entities?.includes('troll') ? 'attack troll' : 'look around';
+      await ingestEvent('Agent fallback: ' + smartFallback, parsedState); // Fixed fallback log
+      this.recentActions.push(smartFallback);
+      if (this.recentActions.length > 5) this.recentActions.shift();
+      return smartFallback;
+    }
   }
 
   updateGoals(newGoal: string) {
