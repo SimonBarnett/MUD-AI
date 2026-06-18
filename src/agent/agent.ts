@@ -1,6 +1,7 @@
-// src/agent/agent.ts - FINAL POLISHED VERSION (all minor issues fixed)
+// src/agent/agent.ts - NOW USING PERSISTENT LOGGER (all console.log replaced)
 import { retrieveContext } from '../context-engine/retrieval.js';
 import { ingestEvent } from '../context-engine/ingestion.js';
+import { log } from '../logger.js';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY });
@@ -8,20 +9,19 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.XA
 export class MUDAgent {
   private personality = "Chaotic Good Grok - helpful, witty, slightly mischievous MUD player";
   private goals: string[] = ["Explore the Discworld", "Help other players", "Collect interesting memories", "Avoid getting killed too often"];
-  private recentActions: string[] = []; // Basic state tracking
+  private recentActions: string[] = [];
 
   async think(input: string, parsedState: any = {}) {
     try {
       const memories = await retrieveContext(input);
 
-      // Combined single LLM call for decision + Third Thoughts (structured JSON)
       const systemPrompt = `You are ${this.personality}. Goals: ${this.goals.join(', ')}. Recent actions: ${this.recentActions.join(', ')}.`;
       const userPrompt = `Parsed state: ${JSON.stringify(parsedState)}. Recent memories: ${memories}. Input: ${input}.
 
-Respond with STRICT JSON (command must be a short valid MUD command only):
+Respond with STRICT JSON:
 {
   "command": "short valid MUD command",
-  "third_thoughts": "short reflection: does this align with goals and memories?"
+  "third_thoughts": "short reflection on whether this aligns with goals and memories"
 }`;
 
       const completion = await openai.chat.completions.create({
@@ -43,7 +43,6 @@ Respond with STRICT JSON (command must be a short valid MUD command only):
         parsed = { command: "look around", third_thoughts: "Fallback decision." };
       }
 
-      // Robust validation + guards (fixes fragile parsing + type safety)
       const decision = (typeof parsed.command === 'string' && parsed.command.trim()) 
         ? parsed.command.trim() 
         : "look around";
@@ -51,19 +50,19 @@ Respond with STRICT JSON (command must be a short valid MUD command only):
         ? parsed.third_thoughts.trim() 
         : "Decision aligns with goals.";
 
-      console.log('🌀 Third thoughts:', thirdThoughts);
+      log.info('🌀 Third thoughts: ' + thirdThoughts);
 
       await ingestEvent('Agent acted: ' + decision, parsedState);
       this.recentActions.push(decision);
       if (this.recentActions.length > 5) this.recentActions.shift();
 
-      console.log('💡 Agent decided:', decision);
+      log.success('💡 Agent decided: ' + decision);
       return decision;
 
     } catch (e) {
-      console.error('Agent robustness fallback:', e);
+      log.error('Agent robustness fallback: ' + e);
       const smartFallback = parsedState.entities?.includes('troll') ? 'attack troll' : 'look around';
-      await ingestEvent('Agent fallback: ' + smartFallback, parsedState); // Fixed fallback log
+      await ingestEvent('Agent fallback: ' + smartFallback, parsedState);
       this.recentActions.push(smartFallback);
       if (this.recentActions.length > 5) this.recentActions.shift();
       return smartFallback;
@@ -72,7 +71,7 @@ Respond with STRICT JSON (command must be a short valid MUD command only):
 
   updateGoals(newGoal: string) {
     this.goals.push(newGoal);
-    console.log('🎯 New goal added:', newGoal);
+    log.info('🎯 New goal added: ' + newGoal);
   }
 }
 

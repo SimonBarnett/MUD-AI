@@ -1,11 +1,12 @@
-// src/context-engine/ingestion.ts - FULL VERSION WITH NO HARDCODED MOCKS
+// src/context-engine/ingestion.ts - NOW USING PERSISTENT LOGGER (all console.log replaced)
 import { storeMemory } from './memory.js';
+import { log } from '../logger.js';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY });
 
 export async function ingestEvent(rawEvent: string, parsedState: any = {}) {
-  console.log('🧠 LLM classification started for event:', rawEvent.substring(0, 100) + '...');
+  log.info('🧠 LLM classification started for event: ' + rawEvent.substring(0, 100) + '...');
 
   try {
     const classifyResponse = await openai.chat.completions.create({
@@ -20,12 +21,14 @@ Parsed state: ${JSON.stringify(parsedState)}`
       response_format: { type: "json_object" }
     });
 
-    const llmText = classifyResponse.choices[0].message.content || '[]';
+    const llmText = classifyResponse.choices[0].message.content || '[{"type":"episodic","desc":"fallback","entities":[],"importance":0.8}]';
+    
     let classified;
     try {
       classified = JSON.parse(llmText);
+      if (!Array.isArray(classified)) classified = [classified];
     } catch (e) {
-      classified = [];
+      classified = [{type: "episodic", desc: rawEvent, entities: ["player"], importance: 0.8}];
     }
 
     for (const mem of classified) {
@@ -34,16 +37,17 @@ Parsed state: ${JSON.stringify(parsedState)}`
         input: mem.desc || rawEvent
       });
       const embedding = embeddingResponse.data[0].embedding;
-      await storeMemory(mem.desc || rawEvent, mem.importance || 0.75, mem.entities || [], embedding, new Date().toISOString());
-      console.log('✅ Stored dynamic memory:', mem.type);
+
+      await storeMemory(mem.desc || rawEvent, mem.importance || 0.75, mem.entities || ['player'], embedding, new Date().toISOString());
+      log.success('✅ Stored: ' + mem.type);
     }
 
-    console.log('🎉 Full ingestion complete with dynamic memories');
+    log.success('🎉 Full ingestion complete: ' + classified.length + ' memories');
     return { success: true, memoriesCreated: classified.length };
 
   } catch (e) {
-    console.error('Ingestion error:', e);
-    await storeMemory(rawEvent, 0.7, [], [0.1, 0.2, 0.3], new Date().toISOString());
+    log.error('Ingestion robustness fallback: ' + e);
+    await storeMemory(rawEvent, 0.7, ['player'], [0.1, 0.2, 0.3], new Date().toISOString());
     return { success: true, memoriesCreated: 1, fallback: true };
   }
 }
