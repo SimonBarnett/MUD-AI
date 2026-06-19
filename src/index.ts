@@ -1,122 +1,87 @@
 // src/index.ts
-import debug from 'debug';
-debug.disable();
-process.env.DEBUG = '';
-process.env.OPENAI_LOG = 'none';
-process.env.FORCE_COLOR = '1';
-
 import 'dotenv/config';
 import { startInteractiveCLI } from './cli.js';
 import { MUDAgent } from './agent/agent.js';
 import { MUDClient } from './mud-client/client.js';
 import { ingestEvent } from './context-engine/ingestion.js';
 import { log, banner } from './logger.js';
+import { initMemoryDB, remember, memorizeFromUser, getLoginSequence } from './memory-store.js';
 
 import ws from 'ws';
 (global as any).WebSocket = ws;
 
 banner();
-log.success('MUD-AI clean playable demo starting...');
+log.success('🚀 MUD-AI v0.2 Supabase + Anti-Hang Starting...');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
 let autoMode = true;
 let buffer = '';
 let lastActivity = Date.now();
-let waitingForResponse = false;
-let lastThinkTime = 0;
+let currentState = 'login_screen';
+
+initMemoryDB();
 
 async function launch() {
-  await ingestEvent('Boot - Grok enters Discworld', { source: 'boot' });
+  await ingestEvent('Boot - Grok enters Discworld', { source: 'system' });
   mud.connect();
 
   startInteractiveCLI(agent, mud, (mode) => { autoMode = mode; });
 
-  mud.on('data', async (rawOutput) => {
+  // Dynamic memory command
+  mud.onCLICommand = async (cmd) => {
+    if (cmd.startsWith('!memorize ')) {
+      const text = cmd.slice(10).trim();
+      await memorizeFromUser(text);
+      log.success(`💾 Supabase memory saved: ${text}`);
+    }
+  };
+
+  // Heartbeat - prevents hanging
+  setInterval(async () => {
+    if (Date.now() - lastActivity > 2200 && autoMode) {
+      log.warn('⏰ Heartbeat (Supabase mode): No input → forcing decision');
+      lastActivity = Date.now();
+      const memories = await getLoginSequence();
+      const decision = await agent.think(`No new input. Last known state: ${currentState}. Past login memories: ${memories.slice(-3).join(' | ')}`, { state: currentState });
+      mud.sendCommand(decision);
+    }
+  }, 1500);
+
+  mud.on('data', async (raw) => {
     if (!autoMode) return;
 
-    const cleanChunk = rawOutput.replace('Press enter to continue ��', '');
-    buffer += cleanChunk + '\n';
+    const clean = raw.replace(/Press enter to continue ��/g, '');
+    buffer += clean + '\n';
     lastActivity = Date.now();
-
-    const preview = cleanChunk.replace(/\n/g, ' ').substring(0, 80);
-    log.info(`[BUFFER ${buffer.length}] ${preview}...`);
 
     const t = buffer.toLowerCase();
 
-    // STRICT waiting logic
-    if (waitingForResponse) {
-      // Only unblock on these specific new-turn prompts
-      const isNewTurnPrompt =
-        t.includes('your choice:') ||
-        t.includes('enter the name you wish') ||
-        t.includes('sorry the player name') ||
-        t.includes('please try again') ||
-        t.includes('how would you like your name capitalised') ||
-        t.includes('should your character be male or female') ||
-        t.includes('are you using a screenreader') ||
-        t.includes('enter \'yes\' if you agree');
+    // State detection
+    if (t.includes('mended drum') || t.includes('exits:')) currentState = 'in_game';
+    else if (t.includes('capitalised') || t.includes('male or female')) currentState = 'character_creation';
+    else currentState = 'login_screen';
 
-      if (isNewTurnPrompt) {
-        buffer = cleanChunk + '\n';           // fresh start
-        waitingForResponse = false;
-        log.info('🧹 New turn prompt detected — buffer cleared');
-      } else {
-        return;
-      }
+    // Auto-record successful login
+    if (t.includes('you have never logged in before') || t.includes('mended drum')) {
+      await remember('successful_login_sequence', `g → ${currentState} → completed`);
     }
 
-    // Hard 1000ms debounce between any two think() calls
-    if (Date.now() - lastThinkTime < 1000) {
-      return;
-    }
+    const isNewTurn = t.includes('your choice:') || t.includes('enter the name') || 
+                     t.includes('capitalised') || t.includes('male or female') || 
+                     t.includes('screenreader') || t.includes('yes if you agree') ||
+                     t.includes('exits:') || Date.now() - lastActivity > 1800;
 
-    // Clean turn detection
-    const hasClearPrompt =
-      t.includes('your choice:') ||
-      t.includes('enter the name you wish') ||
-      t.includes('g - guest character') ||
-      t.includes('or, enter your current character') ||
-      t.includes('are you using a screenreader') ||
-      t.includes('should your character be male or female') ||
-      t.includes('how would you like your name capitalised') ||
-      t.includes('enter \'yes\' if you agree') ||
-      t.includes('mended drum') ||
-      t.includes('exits:') ||
-      t.includes('>');
-
-    const isComplete = hasClearPrompt || (Date.now() - lastActivity > 1000);
-
-    if (!isComplete) {
-      return;
-    }
-
-    try {
-      await ingestEvent(buffer, {});
-
-      const state = t.includes('mended drum') || t.includes('exits:') ? 'in_game' : 'login_screen';
-
-      log.info(`🤖 Grok reasoning on CLEAN screen (state: ${state})`);
-
-      const decision = await agent.think(buffer, { state });
-
-      log.success(`💡 Grok decided: ${decision.command || '[press enter]'}`);
+    if (isNewTurn) {
+      await ingestEvent(buffer, { state: currentState });
+      const memories = await getLoginSequence();
+      const decision = await agent.think(buffer + `\nPast memories: ${memories.slice(-2)}`, { state: currentState });
       mud.sendCommand(decision);
-
-      lastThinkTime = Date.now();
-      waitingForResponse = true;
-      buffer = '';
-
-    } catch (e) {
-      log.error('Error: ' + e);
-      mud.sendCommand({ action: 'press_enter' });
-      lastThinkTime = Date.now();
-      waitingForResponse = true;
       buffer = '';
     }
   });
 
-  log.success('✅ FINAL STABLE VERSION — 1s debounce + strict new-turn detection');
+  log.success('✅ v0.2 Supabase Edition Loaded — Persistent memory + Heartbeat + !memorize');
 }
 
-launch().catch(err => log.error(err));
+launch().catch(e => log.error(e));
