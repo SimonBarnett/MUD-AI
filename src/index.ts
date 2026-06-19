@@ -21,68 +21,102 @@ log.success('MUD-AI clean playable demo starting...');
 const agent = new MUDAgent();
 const mud = new MUDClient();
 let autoMode = true;
-
-function detectMUDState(rawOutput: string): string {
-  const text = rawOutput.toLowerCase();
-
-  if (text.includes('press enter to continue')) {
-    return 'press_enter';
-  }
-  if (text.includes("or, enter your current character's name")) {
-    return 'character_prompt';
-  }
-
-  // More robust login menu detection
-  if (text.includes('g - guest character') || 
-      (text.includes('q - quit') && text.includes('n - new character'))) {
-    return 'login_menu';
-  }
-
-  if (text.includes('>') || text.match(/\byou (are|stand|see)\b/)) {
-    return 'in_game';
-  }
-  return 'unknown';
-}
+let buffer = '';
+let lastActivity = Date.now();
+let waitingForResponse = false;
+let lastThinkTime = 0;
 
 async function launch() {
-  log.info('Initializing clean real end-to-end...');
-  log.info(`Auto mode starting as: ${autoMode ? 'ON' : 'OFF'}`);
-
   await ingestEvent('Boot - Grok enters Discworld', { source: 'boot' });
   mud.connect();
 
-  startInteractiveCLI(agent, mud, (mode) => {
-    autoMode = mode;
-    log.info(`Auto mode switched to: ${autoMode ? 'ON' : 'OFF'}`);
-  });
+  startInteractiveCLI(agent, mud, (mode) => { autoMode = mode; });
 
-  let lastAutoProcess = 0;
-
-  mud.on('data', async (rawOutput, parsed) => {
+  mud.on('data', async (rawOutput) => {
     if (!autoMode) return;
-    if (Date.now() - lastAutoProcess < 800) return;
-    lastAutoProcess = Date.now();
+
+    const cleanChunk = rawOutput.replace('Press enter to continue ��', '');
+    buffer += cleanChunk + '\n';
+    lastActivity = Date.now();
+
+    const preview = cleanChunk.replace(/\n/g, ' ').substring(0, 80);
+    log.info(`[BUFFER ${buffer.length}] ${preview}...`);
+
+    const t = buffer.toLowerCase();
+
+    // STRICT waiting logic
+    if (waitingForResponse) {
+      // Only unblock on these specific new-turn prompts
+      const isNewTurnPrompt =
+        t.includes('your choice:') ||
+        t.includes('enter the name you wish') ||
+        t.includes('sorry the player name') ||
+        t.includes('please try again') ||
+        t.includes('how would you like your name capitalised') ||
+        t.includes('should your character be male or female') ||
+        t.includes('are you using a screenreader') ||
+        t.includes('enter \'yes\' if you agree');
+
+      if (isNewTurnPrompt) {
+        buffer = cleanChunk + '\n';           // fresh start
+        waitingForResponse = false;
+        log.info('🧹 New turn prompt detected — buffer cleared');
+      } else {
+        return;
+      }
+    }
+
+    // Hard 1000ms debounce between any two think() calls
+    if (Date.now() - lastThinkTime < 1000) {
+      return;
+    }
+
+    // Clean turn detection
+    const hasClearPrompt =
+      t.includes('your choice:') ||
+      t.includes('enter the name you wish') ||
+      t.includes('g - guest character') ||
+      t.includes('or, enter your current character') ||
+      t.includes('are you using a screenreader') ||
+      t.includes('should your character be male or female') ||
+      t.includes('how would you like your name capitalised') ||
+      t.includes('enter \'yes\' if you agree') ||
+      t.includes('mended drum') ||
+      t.includes('exits:') ||
+      t.includes('>');
+
+    const isComplete = hasClearPrompt || (Date.now() - lastActivity > 1000);
+
+    if (!isComplete) {
+      return;
+    }
 
     try {
-      await ingestEvent(rawOutput, parsed);
+      await ingestEvent(buffer, {});
 
-      const state = detectMUDState(rawOutput);
-      const enrichedState = { ...parsed, state };
+      const state = t.includes('mended drum') || t.includes('exits:') ? 'in_game' : 'login_screen';
 
-      const decision = await agent.think(rawOutput, enrichedState);
+      log.info(`🤖 Grok reasoning on CLEAN screen (state: ${state})`);
+
+      const decision = await agent.think(buffer, { state });
+
+      log.success(`💡 Grok decided: ${decision.command || '[press enter]'}`);
       mud.sendCommand(decision);
 
+      lastThinkTime = Date.now();
+      waitingForResponse = true;
+      buffer = '';
+
     } catch (e) {
-      log.error('Data processing error: ' + e);
+      log.error('Error: ' + e);
+      mud.sendCommand({ action: 'press_enter' });
+      lastThinkTime = Date.now();
+      waitingForResponse = true;
+      buffer = '';
     }
   });
 
-  log.success('✅ CLEAN REAL END-TO-END ACTIVE! Type !auto to toggle autonomous mode.');
+  log.success('✅ FINAL STABLE VERSION — 1s debounce + strict new-turn detection');
 }
 
-launch().catch(err => {
-  log.error('Robust boot fallback: ' + err);
-  process.exit(1);
-});
-
-export { agent, mud };
+launch().catch(err => log.error(err));

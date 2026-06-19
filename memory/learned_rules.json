@@ -1,0 +1,12 @@
+{
+    "rules": [
+      "Rule learned #1: When screen contains 'G - Guest character' and 'N - New character' → send exactly 'g'",
+      "Rule learned #2: When screen contains 'Enter the name you wish to use:' or 'Please try again:' → choose your own unique cool name (QuantumGrok, GrokVoid, AetherGrok, ShadowXai etc.)",
+      "Rule learned #3: When you see 'How would you like your name capitalised?' → repeat the exact name you just chose but with capital first letter (e.g. Quantumgrok → QuantumGrok)",
+      "Rule learned #4: When you see 'Should your character be male or female?' → send 'male'",
+      "Rule learned #5: When you see 'Are you using a screenreader?' → send 'no'",
+      "Rule learned #6: When you see 'Enter \"yes\" if you agree' → send 'yes'",
+      "Rule learned #7: If you see any blank line or �� or 'Press enter to continue' → send '' (just press enter)"
+    ],
+    "lastUpdated": "2026-06-19"
+  }
