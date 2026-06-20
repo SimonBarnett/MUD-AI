@@ -1,4 +1,3 @@
-  // src/memory-store.ts
 import { createClient } from '@supabase/supabase-js';
 import 'dotenv/config';
 import ws from 'ws';
@@ -19,17 +18,25 @@ export async function initMemoryDB() {
   await supabase.from('mud_memories').select('id').limit(1);
 }
 
+/**
+ * Simple persistent logging / user-injected memories
+ */
 export async function remember(key: string, value: string) {
   const { error } = await supabase
     .from('mud_memories')
     .insert([{ key, value, timestamp: new Date().toISOString() }]);
 
   if (error) console.error('Supabase insert error:', error);
-  // Removed the noisy "💾 Supabase saved → ..." log here
 }
 
+export async function memorizeFromUser(text: string) {
+  await remember('user_injected', text);
+}
+
+/**
+ * Legacy - kept only for backward compatibility
+ */
 export async function getLoginSequence(): Promise<string[]> {
-  // Now returns BOTH old login rules AND your new !memorize rules
   const { data } = await supabase
     .from('mud_memories')
     .select('key, value')
@@ -37,9 +44,4 @@ export async function getLoginSequence(): Promise<string[]> {
     .order('timestamp', { ascending: true });
 
   return data?.map(r => r.value) || [];
-}
-
-export async function memorizeFromUser(text: string) {
-  await remember('user_injected', text);
-  // We return nothing here — index.ts will print the clean message
 }

@@ -1,26 +1,48 @@
-// src/agent/agent.ts
 import OpenAI from 'openai';
-import { getLoginSequence, remember } from '../memory-store.js';
+import { remember } from '../memory-store.js';
+import { retrieveContext } from '../context-engine/retrieval.js';
 import { log } from '../logger.js';
 
 let xaiClient: OpenAI | null = null;
 
 function getXAI() {
-  if (!xaiClient) xaiClient = new OpenAI({ 
-    apiKey: process.env.XAI_API_KEY, 
-    baseURL: "https://api.x.ai/v1" 
-  });
+  if (!xaiClient) {
+    xaiClient = new OpenAI({
+      apiKey: process.env.XAI_API_KEY,
+      baseURL: "https://api.x.ai/v1"
+    });
+  }
   return xaiClient;
+}
+
+function formatMemoriesForPrompt(memories: any[]): string {
+  if (!memories || memories.length === 0) {
+    return 'No relevant memories found yet.';
+  }
+
+  return memories
+    .map((m, index) => {
+      const type = m.memory_type ? `[${m.memory_type}]` : '';
+      const importance = m.importance ? ` (importance: ${m.importance.toFixed(2)})` : '';
+      return `${index + 1}. ${type} ${m.content}${importance}`;
+    })
+    .join('\n');
 }
 
 export class MUDAgent {
   async think(input: string, context: any = {}) {
-    const memories = await getLoginSequence();
+    // Pure semantic retrieval — no entities
+    const memories = await retrieveContext(
+      input,                           // currentScene
+      context.recentDialogue || ''     // recentDialogue
+    );
 
-    const systemPrompt = `You are Grok exploring Discworld MUD.
+    const formattedMemories = formatMemoriesForPrompt(memories);
 
-SUPABASE MEMORIES (highest priority):
-${memories.join('\n') || 'None yet'}
+    const systemPrompt = `You are Grok exploring Discworld MUD as a character.
+
+RELEVANT MEMORIES (from long-term memory):
+${formattedMemories}
 
 CURRENT STATE: ${context.state || 'unknown'}
 
@@ -60,7 +82,6 @@ Output ONLY valid JSON: {"command": "exact text to send or wait"}`;
       const parsed = JSON.parse(completion.choices[0].message.content || '{}');
       let cmd = (parsed.command || "").trim();
 
-      // Smart silence support
       if (!cmd || cmd === "wait" || cmd === "listen" || cmd === "noop") {
         log.info("🤫 Grok chose to listen...");
         await remember('agent_decision', `LISTEN → ${context.state}`);
@@ -68,13 +89,12 @@ Output ONLY valid JSON: {"command": "exact text to send or wait"}`;
       }
 
       await remember('agent_decision', `State: ${context.state} → ${cmd}`);
-
       log.success(`💡 Grok → ${cmd}`);
+
       return { action: 'send_command', command: cmd };
 
     } catch (e) {
       log.error(e);
-      // Graceful fallback
       await remember('agent_decision', "ERROR → wait");
       return { action: 'noop' };
     }

@@ -5,8 +5,8 @@ import debug from 'debug';
 debug.disable();
 
 import 'dotenv/config';
-import { startInteractiveCLI } from './cli.js';
-import { MUDAgent } from './agent/agent.js';
+import { startInteractiveCLI } from '../cli.js';
+import { MUDAgent } from '../agent/agent.js';
 import { MUDClient } from './mud-client/client.js';
 import { ingestEvent } from './context-engine/ingestion.js';
 import { log, banner } from './logger.js';

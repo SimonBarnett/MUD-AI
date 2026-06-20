@@ -1,4 +1,4 @@
-// src/context-engine/retrieval.ts - LAZY Supabase client (fixes env loading issue)
+// src/context-engine/retrieval.ts
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
 
@@ -46,13 +46,11 @@ export async function retrieveContext(
   options: {
     topK?: number;
     threshold?: number;
-    currentEntities?: string[];
   } = {}
 ): Promise<RetrievedMemory[]> {
   const {
     topK = 12,
     threshold = 0.78,
-    currentEntities = [],
   } = options;
 
   const queryText = `${currentScene}\n${recentDialogue}`.slice(0, 8000);
@@ -68,7 +66,6 @@ export async function retrieveContext(
     query_embedding: queryEmbedding,
     match_threshold: threshold,
     match_count: topK,
-    current_entities: currentEntities,
   });
 
   if (error) {
@@ -81,11 +78,9 @@ export async function retrieveContext(
 
 export async function getRelevantMemories(
   scene: string,
-  dialogue: string,
-  entities: string[] = []
+  dialogue: string
 ): Promise<RetrievedMemory[]> {
   return retrieveContext(scene, dialogue, {
-    currentEntities: entities,
     topK: 10,
   });
 }

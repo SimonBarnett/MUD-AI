@@ -1,4 +1,4 @@
-// src/index.ts - v0.4.3-SMART-FINAL — Password regeneration + pure name
+// src/index.ts - v0.4.7 — Pure semantic memory (no entity passing)
 process.env.OPENAI_LOG = 'none';
 process.env.DEBUG = '';
 import debug from 'debug';
@@ -19,7 +19,7 @@ import ws from 'ws';
 (global as any).WebSocket = ws;
 
 banner();
-log.success('🚀 MUD-AI v0.4.3-SMART-FINAL — Password regeneration');
+log.success('🚀 MUD-AI v0.4.7 — Pure Semantic Retrieval');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
@@ -31,6 +31,10 @@ let currentState = 'menu';
 let isCreationMode = true;
 let desiredUsername = '';
 let desiredPassword = '';
+
+// === Recent Dialogue Buffer Only ===
+let recentDialogue = '';
+const MAX_RECENT_DIALOGUE_LENGTH = 1800;
 
 function loadOrGenerateCredentials() {
   const char = process.env.MUD_CHARACTER;
@@ -97,8 +101,16 @@ async function launch() {
     if (Date.now() - lastActivity < 1700) return;
 
     log.info('🤔 Second thought...');
+
     await ingestEvent(buffer, { state: currentState });
-    const d = await agent.think(buffer, { state: currentState, forcedName: desiredUsername });
+
+    // Pure semantic context — no entities
+    const d = await agent.think(buffer, {
+      state: currentState,
+      recentDialogue: recentDialogue,
+      forcedName: desiredUsername
+    });
+
     if (d.action !== 'noop') mud.sendCommand(d);
     lastActivity = Date.now();
   }, 1900);
@@ -108,6 +120,9 @@ async function launch() {
     lastActivity = Date.now();
     const clean = raw.replace(/Press enter to continue ��/g, '');
     buffer += clean + '\n';
+
+    updateRecentDialogue(clean);
+
     const t = buffer.toLowerCase();
 
     if (t.includes('1.') && t.includes('2.') && t.includes('3.')) {
@@ -130,7 +145,6 @@ async function launch() {
       return;
     }
 
-    // PASSWORD REJECTION → NEW PASSWORD
     if (t.includes('different than your character name') || t.includes('too short') || t.includes('do not match') || t.includes('longer than')) {
       log.success('🔄 Password rejected → generating new one');
       desiredPassword = generateLongPassword();
@@ -146,6 +160,25 @@ async function launch() {
   });
 
   log.success('✅ Type !login');
+}
+
+function updateRecentDialogue(newText: string) {
+  const cleaned = newText
+    .replace(/Press enter to continue.*$/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleaned) return;
+
+  recentDialogue = (recentDialogue + '\n' + cleaned).trim();
+
+  if (recentDialogue.length > MAX_RECENT_DIALOGUE_LENGTH) {
+    recentDialogue = recentDialogue.slice(-MAX_RECENT_DIALOGUE_LENGTH);
+    const firstNewline = recentDialogue.indexOf('\n');
+    if (firstNewline > 50) {
+      recentDialogue = recentDialogue.slice(firstNewline + 1);
+    }
+  }
 }
 
 launch().catch(e => log.error(e));
