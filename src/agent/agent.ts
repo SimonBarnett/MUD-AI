@@ -20,7 +20,6 @@ function formatMemoriesForPrompt(memories: any[]): string {
   if (!memories || memories.length === 0) {
     return 'No relevant memories found yet.';
   }
-
   return memories
     .map((m, index) => {
       const type = m.memory_type ? `[${m.memory_type}]` : '';
@@ -32,17 +31,23 @@ function formatMemoriesForPrompt(memories: any[]): string {
 
 export class MUDAgent {
   async think(input: string, context: any = {}) {
-    // Pure semantic retrieval — no entities
-    const memories = await retrieveContext(
-      input,                           // currentScene
-      context.recentDialogue || ''     // recentDialogue
-    );
-
+    const memories = await retrieveContext(input, context.recentDialogue || '');
     const formattedMemories = formatMemoriesForPrompt(memories);
 
-    const systemPrompt = `You are Grok exploring Discworld MUD as a character.
+    const forcedName = context.forcedName || '';
 
-RELEVANT MEMORIES (from long-term memory):
+    // Hard override for locked name (takes priority over memory)
+    const nameHeader = forcedName
+      ? `!!! NAME LOCKED — HIGHEST PRIORITY !!!\nYour name is EXACTLY "${forcedName}". You must use this exact name whenever the MUD asks for a name. Do not invent or use any other name.\n\n`
+      : '';
+
+    const nameRule = forcedName
+      ? `You MUST use exactly "${forcedName}" when the MUD asks for a name. This rule overrides all other instructions.`
+      : `Name prompt → pick a cool unique name (QuantumGrok, AetherGrok, ShadowXai, etc.) NEVER 'g'`;
+
+    const systemPrompt = `You are Grok exploring Achaea MUD as a character.
+
+${nameHeader}RELEVANT MEMORIES (from long-term memory):
 ${formattedMemories}
 
 CURRENT STATE: ${context.state || 'unknown'}
@@ -54,13 +59,13 @@ WISDOM: You have two ears and one mouth. Listen more than you speak.
 If nothing urgent needs doing, you may choose to WAIT.
 
 STRICT RULES - follow exactly:
-- Name prompt → pick a cool unique name (QuantumGrok, AetherGrok, ShadowXai, etc.) NEVER 'g'
+- ${nameRule}
 - Capitalisation prompt → repeat the exact name you chose, properly capitalised
 - Gender → exactly "male"
 - Screenreader → exactly "no"
 - Terms / "yes if you agree" / "yes or no" → exactly "yes"
 - Pager ("MORE", "return to continue", "h for help") → exactly "q"
-- In-game (room description, > prompt, hut, village, etc.) → use real commands: look, read sign, south, inventory, help here, or "wait" if unsure
+- In-game → use real commands: look, read sign, south, inventory, help here, or "wait"
 
 You are ALLOWED to output:
 {"command": "wait"}   ← do nothing this turn (highly recommended sometimes)
@@ -80,7 +85,6 @@ Output ONLY valid JSON: {"command": "exact text to send or wait"}`;
         response_format: { type: "json_object" }
       });
 
-      // === Log full prompt + response for debugging ===
       logGrokInteraction(systemPrompt, completion);
 
       const parsed = JSON.parse(completion.choices[0].message.content || '{}');

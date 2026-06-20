@@ -1,4 +1,4 @@
-// src/index.ts - v0.5.2 — Better Observability (dated log folders + Grok debugging)
+// src/index.ts - v0.5.5 — Stronger Name Rule Memory Injection
 process.env.OPENAI_LOG = 'none';
 process.env.DEBUG = '';
 import debug from 'debug';
@@ -18,42 +18,13 @@ import crypto from 'crypto';
 import ws from 'ws';
 (global as any).WebSocket = ws;
 
-// =====================================================
-// RUNTIME LOG DIRECTORY SETUP
-// =====================================================
 const runtimeTimestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 const logDir = path.resolve(process.cwd(), 'logs', runtimeTimestamp);
-
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir, { recursive: true });
-}
-
-const runtimeLogPath = path.join(logDir, 'runtime.log');
-const grokDebugPath = path.join(logDir, 'grok-debug.log');
-
-function writeRuntimeLog(message: string) {
-  const timestamp = new Date().toISOString();
-  fs.appendFileSync(runtimeLogPath, `[${timestamp}] ${message}\n`);
-}
-
-function writeGrokDebug(prompt: string, response: any) {
-  const timestamp = new Date().toISOString();
-  const entry = {
-    timestamp,
-    prompt,
-    response
-  };
-  fs.appendFileSync(grokDebugPath, JSON.stringify(entry, null, 2) + '\n\n');
-}
-
-// =====================================================
-// MAIN APPLICATION
-// =====================================================
+if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
 
 banner();
-log.success(`🚀 MUD-AI v0.5.2 — Observability Enabled`);
+log.success(`🚀 MUD-AI v0.5.5 — Strong Name Rule Memory Injection`);
 log.success(`📁 Logging to: ${logDir}`);
-writeRuntimeLog('Application started');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
@@ -65,18 +36,21 @@ let currentState = 'menu';
 let isCreationMode = true;
 let desiredUsername = '';
 let desiredPassword = '';
+let hasChosenCreation = false;
 
-// === Recent Dialogue Buffer ===
 let recentDialogue = '';
 const MAX_RECENT_DIALOGUE_LENGTH = 1800;
 
-// === Deduplication ===
 const MIN_PROCESS_INTERVAL = parseInt(process.env.MIN_PROCESS_INTERVAL || '1600', 10);
 let lastScreenHash = '';
 let lastProcessTime = 0;
 
+function stripAnsi(text: string): string {
+  return text.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '').replace(/\r/g, '');
+}
+
 function getScreenHash(text: string): string {
-  const normalized = text
+  const normalized = stripAnsi(text)
     .replace(/Press enter to continue.*$/gi, '')
     .replace(/\d+ adventurers are currently in the realms\./gi, '')
     .replace(/Rapture Runtime Environment.*/gi, '')
@@ -84,21 +58,6 @@ function getScreenHash(text: string): string {
     .trim()
     .toLowerCase();
   return crypto.createHash('md5').update(normalized).digest('hex');
-}
-
-function loadOrGenerateCredentials() {
-  const char = process.env.MUD_CHARACTER;
-  if (char) {
-    desiredUsername = char;
-    desiredPassword = process.env.MUD_PASSWORD || 'default';
-    isCreationMode = false;
-    log.success(`📂 Login mode: ${desiredUsername}`);
-  } else {
-    desiredUsername = generatePureName();
-    desiredPassword = generateLongPassword();
-    isCreationMode = true;
-    log.success(`🆕 Creation mode`);
-  }
 }
 
 function generatePureName(): string {
@@ -123,12 +82,20 @@ function saveCredentials() {
 }
 
 initMemoryDB();
-loadOrGenerateCredentials();
 
 async function start() {
-  await memorizeFromUser(`PERMANENT: Name="${desiredUsername}", Password="${desiredPassword}". ${isCreationMode ? 'Create new (send 2 on menu)' : 'Login (send 1 on menu)'}. If password rejected, generate new password.`);
-  log.success(`🔒 Mode: ${isCreationMode ? 'CREATE' : 'LOGIN'}`);
-  writeRuntimeLog(`Started session in ${isCreationMode ? 'CREATE' : 'LOGIN'} mode`);
+  desiredUsername = process.env.MUD_CHARACTER || generatePureName();
+  desiredPassword = process.env.MUD_PASSWORD || generateLongPassword();
+  isCreationMode = !process.env.MUD_CHARACTER;
+
+  // === Strong memory injection for name rule ===
+  await memorizeFromUser(
+    `CRITICAL RULE — HIGHEST PRIORITY: The character's name is EXACTLY "${desiredUsername}". ` +
+    `You MUST use this exact name (case-sensitive) whenever the MUD asks for a name. ` +
+    `Never invent or use any other name. This rule overrides all other instructions.`
+  );
+
+  log.success(`🔒 Mode: ${isCreationMode ? 'CREATE' : 'LOGIN'} | Locked name: ${desiredUsername}`);
   mud.connect();
   loggedIn = true;
 }
@@ -147,20 +114,14 @@ async function launch() {
   startInteractiveCLI(agent, mud, (m) => { autoMode = m; });
 
   setInterval(async () => {
-    if (!autoMode || !loggedIn) return;
-    if (Date.now() - lastActivity < 2200) return;
-
-    log.info('🤔 Second thought...');
-    writeRuntimeLog('Periodic thinking triggered');
+    if (!autoMode || !loggedIn || Date.now() - lastActivity < 2200) return;
 
     await ingestEvent(buffer, { state: currentState });
-
     const d = await agent.think(buffer, {
       state: currentState,
-      recentDialogue: recentDialogue,
+      recentDialogue,
       forcedName: desiredUsername
     });
-
     if (d.action !== 'noop') mud.sendCommand(d);
     lastActivity = Date.now();
   }, 2200);
@@ -168,14 +129,13 @@ async function launch() {
   mud.on('data', async (raw) => {
     if (!autoMode) return;
 
-    const clean = raw.replace(/Press enter to continue ��/g, '');
+    const clean = stripAnsi(raw.replace(/Press enter to continue ��/g, ''));
     buffer += clean + '\n';
     lastActivity = Date.now();
     updateRecentDialogue(clean);
-
     const t = buffer.toLowerCase();
 
-    // === Manual priority flows ===
+    // Menu selection
     if (t.includes('1. enter the game') && t.includes('2. create a new character') && !hasChosenCreation) {
       log.success('🆕 Sending 2 → Create new character');
       mud.sendCommand({ action: 'send_command', command: '2' });
@@ -184,8 +144,26 @@ async function launch() {
       return;
     }
 
-    if ((t.includes('what is the name you wish to use') || t.includes('pick your name with care')) && desiredUsername) {
-      log.success(`✍️ Sending locked name: ${desiredUsername}`);
+    // Name prompt + rejection handling
+    if (t.includes('what is the name you wish to use') || t.includes('pick your name with care')) {
+      if (isCreationMode &&
+          (t.includes('sadly, that name is either taken') ||
+           t.includes('has been disallowed') ||
+           t.includes('must have between'))) {
+
+        const oldName = desiredUsername;
+        desiredUsername = generatePureName();
+
+        // Update memory with new name
+        await memorizeFromUser(
+          `CRITICAL RULE — HIGHEST PRIORITY: The character's name has been changed to EXACTLY "${desiredUsername}". ` +
+          `Use only this name. The previous name "${oldName}" is no longer valid.`
+        );
+
+        log.success(`🔄 Name rejected (${oldName}) → New name: ${desiredUsername}`);
+      }
+
+      log.success(`✍️ Sending name: ${desiredUsername}`);
       mud.sendCommand({ action: 'send_command', command: desiredUsername });
       buffer = '';
       return;
@@ -199,7 +177,7 @@ async function launch() {
       return;
     }
 
-    // === Agent section with deduplication ===
+    // Agent section with deduplication
     const now = Date.now();
     const currentHash = getScreenHash(buffer);
 
@@ -208,10 +186,7 @@ async function launch() {
       t.includes('what sex will you be') ||
       t.includes('gender selection');
 
-    if (isAgentPrompt) {
-      if (currentHash === lastScreenHash) return;
-      if (now - lastProcessTime < MIN_PROCESS_INTERVAL) return;
-
+    if (isAgentPrompt && currentHash !== lastScreenHash && now - lastProcessTime > MIN_PROCESS_INTERVAL) {
       lastScreenHash = currentHash;
       lastProcessTime = now;
 
@@ -253,10 +228,6 @@ function updateRecentDialogue(newText: string) {
 
   if (recentDialogue.length > MAX_RECENT_DIALOGUE_LENGTH) {
     recentDialogue = recentDialogue.slice(-MAX_RECENT_DIALOGUE_LENGTH);
-    const firstNewline = recentDialogue.indexOf('\n');
-    if (firstNewline > 50) {
-      recentDialogue = recentDialogue.slice(firstNewline + 1);
-    }
   }
 }
 

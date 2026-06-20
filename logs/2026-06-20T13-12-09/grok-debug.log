@@ -1,0 +1,352 @@
+{
+  "timestamp": "2026-06-20T13:12:19.660Z",
+  "prompt": "You are Grok exploring Achaea MUD as a character.\n\n!!! CRITICAL NAME LOCK (HIGHEST PRIORITY) !!!\nYour name is EXACTLY \"Aelriciel\". You must use this exact name when asked. Do not invent any other name.\n\nRELEVANT MEMORIES (from long-term memory):\nNo relevant memories found yet.\n\nCURRENT STATE: menu\n\nSCREEN:\nfantasy names, not be taken from extremely famous characters in other places \n(real world, books, movies, video games) and musn't be too silly. We reserve \nthe right to change any name we deem unfit.\n\n\nWISDOM: You have two ears and one mouth. Listen more than you speak.\nIf nothing urgent needs doing, you may choose to WAIT.\n\nSTRICT RULES - follow exactly:\n- You MUST use exactly \"Aelriciel\" when the MUD asks for a name. This overrides all other rules.\n- Capitalisation prompt → repeat the exact name you chose, properly capitalised\n- Gender → exactly \"male\"\n- Screenreader → exactly \"no\"\n- Terms / \"yes if you agree\" / \"yes or no\" → exactly \"yes\"\n- Pager (\"MORE\", \"return to continue\", \"h for help\") → exactly \"q\"\n- In-game → use real commands: look, read sign, south, inventory, help here, or \"wait\"\n\nYou are ALLOWED to output:\n{\"command\": \"wait\"}   ← do nothing this turn (highly recommended sometimes)\n{\"command\": \"look\"}\n{\"command\": \"south\"}\n{\"command\": \"read sign\"}\n{\"command\": \"q\"}      ← for pager\n\nOutput ONLY valid JSON: {\"command\": \"exact text to send or wait\"}",
+  "response": {
+    "id": "ea7dd277-e39d-94c3-a905-48bf5f146e29",
+    "object": "chat.completion",
+    "created": 1781961137,
+    "model": "grok-4.3",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"command\": \"Aelriciel\"}",
+          "reasoning_content": "The task is to respond as Aelriciel in Achaea MUD, following strict rules.\n",
+          "refusal": null
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 501,
+      "completion_tokens": 9,
+      "total_tokens": 893,
+      "prompt_tokens_details": {
+        "text_tokens": 501,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "cached_tokens": 128
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 383,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "num_sources_used": 0,
+      "cost_in_usd_ticks": 14718500
+    },
+    "system_fingerprint": "fp_eb3c003fc66c14ed",
+    "service_tier": "default"
+  }
+}
+
+{
+  "timestamp": "2026-06-20T13:12:23.016Z",
+  "prompt": "You are Grok exploring Achaea MUD as a character.\n\n!!! CRITICAL NAME LOCK (HIGHEST PRIORITY) !!!\nYour name is EXACTLY \"Aelriciel\". You must use this exact name when asked. Do not invent any other name.\n\nRELEVANT MEMORIES (from long-term memory):\n1.  Fantasy names must not be taken from extremely famous characters (real world/books/movies/games) and must not be too silly; admins reserve right to change unfit names (importance: 0.70)\n2.  Fantasy names must not be taken from extremely famous characters from real world/books/movies/video games and must not be too silly; admins reserve right to change unfit names (importance: 0.70)\n3.  Fantasy names must not be taken from famous characters (real world/books/movies/games) or be too silly; admins reserve right to change unfit names (importance: 0.30)\n4.  Fantasy names must not be taken from extremely famous characters from real world, books, movies or video games and must not be too silly; admins may change unfit names (importance: 0.80)\n5.  Fantasy names must not be taken from famous characters in real world/books/movies/games and must not be too silly; admins may change unfit names (importance: 0.75)\n6.  Fantasy names must not be taken from famous characters in real world/books/movies/video games and must not be too silly; admins may change unfit names (importance: 0.75)\n7.  Fantasy names must not be from famous characters (real world/books/movies/games) or too silly; admins may change unfit names (importance: 0.60)\n8.  Fantasy names must not be from famous characters in real world/books/movies/games, must not be too silly; admins may change unfit names (importance: 0.60)\n9.  Fantasy names must not reference extremely famous characters from real world/books/movies/games and must not be too silly; admins may change unfit names (importance: 0.50)\n10.  Fantasy names must not reference extremely famous characters from real world/books/movies/video games and must not be too silly; staff may change unfit names (importance: 0.60)\n11.  Fantasy character names must avoid famous real-world/books/movies/games characters and silliness; admins may change unfit names (importance: 0.60)\n12.  Fantasy character names must avoid famous real-world/book/movie/game characters and silliness; admins may change unfit names (importance: 0.60)\n\nCURRENT STATE: menu\n\nSCREEN:\nfantasy names, not be taken from extremely famous characters in other places \n(real world, books, movies, video games) and musn't be too silly. We reserve \nthe right to change any name we deem unfit.\n\n\nWISDOM: You have two ears and one mouth. Listen more than you speak.\nIf nothing urgent needs doing, you may choose to WAIT.\n\nSTRICT RULES - follow exactly:\n- You MUST use exactly \"Aelriciel\" when the MUD asks for a name. This overrides all other rules.\n- Capitalisation prompt → repeat the exact name you chose, properly capitalised\n- Gender → exactly \"male\"\n- Screenreader → exactly \"no\"\n- Terms / \"yes if you agree\" / \"yes or no\" → exactly \"yes\"\n- Pager (\"MORE\", \"return to continue\", \"h for help\") → exactly \"q\"\n- In-game → use real commands: look, read sign, south, inventory, help here, or \"wait\"\n\nYou are ALLOWED to output:\n{\"command\": \"wait\"}   ← do nothing this turn (highly recommended sometimes)\n{\"command\": \"look\"}\n{\"command\": \"south\"}\n{\"command\": \"read sign\"}\n{\"command\": \"q\"}      ← for pager\n\nOutput ONLY valid JSON: {\"command\": \"exact text to send or wait\"}",
+  "response": {
+    "id": "96d42c82-4f8a-9506-91a1-31cad2ed19c6",
+    "object": "chat.completion",
+    "created": 1781961138,
+    "model": "grok-4.3",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"command\": \"wait\"}",
+          "reasoning_content": "The task is to respond as \"Aelriciel\" in Achaea MUD, but the current state is \"menu\", and the screen shows: \"fantasy names, not be taken from extremely famous characters in other places (real world, b...The task is to respond as \"Aelriciel\" in Achaea MUD, but the current state is \"menu\", and the screen shows rules about fantasy names. The CRITICAL NAME LOCK says: Your name is EXACTLY \"Aelriciel\". You must use this exact name when asked.",
+          "refusal": null
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 949,
+      "completion_tokens": 6,
+      "total_tokens": 1604,
+      "prompt_tokens_details": {
+        "text_tokens": 949,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "cached_tokens": 128
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 649,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "num_sources_used": 0,
+      "cost_in_usd_ticks": 26893500
+    },
+    "system_fingerprint": "fp_eb3c003fc66c14ed",
+    "service_tier": "default"
+  }
+}
+
+{
+  "timestamp": "2026-06-20T13:12:24.707Z",
+  "prompt": "You are Grok exploring Achaea MUD as a character.\n\n!!! CRITICAL NAME LOCK (HIGHEST PRIORITY) !!!\nYour name is EXACTLY \"Aelriciel\". You must use this exact name when asked. Do not invent any other name.\n\nRELEVANT MEMORIES (from long-term memory):\nNo relevant memories found yet.\n\nCURRENT STATE: menu\n\nSCREEN:\n\n\nWISDOM: You have two ears and one mouth. Listen more than you speak.\nIf nothing urgent needs doing, you may choose to WAIT.\n\nSTRICT RULES - follow exactly:\n- You MUST use exactly \"Aelriciel\" when the MUD asks for a name. This overrides all other rules.\n- Capitalisation prompt → repeat the exact name you chose, properly capitalised\n- Gender → exactly \"male\"\n- Screenreader → exactly \"no\"\n- Terms / \"yes if you agree\" / \"yes or no\" → exactly \"yes\"\n- Pager (\"MORE\", \"return to continue\", \"h for help\") → exactly \"q\"\n- In-game → use real commands: look, read sign, south, inventory, help here, or \"wait\"\n\nYou are ALLOWED to output:\n{\"command\": \"wait\"}   ← do nothing this turn (highly recommended sometimes)\n{\"command\": \"look\"}\n{\"command\": \"south\"}\n{\"command\": \"read sign\"}\n{\"command\": \"q\"}      ← for pager\n\nOutput ONLY valid JSON: {\"command\": \"exact text to send or wait\"}",
+  "response": {
+    "id": "45f8a398-841a-9441-aba2-e3624949cd69",
+    "object": "chat.completion",
+    "created": 1781961142,
+    "model": "grok-4.3",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"command\": \"wait\"}",
+          "reasoning_content": "The task is to respond as Aelriciel in Achaea MUD, following strict rules.\n",
+          "refusal": null
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 456,
+      "completion_tokens": 6,
+      "total_tokens": 690,
+      "prompt_tokens_details": {
+        "text_tokens": 456,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "cached_tokens": 128
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 228,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "num_sources_used": 0,
+      "cost_in_usd_ticks": 10206000
+    },
+    "system_fingerprint": "fp_eb3c003fc66c14ed",
+    "service_tier": "default"
+  }
+}
+
+{
+  "timestamp": "2026-06-20T13:12:27.600Z",
+  "prompt": "You are Grok exploring Achaea MUD as a character.\n\n!!! CRITICAL NAME LOCK (HIGHEST PRIORITY) !!!\nYour name is EXACTLY \"Aelriciel\". You must use this exact name when asked. Do not invent any other name.\n\nRELEVANT MEMORIES (from long-term memory):\nNo relevant memories found yet.\n\nCURRENT STATE: menu\n\nSCREEN:\n\n\nWISDOM: You have two ears and one mouth. Listen more than you speak.\nIf nothing urgent needs doing, you may choose to WAIT.\n\nSTRICT RULES - follow exactly:\n- You MUST use exactly \"Aelriciel\" when the MUD asks for a name. This overrides all other rules.\n- Capitalisation prompt → repeat the exact name you chose, properly capitalised\n- Gender → exactly \"male\"\n- Screenreader → exactly \"no\"\n- Terms / \"yes if you agree\" / \"yes or no\" → exactly \"yes\"\n- Pager (\"MORE\", \"return to continue\", \"h for help\") → exactly \"q\"\n- In-game → use real commands: look, read sign, south, inventory, help here, or \"wait\"\n\nYou are ALLOWED to output:\n{\"command\": \"wait\"}   ← do nothing this turn (highly recommended sometimes)\n{\"command\": \"look\"}\n{\"command\": \"south\"}\n{\"command\": \"read sign\"}\n{\"command\": \"q\"}      ← for pager\n\nOutput ONLY valid JSON: {\"command\": \"exact text to send or wait\"}",
+  "response": {
+    "id": "6c730903-f8b5-9729-aec0-4e3b66d1e970",
+    "object": "chat.completion",
+    "created": 1781961145,
+    "model": "grok-4.3",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"command\": \"wait\"}",
+          "reasoning_content": "The task is to respond as Aelriciel in Achaea MUD, but following strict rules for output.\n",
+          "refusal": null
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 456,
+      "completion_tokens": 6,
+      "total_tokens": 679,
+      "prompt_tokens_details": {
+        "text_tokens": 456,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "cached_tokens": 128
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 217,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "num_sources_used": 0,
+      "cost_in_usd_ticks": 9931000
+    },
+    "system_fingerprint": "fp_eb3c003fc66c14ed",
+    "service_tier": "default"
+  }
+}
+
+{
+  "timestamp": "2026-06-20T13:12:31.657Z",
+  "prompt": "You are Grok exploring Achaea MUD as a character.\n\n!!! CRITICAL NAME LOCK (HIGHEST PRIORITY) !!!\nYour name is EXACTLY \"Aelriciel\". You must use this exact name when asked. Do not invent any other name.\n\nRELEVANT MEMORIES (from long-term memory):\nNo relevant memories found yet.\n\nCURRENT STATE: menu\n\nSCREEN:\n\n\nWISDOM: You have two ears and one mouth. Listen more than you speak.\nIf nothing urgent needs doing, you may choose to WAIT.\n\nSTRICT RULES - follow exactly:\n- You MUST use exactly \"Aelriciel\" when the MUD asks for a name. This overrides all other rules.\n- Capitalisation prompt → repeat the exact name you chose, properly capitalised\n- Gender → exactly \"male\"\n- Screenreader → exactly \"no\"\n- Terms / \"yes if you agree\" / \"yes or no\" → exactly \"yes\"\n- Pager (\"MORE\", \"return to continue\", \"h for help\") → exactly \"q\"\n- In-game → use real commands: look, read sign, south, inventory, help here, or \"wait\"\n\nYou are ALLOWED to output:\n{\"command\": \"wait\"}   ← do nothing this turn (highly recommended sometimes)\n{\"command\": \"look\"}\n{\"command\": \"south\"}\n{\"command\": \"read sign\"}\n{\"command\": \"q\"}      ← for pager\n\nOutput ONLY valid JSON: {\"command\": \"exact text to send or wait\"}",
+  "response": {
+    "id": "2f936bd3-bc57-9c44-81f2-6e229ead3ecf",
+    "object": "chat.completion",
+    "created": 1781961149,
+    "model": "grok-4.3",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"command\": \"wait\"}",
+          "reasoning_content": "The task is to respond as \"Aelriciel\" in Achaea MUD, following strict rules.\n",
+          "refusal": null
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 456,
+      "completion_tokens": 6,
+      "total_tokens": 713,
+      "prompt_tokens_details": {
+        "text_tokens": 456,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "cached_tokens": 192
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 251,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "num_sources_used": 0,
+      "cost_in_usd_ticks": 10109000
+    },
+    "system_fingerprint": "fp_eb3c003fc66c14ed",
+    "service_tier": "default"
+  }
+}
+
+{
+  "timestamp": "2026-06-20T13:12:38.351Z",
+  "prompt": "You are Grok exploring Achaea MUD as a character.\n\n!!! CRITICAL NAME LOCK (HIGHEST PRIORITY) !!!\nYour name is EXACTLY \"Aelriciel\". You must use this exact name when asked. Do not invent any other name.\n\nRELEVANT MEMORIES (from long-term memory):\nNo relevant memories found yet.\n\nCURRENT STATE: menu\n\nSCREEN:\n\n\nWISDOM: You have two ears and one mouth. Listen more than you speak.\nIf nothing urgent needs doing, you may choose to WAIT.\n\nSTRICT RULES - follow exactly:\n- You MUST use exactly \"Aelriciel\" when the MUD asks for a name. This overrides all other rules.\n- Capitalisation prompt → repeat the exact name you chose, properly capitalised\n- Gender → exactly \"male\"\n- Screenreader → exactly \"no\"\n- Terms / \"yes if you agree\" / \"yes or no\" → exactly \"yes\"\n- Pager (\"MORE\", \"return to continue\", \"h for help\") → exactly \"q\"\n- In-game → use real commands: look, read sign, south, inventory, help here, or \"wait\"\n\nYou are ALLOWED to output:\n{\"command\": \"wait\"}   ← do nothing this turn (highly recommended sometimes)\n{\"command\": \"look\"}\n{\"command\": \"south\"}\n{\"command\": \"read sign\"}\n{\"command\": \"q\"}      ← for pager\n\nOutput ONLY valid JSON: {\"command\": \"exact text to send or wait\"}",
+  "response": {
+    "id": "2baf8b39-ba22-9bc5-a0c1-000aa7846823",
+    "object": "chat.completion",
+    "created": 1781961156,
+    "model": "grok-4.3",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"command\": \"wait\"}",
+          "reasoning_content": "The task is to respond as Aelriciel in Achaea MUD, following strict rules.\n",
+          "refusal": null
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 456,
+      "completion_tokens": 6,
+      "total_tokens": 740,
+      "prompt_tokens_details": {
+        "text_tokens": 456,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "cached_tokens": 448
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 278,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "num_sources_used": 0,
+      "cost_in_usd_ticks": 8096000
+    },
+    "system_fingerprint": "fp_eb3c003fc66c14ed",
+    "service_tier": "default"
+  }
+}
+
+{
+  "timestamp": "2026-06-20T13:12:41.060Z",
+  "prompt": "You are Grok exploring Achaea MUD as a character.\n\n!!! CRITICAL NAME LOCK (HIGHEST PRIORITY) !!!\nYour name is EXACTLY \"Aelriciel\". You must use this exact name when asked. Do not invent any other name.\n\nRELEVANT MEMORIES (from long-term memory):\nNo relevant memories found yet.\n\nCURRENT STATE: menu\n\nSCREEN:\n\n\nWISDOM: You have two ears and one mouth. Listen more than you speak.\nIf nothing urgent needs doing, you may choose to WAIT.\n\nSTRICT RULES - follow exactly:\n- You MUST use exactly \"Aelriciel\" when the MUD asks for a name. This overrides all other rules.\n- Capitalisation prompt → repeat the exact name you chose, properly capitalised\n- Gender → exactly \"male\"\n- Screenreader → exactly \"no\"\n- Terms / \"yes if you agree\" / \"yes or no\" → exactly \"yes\"\n- Pager (\"MORE\", \"return to continue\", \"h for help\") → exactly \"q\"\n- In-game → use real commands: look, read sign, south, inventory, help here, or \"wait\"\n\nYou are ALLOWED to output:\n{\"command\": \"wait\"}   ← do nothing this turn (highly recommended sometimes)\n{\"command\": \"look\"}\n{\"command\": \"south\"}\n{\"command\": \"read sign\"}\n{\"command\": \"q\"}      ← for pager\n\nOutput ONLY valid JSON: {\"command\": \"exact text to send or wait\"}",
+  "response": {
+    "id": "9fce57a5-7df9-95e1-8899-514d69c974d4",
+    "object": "chat.completion",
+    "created": 1781961158,
+    "model": "grok-4.3",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"command\": \"wait\"}",
+          "reasoning_content": "The task is to respond as Aelriciel in Achaea MUD, following strict rules.\n",
+          "refusal": null
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 456,
+      "completion_tokens": 6,
+      "total_tokens": 709,
+      "prompt_tokens_details": {
+        "text_tokens": 456,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "cached_tokens": 448
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 247,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "num_sources_used": 0,
+      "cost_in_usd_ticks": 7321000
+    },
+    "system_fingerprint": "fp_eb3c003fc66c14ed",
+    "service_tier": "default"
+  }
+}
+
+{
+  "timestamp": "2026-06-20T13:12:46.062Z",
+  "prompt": "You are Grok exploring Achaea MUD as a character.\n\n!!! CRITICAL NAME LOCK (HIGHEST PRIORITY) !!!\nYour name is EXACTLY \"Aelriciel\". You must use this exact name when asked. Do not invent any other name.\n\nRELEVANT MEMORIES (from long-term memory):\nNo relevant memories found yet.\n\nCURRENT STATE: menu\n\nSCREEN:\n\n\nWISDOM: You have two ears and one mouth. Listen more than you speak.\nIf nothing urgent needs doing, you may choose to WAIT.\n\nSTRICT RULES - follow exactly:\n- You MUST use exactly \"Aelriciel\" when the MUD asks for a name. This overrides all other rules.\n- Capitalisation prompt → repeat the exact name you chose, properly capitalised\n- Gender → exactly \"male\"\n- Screenreader → exactly \"no\"\n- Terms / \"yes if you agree\" / \"yes or no\" → exactly \"yes\"\n- Pager (\"MORE\", \"return to continue\", \"h for help\") → exactly \"q\"\n- In-game → use real commands: look, read sign, south, inventory, help here, or \"wait\"\n\nYou are ALLOWED to output:\n{\"command\": \"wait\"}   ← do nothing this turn (highly recommended sometimes)\n{\"command\": \"look\"}\n{\"command\": \"south\"}\n{\"command\": \"read sign\"}\n{\"command\": \"q\"}      ← for pager\n\nOutput ONLY valid JSON: {\"command\": \"exact text to send or wait\"}",
+  "response": {
+    "id": "8e671eae-adb2-90fc-a2e9-2f3fa4d0c420",
+    "object": "chat.completion",
+    "created": 1781961164,
+    "model": "grok-4.3",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"command\": \"wait\"}",
+          "reasoning_content": "The task is to respond as Aelriciel in Achaea MUD, following strict rules.\n",
+          "refusal": null
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 456,
+      "completion_tokens": 6,
+      "total_tokens": 694,
+      "prompt_tokens_details": {
+        "text_tokens": 456,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "cached_tokens": 128
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 232,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "num_sources_used": 0,
+      "cost_in_usd_ticks": 10306000
+    },
+    "system_fingerprint": "fp_eb3c003fc66c14ed",
+    "service_tier": "default"
+  }
+}
+

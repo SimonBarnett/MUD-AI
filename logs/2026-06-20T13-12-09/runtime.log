@@ -1,0 +1,65 @@
+=== MUD-AI SESSION STARTED: 2026-06-20T13:12:09.793Z ===
+[2026-06-20T13:12:09.793Z] [SUCCESS] 🚀 MUD-AI v0.5.5 — Strong Name Rule Memory Injection
+[2026-06-20T13:12:09.798Z] [SUCCESS] 📁 Logging to: C:\Users\medatech.si\mud\logs\2026-06-20T13-12-09
+[2026-06-20T13:12:09.812Z] [SUCCESS] ✅ Type !login
+[2026-06-20T13:12:14.049Z] [SUCCESS] 🔒 Mode: CREATE | Locked name: Aelriciel
+[2026-06-20T13:12:14.054Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-20T13:12:14.168Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-20T13:12:14.238Z] [INFO] 🧠 LLM classification started for event: ...
+[2026-06-20T13:12:14.264Z] [INFO] 📥 MUD: ����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-20T13:12:14.268Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-20T13:12:14.274Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-20T13:12:14.279Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-20T13:12:14.283Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-20T13:12:14.288Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-20T13:12:14.293Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-20T13:12:14.297Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-20T13:12:14.302Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-20T13:12:14.307Z] [INFO] 📥 MUD:            106 adventurers are currently in the realms.
+[2026-06-20T13:12:14.311Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-20T13:12:14.315Z] [SUCCESS] 🆕 Sending 2 → Create new character
+[2026-06-20T13:12:14.320Z] [SUCCESS] ✅ Sent: 2
+[2026-06-20T13:12:14.326Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-20T13:12:14.330Z] [INFO] 📥 MUD:            [32m3.[37m Quit.
+[2026-06-20T13:12:14.507Z] [INFO] 🧠 LLM classification started for event:            3. Quit.
+Enter an option or enter your character's name. ����
+...
+[2026-06-20T13:12:14.512Z] [INFO] 📥 MUD: Enter an option or enter your character's name. ����
+[2026-06-20T13:12:14.516Z] [INFO] 📥 MUD: Please be aware that you must be 13 years of age or older to play Achaea.
+[2026-06-20T13:12:14.520Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 1 of 7): Name Selection ***
+[2026-06-20T13:12:14.526Z] [SUCCESS] ✍️ Sending name: Aelriciel
+[2026-06-20T13:12:14.530Z] [INFO] 📥 MUD: Pick your name with care! This is a fantasy world. Names must sound like 
+[2026-06-20T13:12:14.534Z] [INFO] 📥 MUD: fantasy names, not be taken from extremely famous characters in other places 
+[2026-06-20T13:12:14.539Z] [INFO] 📥 MUD: (real world, books, movies, video games) and musn't be too silly. We reserve 
+[2026-06-20T13:12:14.544Z] [INFO] 📥 MUD: the right to change any name we deem unfit.
+[2026-06-20T13:12:16.994Z] [SUCCESS] 🎉 Ingestion complete: 0 memories
+[2026-06-20T13:12:18.521Z] [SUCCESS] ✅ Stored: menu
+[2026-06-20T13:12:18.527Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-20T13:12:18.639Z] [INFO] 🧠 LLM classification started for event: fantasy names, not be taken from extremely famous characters in other places 
+(r...
+[2026-06-20T13:12:19.719Z] [SUCCESS] 💡 Grok → Aelriciel
+[2026-06-20T13:12:19.722Z] [SUCCESS] ✅ Sent: Aelriciel
+[2026-06-20T13:12:19.893Z] [SUCCESS] ✍️ Sending name: Aelriciel
+[2026-06-20T13:12:19.896Z] [INFO] 📥 MUD: What is the name you wish to use? > ��
+[2026-06-20T13:12:22.682Z] [SUCCESS] ✅ Stored: policy
+[2026-06-20T13:12:22.687Z] [SUCCESS] 🎉 Ingestion complete: 1 memories
+[2026-06-20T13:12:23.018Z] [INFO] 🤫 Grok chose to listen...
+[2026-06-20T13:12:23.052Z] [INFO] 🧠 LLM classification started for event: ...
+[2026-06-20T13:12:24.708Z] [INFO] 🤫 Grok chose to listen...
+[2026-06-20T13:12:25.762Z] [SUCCESS] 🎉 Ingestion complete: 0 memories
+[2026-06-20T13:12:27.458Z] [INFO] 🧠 LLM classification started for event: ...
+[2026-06-20T13:12:27.602Z] [INFO] 🤫 Grok chose to listen...
+[2026-06-20T13:12:29.438Z] [SUCCESS] 🎉 Ingestion complete: 0 memories
+[2026-06-20T13:12:31.658Z] [INFO] 🤫 Grok chose to listen...
+[2026-06-20T13:12:34.086Z] [INFO] 🧠 LLM classification started for event: ...
+[2026-06-20T13:12:36.293Z] [INFO] 🧠 LLM classification started for event: ...
+[2026-06-20T13:12:36.310Z] [SUCCESS] 🎉 Ingestion complete: 0 memories
+[2026-06-20T13:12:38.352Z] [INFO] 🤫 Grok chose to listen...
+[2026-06-20T13:12:38.969Z] [SUCCESS] 🎉 Ingestion complete: 0 memories
+[2026-06-20T13:12:40.708Z] [INFO] 🧠 LLM classification started for event: ...
+[2026-06-20T13:12:41.062Z] [INFO] 🤫 Grok chose to listen...
+[2026-06-20T13:12:44.198Z] [SUCCESS] 🎉 Ingestion complete: 0 memories
+[2026-06-20T13:12:45.112Z] [INFO] 🧠 LLM classification started for event: ...
+[2026-06-20T13:12:46.063Z] [INFO] 🤫 Grok chose to listen...
+[2026-06-20T13:12:48.266Z] [SUCCESS] 🎉 Ingestion complete: 0 memories
+[2026-06-20T13:12:48.728Z] [INFO] CLI closed
