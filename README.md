@@ -29,8 +29,9 @@ src/
 │   ├── memory.ts            # storeMemory(), updateMemory()
 │   ├── retrieval.ts         # retrieveContext() with multi-stage logic
 │   └── index.ts
-├── mud-client/              # Telnet + command queue + parser
-├── agent/                   # Personality, goals, decision loop
+├── mud-client/              # Telnet + command queue + parser + state detection
+├── agent/                   # Personality, goals, decision loop + autonomous mode
+├── cli/                     # Interactive CLI with auto mode toggle
 └── index.ts                 # Main entry
 ```
 
@@ -52,9 +53,25 @@ Retrieval is multi-stage:
 2. Entity overlap boost
 3. Semantic similarity + importance + recency decay
 
+**LLM Setup**:
+- Grok (via xAI) for reasoning, decision making and classification
+- OpenAI used only for embeddings :(
+
+## Key Features (Current)
+
+- Persistent memory across sessions with importance scoring and decay
+- Full end-to-end autonomous loop (can run with minimal intervention)
+- Interactive CLI with auto mode toggle and state tracking
+- Telnet-based Discworld MUD client with login handling and state detection
+- LLM-driven event classification and dynamic memory storage
+- Append-only session logging with headers
+- User authentication (JWT) and basic profile management
+- "Learned rules" system for character behaviour and input handling
+
 ## Quick Start
 
 ### 1. Supabase
+
 ```bash
 # Create project at supabase.com
 # Enable pgvector extension
@@ -62,12 +79,17 @@ Retrieval is multi-stage:
 ```
 
 ### 2. Environment
+
 ```bash
 cp .env.example .env
-# Fill in SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY
-```
+
+Fill in:SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+OPENAI_API_KEY (for embeddings)
+xAI / Grok credentials as required
 
 ### 3. Run the brain
+
 ```bash
 npm install
 npm run dev
@@ -78,10 +100,17 @@ npm run dev
 - [x] Repo created
 - [x] README + vision
 - [x] Supabase schema + retrieval function
-- [x] MUD telnet client
-- [ ] Agent loop with personality
+- [x] MUD telnet client with state detection and login handling
+- [x] Agent loop with personality and goals
+- [x] Full end-to-end autonomous loop implemented
+- [x] LLM-driven classification and dynamic memory storage
+- [x] Interactive CLI with auto mode
 - [x] First live connection to Discworld MUD
-- [ ] Persistent memory across sessions
+- [x] Persistent memory across sessions
+- [x] Multi-LLM architecture (Grok 4.3 + xAI classification, OpenAI embeddings only)
+- [x] Append-only logging with session headers
+- [x] Learned rules for character creation and input handling
+
 
 ## Contributing / Playing Along
 
