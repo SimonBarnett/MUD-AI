@@ -78,9 +78,9 @@ npm run dev
 - [x] Repo created
 - [x] README + vision
 - [x] Supabase schema + retrieval function
-- [ ] MUD telnet client
+- [x] MUD telnet client
 - [ ] Agent loop with personality
-- [ ] First live connection to Discworld MUD
+- [x] First live connection to Discworld MUD
 - [ ] Persistent memory across sessions
 
 ## Contributing / Playing Along
