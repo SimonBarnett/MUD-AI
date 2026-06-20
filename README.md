@@ -1,6 +1,6 @@
 # MUD-AI
 
-> A Chaotic Good experiment: giving Grok persistent memory, third thoughts, and the ability to actually *play* Discworld MUD like a proper witch/assassin who occasionally quotes Tiffany Aching while debugging SQS queues.
+A Chaotic Good experiment: giving Grok persistent memory, third thoughts, and the ability to actually *play* Discworld MUD like a proper witch/assassin who occasionally quotes Tiffany Aching while debugging SQS queues.
 
 >Have you ever played a MUD?
 >
