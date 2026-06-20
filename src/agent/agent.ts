@@ -1,7 +1,8 @@
+// src/agent/agent.ts
 import OpenAI from 'openai';
 import { remember } from '../memory-store.js';
 import { retrieveContext } from '../context-engine/retrieval.js';
-import { log } from '../logger.js';
+import { log, logGrokInteraction } from '../logger.js';
 
 let xaiClient: OpenAI | null = null;
 
@@ -78,6 +79,9 @@ Output ONLY valid JSON: {"command": "exact text to send or wait"}`;
         max_tokens: 120,
         response_format: { type: "json_object" }
       });
+
+      // === Log full prompt + response for debugging ===
+      logGrokInteraction(systemPrompt, completion);
 
       const parsed = JSON.parse(completion.choices[0].message.content || '{}');
       let cmd = (parsed.command || "").trim();

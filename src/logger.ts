@@ -1,72 +1,101 @@
-// src/logger.ts - APPEND-ONLY + CLEAR SESSION SEPARATOR (no wiping, keeps history)
+// src/logger.ts - Dated runtime folders + Grok debug logging
 import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 
-const LOG_DIR = path.join(process.cwd(), 'logs');
-const LOG_FILE = path.join(LOG_DIR, 'mud-ai-latest.log');
+const LOGS_ROOT = path.join(process.cwd(), 'logs');
 
-let sessionHeaderWritten = false; // prevents duplicate headers on repeated imports
+// Generate a clean timestamp for the folder name
+const runtimeTimestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+const RUNTIME_LOG_DIR = path.join(LOGS_ROOT, runtimeTimestamp);
 
-function ensureLogDir() {
-  if (!fs.existsSync(LOG_DIR)) {
-    fs.mkdirSync(LOG_DIR, { recursive: true });
+let logDirCreated = false;
+let sessionHeaderWritten = false;
+
+// Ensure the dated log directory exists
+function ensureRuntimeLogDir() {
+  if (logDirCreated) return;
+
+  try {
+    if (!fs.existsSync(RUNTIME_LOG_DIR)) {
+      fs.mkdirSync(RUNTIME_LOG_DIR, { recursive: true });
+    }
+    logDirCreated = true;
+
+    // Write initial session header
+    const header = `=== MUD-AI SESSION STARTED: ${new Date().toISOString()} ===\n`;
+    fs.appendFileSync(path.join(RUNTIME_LOG_DIR, 'runtime.log'), header, 'utf8');
+  } catch (e) {
+    // Silent fail - never crash the app over logging
   }
 }
 
-function writeSessionHeaderIfNeeded() {
-  if (sessionHeaderWritten) return;
+function writeToRuntimeLog(level: string, message: string) {
   try {
-    ensureLogDir();
-    const header = `\n=== NEW RUN: ${new Date().toISOString()} ===\n`;
-    fs.appendFileSync(LOG_FILE, header, 'utf8');
-    sessionHeaderWritten = true;
+    ensureRuntimeLogDir();
+    const timestamp = new Date().toISOString();
+    const line = `[${timestamp}] [${level}] ${message}\n`;
+    fs.appendFileSync(path.join(RUNTIME_LOG_DIR, 'runtime.log'), line, 'utf8');
   } catch (e) {
     // Silent fail
   }
 }
 
-function writeToFile(level: string, message: string) {
-  try {
-    ensureLogDir();
-    writeSessionHeaderIfNeeded(); // ensures header appears once per process start
-    const timestamp = new Date().toISOString();
-    const line = `[${timestamp}] [${level}] ${message}\n`;
-    fs.appendFileSync(LOG_FILE, line, 'utf8');
-  } catch (e) {
-    // Silent fail — never crash the app because of logging
-  }
-}
-
+// Public logging interface
 export const log = {
   success: (message: string) => {
     console.log(chalk.green('✅'), message);
-    writeToFile('SUCCESS', message);
+    writeToRuntimeLog('SUCCESS', message);
   },
+
   error: (message: string) => {
     console.log(chalk.red('❌ Error:'), message);
-    writeToFile('ERROR', message);
+    writeToRuntimeLog('ERROR', message);
   },
+
   info: (message: string) => {
     console.log(chalk.blue('ℹ️'), message);
-    writeToFile('INFO', message);
+    writeToRuntimeLog('INFO', message);
   },
+
   hint: (message: string) => {
     console.log(chalk.yellow('💡 Hint:'), message);
-    writeToFile('HINT', message);
+    writeToRuntimeLog('HINT', message);
   },
+
   debug: (message: string) => {
     if (process.env.DEBUG === 'true') {
       console.log(chalk.gray('🐛'), message);
-      writeToFile('DEBUG', message);
+      writeToRuntimeLog('DEBUG', message);
     }
   }
 };
 
+// Banner (unchanged)
 export const banner = () => {
   console.log(chalk.bold.magenta('\n🏴‍☠️ MUD-AI Interactive CLI'));
   console.log(chalk.gray('Type commands or !connect to start MUD session. Type "exit" to quit.\n'));
-  console.log(chalk.gray('📄 Latest logs → logs/mud-ai-latest.log (append-only, new session header on every run)\n'));
+  console.log(chalk.gray(`📄 Logs → ${RUNTIME_LOG_DIR}\n`));
 };
 
-export default { log, banner };
+// =====================================================
+// GROK DEBUG LOGGING (separate file)
+// =====================================================
+export function logGrokInteraction(prompt: string, response: any) {
+  try {
+    ensureRuntimeLogDir();
+    const timestamp = new Date().toISOString();
+    const entry = {
+      timestamp,
+      prompt,
+      response
+    };
+
+    const debugPath = path.join(RUNTIME_LOG_DIR, 'grok-debug.log');
+    fs.appendFileSync(debugPath, JSON.stringify(entry, null, 2) + '\n\n', 'utf8');
+  } catch (e) {
+    // Silent fail
+  }
+}
+
+export default { log, banner, logGrokInteraction };
