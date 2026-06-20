@@ -1,16 +1,22 @@
-// src/memory-store.ts
+  // src/memory-store.ts
 import { createClient } from '@supabase/supabase-js';
 import 'dotenv/config';
+import ws from 'ws';
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+(global as any).WebSocket = ws;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  {
+    realtime: { params: {}, transport: ws as any },
+    auth: { persistSession: false }
+  }
+);
 
 export async function initMemoryDB() {
-  console.log('📦 Connected to Supabase memory store');
-  // Optional: create table if not exists (run once)
-  await supabase.from('mud_memories').upsert({ key: 'init', value: 'ready' });
+  console.log('📦 Connected to Supabase (with ws polyfill)');
+  await supabase.from('mud_memories').select('id').limit(1);
 }
 
 export async function remember(key: string, value: string) {
@@ -18,21 +24,22 @@ export async function remember(key: string, value: string) {
     .from('mud_memories')
     .insert([{ key, value, timestamp: new Date().toISOString() }]);
 
-  if (!error) console.log(`💾 Supabase memory saved → ${key}`);
+  if (error) console.error('Supabase insert error:', error);
+  // Removed the noisy "💾 Supabase saved → ..." log here
 }
 
 export async function getLoginSequence(): Promise<string[]> {
+  // Now returns BOTH old login rules AND your new !memorize rules
   const { data } = await supabase
     .from('mud_memories')
-    .select('value')
-    .like('key', '%login%')
+    .select('key, value')
+    .or('key.like.%login%,key.eq.user_injected')
     .order('timestamp', { ascending: true });
 
   return data?.map(r => r.value) || [];
 }
 
-// Bonus: Dynamic memorize from CLI
 export async function memorizeFromUser(text: string) {
   await remember('user_injected', text);
-  return `💾 Saved to Supabase: ${text}`;
+  // We return nothing here — index.ts will print the clean message
 }

@@ -6,81 +6,77 @@ import { log } from '../logger.js';
 let xaiClient: OpenAI | null = null;
 
 function getXAI() {
-  if (!xaiClient) {
-    xaiClient = new OpenAI({
-      apiKey: process.env.XAI_API_KEY,
-      baseURL: "https://api.x.ai/v1",
-    });
-  }
+  if (!xaiClient) xaiClient = new OpenAI({ 
+    apiKey: process.env.XAI_API_KEY, 
+    baseURL: "https://api.x.ai/v1" 
+  });
   return xaiClient;
 }
 
-export interface AgentDecision {
-  action: 'send_command' | 'press_enter';
-  command?: string;
-}
-
 export class MUDAgent {
-  private learnedRules: string[] = [];
-
-  constructor() {
-    this.loadRules();
-  }
-
-  private async loadRules() {
-    this.learnedRules = await getLoginSequence();
-    log.success(`📚 Supabase loaded ${this.learnedRules.length} memories`);
-  }
-
-  async think(input: string, context: any = {}): Promise<AgentDecision> {
+  async think(input: string, context: any = {}) {
     const memories = await getLoginSequence();
 
-    const systemPrompt = `You are Grok in Discworld MUD.
+    const systemPrompt = `You are Grok exploring Discworld MUD.
 
-SUPABASE MEMORIES (use them):
-${memories.length ? memories.join('\n') : 'None yet'}
+SUPABASE MEMORIES (highest priority):
+${memories.join('\n') || 'None yet'}
 
-CURRENT STATE: ${context.state || 'login_screen'}
+CURRENT STATE: ${context.state || 'unknown'}
 
 SCREEN:
 ${input}
 
-Rules:
-- On main menu with G/N/Q → send 'g'
-- On name prompt → choose your own unique name (e.g. QuantumGrok, AetherGrok)
-- Capitalisation prompt → repeat the name you just chose (capitalised)
-- Gender → male
-- Screenreader → no
-- Terms → yes
-- When in game (room description or > prompt) → send normal commands like 'look', 'inventory', 'say hello'
+WISDOM: You have two ears and one mouth. Listen more than you speak.
+If nothing urgent needs doing, you may choose to WAIT.
 
-If the user just used !memorize, respect the new rule immediately.
+STRICT RULES - follow exactly:
+- Name prompt → pick a cool unique name (QuantumGrok, AetherGrok, ShadowXai, etc.) NEVER 'g'
+- Capitalisation prompt → repeat the exact name you chose, properly capitalised
+- Gender → exactly "male"
+- Screenreader → exactly "no"
+- Terms / "yes if you agree" / "yes or no" → exactly "yes"
+- Pager ("MORE", "return to continue", "h for help") → exactly "q"
+- In-game (room description, > prompt, hut, village, etc.) → use real commands: look, read sign, south, inventory, help here, or "wait" if unsure
 
-Output only JSON: {"command": "exact text to send"}`;
+You are ALLOWED to output:
+{"command": "wait"}   ← do nothing this turn (highly recommended sometimes)
+{"command": "look"}
+{"command": "south"}
+{"command": "read sign"}
+{"command": "q"}      ← for pager
+
+Output ONLY valid JSON: {"command": "exact text to send or wait"}`;
 
     try {
       const completion = await getXAI().chat.completions.create({
         model: 'grok-4.3',
         messages: [{ role: 'system', content: systemPrompt }],
-        temperature: 0.3,
-        max_tokens: 150,
+        temperature: 0.2,
+        max_tokens: 120,
         response_format: { type: "json_object" }
       });
 
       const parsed = JSON.parse(completion.choices[0].message.content || '{}');
-      const command = parsed.command?.trim() || "look";
+      let cmd = (parsed.command || "").trim();
 
-      // Auto-save successful decisions
-      if (command.length > 2) {
-        await remember('agent_decision', `In ${context.state} sent: ${command}`);
+      // Smart silence support
+      if (!cmd || cmd === "wait" || cmd === "listen" || cmd === "noop") {
+        log.info("🤫 Grok chose to listen...");
+        await remember('agent_decision', `LISTEN → ${context.state}`);
+        return { action: 'noop' };
       }
 
-      log.success(`💡 Grok (Supabase-aware) → ${command}`);
-      return { action: 'send_command', command };
+      await remember('agent_decision', `State: ${context.state} → ${cmd}`);
+
+      log.success(`💡 Grok → ${cmd}`);
+      return { action: 'send_command', command: cmd };
 
     } catch (e) {
       log.error(e);
-      return { action: 'send_command', command: 'look' };
+      // Graceful fallback
+      await remember('agent_decision', "ERROR → wait");
+      return { action: 'noop' };
     }
   }
 }

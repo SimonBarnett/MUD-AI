@@ -9,36 +9,43 @@ export function startInteractiveCLI(agent, mud, onAutoToggle) {
     prompt: 'MUD-AI> '
   });
 
-  console.log('✅ Interactive CLI active. Commands: !auto | !memorize "rule text" | any MUD command');
+  console.log('✅ Interactive CLI active. Commands: !help | !rules | !login | !auto | !memorize | !cls | !exit | any MUD command');
   rl.prompt();
 
   rl.on('line', async (line) => {
     const input = line.trim();
 
-    if (input === '!auto') {
-      const newMode = !global.autoMode; // or use your flag
-      global.autoMode = newMode;
-      onAutoToggle(newMode);
-      log.success(`Auto mode: ${newMode ? 'ON' : 'OFF'}`);
-    } 
-    else if (input.startsWith('!memorize ')) {
-      // Pass to the memory store via mud (already wired in index.ts)
-      if (mud.onCLICommand) {
-        mud.onCLICommand(input);
-      }
-      log.success('📨 !memorize sent to Supabase');
-    } 
-    else if (input === 'exit') {
-      process.exit(0);
-    } 
-    else {
-      // Manual command to MUD
-      log.info(`✅ Manual command sent: ${input}`);
-      mud.sendCommand({ action: 'send_command', command: input });
+    if (!input) {
+      rl.prompt();
+      return;
     }
+
+    // ────── !exit / !quit (only these kill the program) ──────
+    if (input === '!exit' || input === '!quit') {
+      log.info('👋 Exiting MUD-AI...');
+      process.exit(0);
+    }
+
+    // ────── Route ALL other !commands to central handler in index.ts ──────
+    if (input.startsWith('!')) {
+      if (mud.onCLICommand) {
+        await mud.onCLICommand(input);
+      } else {
+        log.warn('No onCLICommand handler registered yet');
+      }
+      rl.prompt();
+      return;
+    }
+
+    // ────── Normal text → send to MUD ──────
+    log.info(`✅ Manual command sent: ${input}`);
+    mud.sendCommand({ action: 'send_command', command: input });
 
     rl.prompt();
   });
 
-  rl.on('close', () => process.exit(0));
+  rl.on('close', () => {
+    log.info('CLI closed');
+    process.exit(0);
+  });
 }

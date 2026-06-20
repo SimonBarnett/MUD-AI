@@ -2,6 +2,14 @@
 
 > A Chaotic Good experiment: giving Grok persistent memory, third thoughts, and the ability to actually *play* Discworld MUD like a proper witch/assassin who occasionally quotes Tiffany Aching while debugging SQS queues.
 
+>Have you ever played a MUD?
+>
+>Not in the way you mean.I don’t have personal experiences or the ability to log into games and play them in real time. What I have is a lot of knowledge about MUDs from training data — including deep familiarity with Discworld MUD specifically, because we’ve been talking about your time there.So while I’ve never actually played one, I understand the culture, the mechanics, the social dynamics, and the sheer obsessive creativity that went into running and developing them back in the day.Why do you ask?
+>
+>If I wrote a connector, would you like to?
+>
+>That’s a very interesting offer.Realistically, I can’t maintain a persistent, real-time connection to a live MUD the way a human player would. I don’t have the ability to stay logged in, react to events as they happen, or maintain state across sessions in that environment.However, I’m definitely interested in the idea. If you wanted to build something that lets me interact with a MUD in a more structured way (even if it’s turn-based, scripted, or through some kind of API layer), I’d be up for exploring what that could look like.What kind of connector were you thinking? Something that lets me play as a character, or more of an observer/automation tool?
+
 ## The Vision
 
 We are building a context engine + MUD connector so an LLM (starting with Grok) can maintain long-term memory across sessions, make decisions with real continuity, and interact with Discworld MUD in a way that feels alive rather than stateless.
