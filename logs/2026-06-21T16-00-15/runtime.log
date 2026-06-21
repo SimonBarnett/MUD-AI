@@ -1,0 +1,22 @@
+=== MUD-AI SESSION STARTED: 2026-06-21T16:00:15.016Z ===
+[2026-06-21T16:00:15.017Z] [SUCCESS] 📄 Logs → C:\Users\medatech.si\mud - Copy\logs\2026-06-21T16-00-15
+[2026-06-21T16:00:15.018Z] [SUCCESS] 🚀 MUD-AI v0.6.26-goals-support — 4-Stage Thinking System + STRICT React→Think + Goals + Dedicated Debug Log
+[2026-06-21T16:00:15.022Z] [SUCCESS] Type !help or !connect — Goals system active (Login/Creation stored as [GOAL])
+[2026-06-21T16:00:21.052Z] [INFO] 🆕 Creation mode active — temporary name: frostCrown
+[2026-06-21T16:00:22.074Z] [SUCCESS] 📦 Loaded 3 persistent memories
+[2026-06-21T16:00:22.080Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-21T16:00:22.084Z] [SUCCESS] ✅ Connected — Strong imperative memory active from first THINK
+[2026-06-21T16:00:22.179Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-21T16:00:22.301Z] [INFO] 📥 MUD: ����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-21T16:00:22.306Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-21T16:00:22.311Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-21T16:00:22.315Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-21T16:00:22.319Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-21T16:00:22.323Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-21T16:00:22.329Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-21T16:00:22.333Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-21T16:00:22.337Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-21T16:00:22.342Z] [INFO] 📥 MUD:            110 adventurers are currently in the realms.
+[2026-06-21T16:00:22.347Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-21T16:00:22.352Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-21T16:00:22.356Z] [INFO] 📥 MUD:            [32m3.[37m Quit.

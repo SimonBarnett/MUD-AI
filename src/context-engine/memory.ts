@@ -1,4 +1,6 @@
-// src/context-engine/memory.ts - Vector Embeddings + Goal-Aware Memory
+// src/context-engine/memory.ts - v0.6.30-clean-schema
+// Vector Embeddings + Semantic Search + STRONG ANTI-DUPLICATION
+// Compatible with clean grok_mud_memories schema (id, content, embedding, created_at, updated_at, entities, importance, memory_type)
 import ws from 'ws';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
@@ -11,7 +13,6 @@ function getSupabase(): SupabaseClient {
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env file');
     }
-
     supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -35,6 +36,7 @@ function getOpenAI(): OpenAI {
   return openai;
 }
 
+// ==================== Types ====================
 export interface Memory {
   id?: string;
   content: string;
@@ -43,143 +45,179 @@ export interface Memory {
   embedding?: number[];
   created_at?: string;
   updated_at?: string;
+  memory_type?: 'fact' | 'goal';
+}
+
+// ==================== Helpers ====================
+
+/**
+ * Normalize text for better duplicate detection.
+ * This prevents REACT from creating near-identical memories with slight rewording.
+ */
+function normalizeForComparison(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 async function generateEmbedding(text: string): Promise<number[]> {
   const openaiClient = getOpenAI();
   const response = await openaiClient.embeddings.create({
-    model: "text-embedding-3-small",
-    input: text.replace(/\n/g, " "),
-    encoding_format: "float",
+    model: 'text-embedding-3-small',
+    input: text,
+    dimensions: 1536,
   });
   return response.data[0].embedding;
 }
 
+// ==================== Core Memory Functions ====================
+
 /**
- * Normal memory insert (with auto-embedding)
+ * SMART MEMORIZE — Facts with strong anti-duplication + Goals
+ *
+ * - Normalizes text before vector comparison
+ * - Uses 0.82 similarity threshold for facts
+ * - Near-duplicates → boost importance instead of inserting again
+ * - Goals are never deduplicated (they are unique active motivations)
  */
-export async function storeMemory(
+export async function smartMemorize(
   content: string,
-  importance: number = 0.8,
-  entities: string[] = [],
-  embedding?: number[],
-  timestamp?: string
+  importance: number = 0.7,
+  memoryType: 'fact' | 'goal' = 'fact'
 ): Promise<void> {
   const supabaseClient = getSupabase();
-  let finalEmbedding = embedding;
-
-  if (!finalEmbedding) {
-    try {
-      finalEmbedding = await generateEmbedding(content);
-    } catch {
-      finalEmbedding = undefined;
-    }
-  }
-
-  const { error } = await supabaseClient.from('grok_mud_memories').insert({
-    content,
-    importance,
-    entities,
-    embedding: finalEmbedding,
-    created_at: timestamp || new Date().toISOString(),
-  });
-
-  if (error) throw error;
-}
-
-/**
- * Smart memory storage with deduplication + importance boosting.
- * Use this for normal observations.
- */
-export async function smartMemorize(content: string, baseImportance: number = 0.7): Promise<void> {
-  const supabaseClient = getSupabase();
+  const normalized = normalizeForComparison(content);
 
   try {
-    const embedding = await generateEmbedding(content);
-
-    const { data: similar } = await supabaseClient.rpc('match_memories', {
-      query_embedding: embedding,
-      match_threshold: 0.87,
-      match_count: 3,
-    });
-
-    if (similar && similar.length > 0) {
-      const existing = similar[0];
-      const newImportance = Math.min((existing.importance || 0.7) + 0.07, 0.98);
-
-      await supabaseClient
-        .from('grok_mud_memories')
-        .update({ importance: newImportance, updated_at: new Date().toISOString() })
-        .eq('id', existing.id);
-
+    // === GOAL PATH (never deduplicate) ===
+    if (memoryType === 'goal') {
+      const embedding = await generateEmbedding(content);
+      const { error } = await supabaseClient.from('grok_mud_memories').insert({
+        content,
+        importance: Math.max(importance, 0.9),
+        embedding,
+        memory_type: 'goal',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+      if (error) console.error('Failed to store goal:', error);
       return;
     }
 
-    await storeMemory(content, baseImportance, [], embedding);
+    // === FACT PATH (with deduplication) ===
+    const queryEmbedding = await generateEmbedding(content);
+
+    const { data: similar, error: searchError } = await supabaseClient.rpc('match_memories', {
+      query_embedding: queryEmbedding,
+      match_threshold: 0.82,
+      match_count: 5,
+    });
+
+    if (searchError) {
+      console.error('Vector search failed in smartMemorize:', searchError);
+    }
+
+    if (similar && similar.length > 0) {
+      for (const mem of similar) {
+        const existingNormalized = normalizeForComparison(mem.content);
+        const isVerySimilar =
+          existingNormalized === normalized ||
+          (mem.similarity && mem.similarity > 0.82);
+
+        if (isVerySimilar) {
+          const newImportance = Math.min((mem.importance || 0.5) + 0.15, 1.0);
+          await supabaseClient
+            .from('grok_mud_memories')
+            .update({
+              importance: newImportance,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', mem.id);
+
+          console.log(`[smartMemorize] Boosted importance of near-duplicate (id=${mem.id})`);
+          return;
+        }
+      }
+    }
+
+    // No duplicate found → insert new memory
+    const embedding = await generateEmbedding(content);
+    const { error: insertError } = await supabaseClient.from('grok_mud_memories').insert({
+      content,
+      importance,
+      embedding,
+      memory_type: 'fact',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+
+    if (insertError) console.error('Failed to insert memory:', insertError);
   } catch (err) {
     console.error('smartMemorize error:', err);
-    await storeMemory(content, baseImportance);
   }
 }
 
 /**
- * Store a GOAL / QUEST type memory.
- * These are treated as current motivations and should be cleaned up when completed.
+ * Store a high-priority goal (login, creation, quest, etc.)
+ * Goals are never auto-deduplicated.
  */
-export async function storeGoal(content: string, importance: number = 0.95): Promise<void> {
-  // Prefix so we can easily identify goals later
-  const goalContent = `[GOAL] ${content}`;
-  await storeMemory(goalContent, importance, ['goal']);
+export async function storeGoal(goalContent: string): Promise<void> {
+  const prefixed = goalContent.startsWith('[GOAL]') ? goalContent : `[GOAL] ${goalContent}`;
+  await smartMemorize(prefixed, 0.95, 'goal');
 }
 
 /**
- * Clear a completed goal from memory.
- * Call this once the agent has successfully achieved the goal (e.g. logged in).
+ * Clear a completed goal so it stops influencing future THINK cycles.
  */
 export async function clearCompletedGoal(goalDescription: string): Promise<void> {
   const supabaseClient = getSupabase();
-
-  // Try to find and delete goal memories that match the description
-  const { data, error } = await supabaseClient
+  const { error } = await supabaseClient
     .from('grok_mud_memories')
-    .select('id, content')
+    .delete()
     .ilike('content', `%${goalDescription}%`)
-    .limit(5);
+    .eq('memory_type', 'goal');
 
-  if (error || !data) return;
-
-  for (const mem of data) {
-    if (mem.content.startsWith('[GOAL]')) {
-      await supabaseClient.from('grok_mud_memories').delete().eq('id', mem.id);
-    }
+  if (error) {
+    console.error('Failed to clear goal:', error);
+  } else {
+    console.log(`[memory] Cleared completed goal containing: ${goalDescription}`);
   }
 }
 
-/**
- * Update an existing memory by ID
- */
-export async function updateMemory(id: string, updates: Partial<Memory>): Promise<void> {
+// ==================== Legacy + Utility Functions ====================
+
+export async function storeMemory(content: string, importance: number = 0.7) {
+  await smartMemorize(content, importance, 'fact');
+}
+
+export async function updateMemory(id: string, updates: Partial<Memory>) {
   const supabaseClient = getSupabase();
   const { error } = await supabaseClient
     .from('grok_mud_memories')
     .update({ ...updates, updated_at: new Date().toISOString() })
     .eq('id', id);
-
-  if (error) throw error;
+  if (error) console.error('Failed to update memory:', error);
 }
 
-export async function deleteMemory(id: string): Promise<void> {
+export async function deleteMemory(id: string) {
   const supabaseClient = getSupabase();
-  await supabaseClient.from('grok_mud_memories').delete().eq('id', id);
+  const { error } = await supabaseClient.from('grok_mud_memories').delete().eq('id', id);
+  if (error) console.error('Failed to delete memory:', error);
 }
 
 export async function getMemoryById(id: string): Promise<Memory | null> {
   const supabaseClient = getSupabase();
-  const { data, error } = await supabaseClient.from('grok_mud_memories').select('*').eq('id', id).single();
+  const { data, error } = await supabaseClient
+    .from('grok_mud_memories')
+    .select('*')
+    .eq('id', id)
+    .single();
   return error ? null : (data as Memory);
 }
 
-export async function getRecentMemories(limit: number = 10): Promise<Memory[]> {
+export async function getRecentMemories(limit: number = 15): Promise<Memory[]> {
   const supabaseClient = getSupabase();
   const { data, error } = await supabaseClient
     .from('grok_mud_memories')
@@ -189,11 +227,16 @@ export async function getRecentMemories(limit: number = 10): Promise<Memory[]> {
   return error ? [] : ((data as Memory[]) || []);
 }
 
-export async function searchSimilarMemories(query: string, limit: number = 10, threshold = 0.72): Promise<Memory[]> {
+export async function searchSimilarMemories(
+  query: string,
+  limit: number = 10,
+  threshold: number = 0.72
+): Promise<Memory[]> {
+  const supabaseClient = getSupabase();
   try {
-    const embedding = await generateEmbedding(query);
+    const queryEmbedding = await generateEmbedding(query);
     const { data, error } = await supabaseClient.rpc('match_memories', {
-      query_embedding: embedding,
+      query_embedding: queryEmbedding,
       match_threshold: threshold,
       match_count: limit,
     });
@@ -218,10 +261,10 @@ export async function searchMemories(query: string, limit: number = 10): Promise
 }
 
 export default {
-  storeMemory,
   smartMemorize,
   storeGoal,
   clearCompletedGoal,
+  storeMemory,
   updateMemory,
   deleteMemory,
   getMemoryById,

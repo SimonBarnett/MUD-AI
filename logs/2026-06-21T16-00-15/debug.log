@@ -1,0 +1,5 @@
+=== MUD-AI SESSION STARTED: 2026-06-21T16:00:15.009Z ===
+[2026-06-21T16:00:21.047Z] [INFO] Stored goal: I'm creating a char, with username frostCrown and password MySecretPassword. On the main menu I must choose option 2. When asked for password and confirm password, send the exact same value. After success, output exactly: SAVE_USERNAME:frostCrown
+[2026-06-21T16:00:21.053Z] [INFO] Creation mode active — temporary name: frostCrown
+[2026-06-21T16:00:22.075Z] [INFO] Loaded 3 persistent memories
+[2026-06-21T16:00:22.084Z] [INFO] Connected to MUD — Strong imperative memory active
