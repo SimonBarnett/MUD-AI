@@ -1,4 +1,4 @@
-// src/agent/agent.ts - v0.6.23-menu-navigation-fix
+// src/agent/agent.ts - v0.6.25-debug-logging
 import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs';
@@ -14,6 +14,23 @@ const getLogDir = (): string => {
   if (!fs.existsSync(fallback)) fs.mkdirSync(fallback, { recursive: true });
   return fallback;
 };
+
+const DEBUG_LOG_PATH = path.join(getLogDir(), 'debug.log');
+
+function logDebug(message: string, level: 'INFO' | 'ERROR' | 'DEBUG' = 'INFO') {
+  const timestamp = new Date().toISOString();
+  const line = `[${timestamp}] [${level}] ${message}\n`;
+
+  try {
+    fs.appendFileSync(DEBUG_LOG_PATH, line);
+  } catch (e) {
+    console.error('Failed to write to debug.log from agent:', e);
+  }
+
+  if (level === 'ERROR') {
+    log.error(message);
+  }
+}
 
 const aiLogPath = path.join(getLogDir(), 'ai-calls.log');
 
@@ -47,7 +64,7 @@ export class MUDAgent {
   async react(input: string, ctx: any) {
     const ultraShort = ctx.ultraShort || ctx.ultraShortMemories || [];
 
-    const system = `REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.23)
+    const system = `REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.25)
 
 You receive recent game output:
 ${input}
@@ -82,7 +99,7 @@ Respond with valid JSON only:
       logAICall('REACT', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
-      log.error('React error:', e.message);
+      logDebug(`React error: ${e.message}`, 'ERROR');
       return this.getEmptyReactResponse();
     }
   }
@@ -102,7 +119,7 @@ Respond with valid JSON only:
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
 
-    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + MENU NAVIGATION + TEMP NAME RULES (v0.6.23)
+    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + MENU vs NAME PROMPT RULES (v0.6.25)
 
 You are controlling a character in Achaea.
 
@@ -122,20 +139,23 @@ PATH B — Set "shouldReflect": true
 
 FORBIDDEN: Returning neither or both.
 
-MAIN MENU NAVIGATION RULES (MANDATORY):
-- When you see the main menu with these options:
-  1. Enter the game
-  2. Create a new character
-  3. Quit
-  → Login Mode (you have a saved character) → You MUST send "1" first.
-  → Creation Mode (no saved character) → You MUST send "2" first.
-- Never send the username or temporary name directly from the main menu.
-- Only send the character name when the game explicitly prompts for it (e.g. "Enter an option or enter your character's name").
+=== CRITICAL STATE DISTINCTION ===
+
+1. MAIN MENU STATE
+   - You see: "1. Enter the game", "2. Create a new character", "3. Quit"
+   - Login Mode → send "1"
+   - Creation Mode → send "2"
+
+2. NAME PROMPT STATE (VERY IMPORTANT)
+   - You see: "Enter an option or enter your character's name."
+   - This is **NOT** the main menu anymore.
+   - In Login Mode: You MUST now send your character name.
+   - Do NOT send "1" or "2" here.
 
 TEMP NAME + PASSWORD RULES (MANDATORY):
-- If persistent memory says you are using a temporary name (e.g. "I am using the temporary name XXX"), you MUST use exactly that name during creation.
+- If persistent memory says you are using a temporary name, use exactly that name during creation.
 - Never send your Windows login name.
-- When the game asks for password and then "confirm your password", you MUST send the exact same value from MUD_PASSWORD both times.
+- When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
 
 After successful character creation, output exactly: SAVE_USERNAME:YourTempName
 
@@ -155,7 +175,7 @@ Output ONLY valid JSON.`;
       logAICall('THINK', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
-      log.error('Think error:', e.message);
+      logDebug(`Think error: ${e.message}`, 'ERROR');
       return this.getSafeDefaultThinkResult();
     }
   }
@@ -234,7 +254,7 @@ Return ONLY a valid JSON array of 4-7 useful memory queries.`;
       logAICall('REFLECT', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
-      log.error('Reflect error:', e.message);
+      logDebug(`Reflect error: ${e.message}`, 'ERROR');
       return ["What is my current situation?", "What should I do next?"];
     }
   }
@@ -244,33 +264,27 @@ Return ONLY a valid JSON array of 4-7 useful memory queries.`;
       .map((m, i) => `${i + 1}. ${m.content || m}`)
       .join('\n');
 
-    const system = `DECIDE MODE — FINAL ACTION + MENU NAVIGATION (v0.6.23)
+    const system = `DECIDE MODE — FINAL ACTION (v0.6.25)
 
 Fresh memories from Reflect:
 ${memoriesText || 'No useful memories retrieved'}
 
-You are playing Achaea and are on the main menu or in character creation.
+You are playing Achaea.
 
 MANDATORY RULES:
-1. You MUST return a command. Never return null or an empty command.
-2. MAIN MENU NAVIGATION:
-   - If you see options "1. Enter the game", "2. Create a new character", "3. Quit":
-     → Login Mode → send "1"
-     → Creation Mode → send "2"
-   - Never send the username or temp name directly from the main menu.
-3. If persistent memory contains a temporary name, you MUST use exactly that name during creation.
-4. Never send your Windows login name during creation.
-5. When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
-6. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
+1. You MUST return a command. Never return null.
+2. If you see "Enter an option or enter your character's name.", send the character name.
+3. If you see the main menu with options 1/2/3, follow menu rules.
+4. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
 
-Return a valid JSON object containing a "command" field.`;
+Return a valid JSON object with a "command" field.`;
 
     try {
       const res = await xai.chat.completions.create({
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.12,
-        max_tokens: 320
+        max_tokens: 280
       });
 
       let content = res.choices[0]?.message?.content || '';
@@ -280,12 +294,7 @@ Return a valid JSON object containing a "command" field.`;
         parsed = JSON.parse(content);
       } catch {
         const match = content.match(/"command"\s*:\s*"([^"]+)"/);
-        if (match) {
-          parsed = { command: match[1] };
-        } else {
-          const trimmed = content.trim().replace(/^"|"$/g, '');
-          parsed = trimmed ? { command: trimmed } : null;
-        }
+        parsed = match ? { command: match[1] } : null;
       }
 
       if (typeof parsed === 'string' || typeof parsed === 'number') {
@@ -299,7 +308,7 @@ Return a valid JSON object containing a "command" field.`;
       logAICall('DECIDE', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
-      log.error('Decide error:', e.message);
+      logDebug(`Decide error: ${e.message}`, 'ERROR');
       return { command: null };
     }
   }
@@ -312,7 +321,7 @@ Return a valid JSON object containing a "command" field.`;
       const flat = results.flat();
       return Array.from(new Map(flat.map(m => [m.id, m])).values()).slice(0, 25);
     } catch (e: any) {
-      log.error('queryMemories error:', e.message);
+      logDebug(`queryMemories error: ${e.message}`, 'ERROR');
       return [];
     }
   }

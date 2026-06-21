@@ -33,10 +33,33 @@ fs.mkdirSync(CURRENT_RUN_LOG_DIR, { recursive: true });
 
 process.env.CURRENT_RUN_LOG_DIR = CURRENT_RUN_LOG_DIR;
 
+// ==================== DEDICATED DEBUG LOG FILE ====================
+const DEBUG_LOG_PATH = path.join(CURRENT_RUN_LOG_DIR, 'debug.log');
+
+function logDebug(message: string, level: 'INFO' | 'ERROR' | 'DEBUG' = 'INFO') {
+  const timestamp = new Date().toISOString();
+  const line = `[${timestamp}] [${level}] ${message}\n`;
+
+  try {
+    fs.appendFileSync(DEBUG_LOG_PATH, line);
+  } catch (e) {
+    console.error('Failed to write to debug.log:', e);
+  }
+
+  if (level === 'ERROR') {
+    log.error(message);
+  } else if (debugMode) {
+    console.log(`[DEBUG] ${message}`);
+  }
+}
+
+// Log session start to debug file
+fs.writeFileSync(DEBUG_LOG_PATH, `=== MUD-AI SESSION STARTED: ${new Date().toISOString()} ===\n`);
+
 console.clear();
 banner();
 log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
-log.success('🚀 MUD-AI v0.6.22-creation-fix — 4-Stage Thinking System + STRICT React→Think + RELIABLE memory hand-off + Cool Temp Name + SAVE_USERNAME Handling');
+log.success('🚀 MUD-AI v0.6.25-debug-logging — 4-Stage Thinking System + STRICT React→Think + Dedicated Debug Log');
 
 // ==================== STRICT REACT-BEFORE-THINK SEQUENCING STATE ====================
 let hasReactedSinceLastThink = false;
@@ -110,8 +133,10 @@ function saveUsernameToEnv(username: string) {
     process.env.MUD_CHARACTER = username;
 
     log.success(`💾 Character saved to .env → MUD_CHARACTER=${username}`);
+    logDebug(`Character saved to .env → MUD_CHARACTER=${username}`);
   } catch (e: any) {
     log.error('Failed to save character to .env:', e.message);
+    logDebug(`Failed to save character to .env: ${e.message}`, 'ERROR');
   }
 }
 
@@ -131,8 +156,10 @@ async function loadPersistentMemories() {
       ];
     }
     log.success(`📦 Loaded ${persistentMemories.length} persistent memories`);
+    logDebug(`Loaded ${persistentMemories.length} persistent memories`);
   } catch (e: any) {
     log.error('Failed to load persistent memories:', e.message);
+    logDebug(`Failed to load persistent memories: ${e.message}`, 'ERROR');
     persistentMemories = [
       "I am a player in Achaea",
       "Primary goal: Survive, explore, and complete my current quest"
@@ -145,6 +172,7 @@ async function memorize(text: string, importance: number = 0.75) {
     await storeMemory(text, importance, []);
   } catch (e: any) {
     log.error('Failed to store memory:', e.message);
+    logDebug(`Failed to store memory: ${e.message}`, 'ERROR');
   }
 }
 
@@ -160,12 +188,15 @@ async function start() {
   if (mudCharacter) {
     const imperative = 
       `I'm logging on with username ${mudCharacter} and password ${actualPassword}. ` +
-      `When I see the main menu or login prompt, I must send my character name first, then the password.`;
+      `When I see the main menu, send "1". ` +
+      `When I see "Enter an option or enter your character's name.", send my username. ` +
+      `Then send the password.`;
 
     await memorize(imperative, 0.98);
     persistentMemories.unshift(imperative);
 
     log.success(`🔐 Login mode active for character: ${mudCharacter}`);
+    logDebug(`Login mode active for character: ${mudCharacter}`);
   } else {
     const tempName = generateCoolTempName();
 
@@ -179,6 +210,7 @@ async function start() {
     persistentMemories.unshift(imperative);
 
     log.info(`🆕 Creation mode active — temporary name: ${tempName}`);
+    logDebug(`Creation mode active — temporary name: ${tempName}`);
   }
 
   await memorize("System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.", 0.9);
@@ -186,6 +218,7 @@ async function start() {
   loggedIn = true;
   mud.connect();
   log.success('✅ Connected — Strong imperative memory active from first THINK');
+  logDebug('Connected to MUD — Strong imperative memory active');
 }
 
 // ==================== GAME DATA HANDLER ====================
@@ -213,22 +246,26 @@ setInterval(async () => {
   reactBuffer = '';
   lastReactTime = Date.now();
 
-  const result = await agent.react(inputForReact, { ultraShort: ultraShortMemories });
+  try {
+    const result = await agent.react(inputForReact, { ultraShort: ultraShortMemories });
 
-  if (result.observations && result.observations.length > 0) {
-    lastFreshObservations = [...result.observations];
-  } else {
-    lastFreshObservations = [];
-  }
-
-  if (result.immediateAction) {
-    mud.sendCommand(result.immediateAction);
-  } else if (result.observations && result.observations.length > 0) {
-    for (const obs of result.observations) {
-      await memorize(obs, 0.7);
-      recentMemories.push(obs);
-      ultraShortMemories.push(obs);
+    if (result.observations && result.observations.length > 0) {
+      lastFreshObservations = [...result.observations];
+    } else {
+      lastFreshObservations = [];
     }
+
+    if (result.immediateAction) {
+      mud.sendCommand(result.immediateAction);
+    } else if (result.observations && result.observations.length > 0) {
+      for (const obs of result.observations) {
+        await memorize(obs, 0.7);
+        recentMemories.push(obs);
+        ultraShortMemories.push(obs);
+      }
+    }
+  } catch (e: any) {
+    logDebug(`React error: ${e.message}`, 'ERROR');
   }
 
   lastReactProcessed = Date.now();
@@ -264,65 +301,74 @@ setInterval(async () => {
   const combinedRecent = [...recentMemories, ...lastFreshObservations];
   lastFreshObservations = [];
 
-  const result = await agent.think("", { recent: combinedRecent, persistent: persistentMemories });
+  try {
+    const result = await agent.think("", { recent: combinedRecent, persistent: persistentMemories });
 
-  // === SAFETY NET: Catch SAVE_USERNAME even if it comes directly from THINK ===
-  if (result.action && typeof result.action === 'string' && result.action.startsWith('SAVE_USERNAME:')) {
-    const newUsername = result.action.split(':')[1]?.trim();
-    if (newUsername) {
-      saveUsernameToEnv(newUsername);
-      await memorize(`New character created successfully. My name is now ${newUsername}.`, 0.95);
-      log.success(`🎉 Character creation complete! Saved as MUD_CHARACTER=${newUsername}`);
+    if (result.action && typeof result.action === 'string' && result.action.startsWith('SAVE_USERNAME:')) {
+      const newUsername = result.action.split(':')[1]?.trim();
+      if (newUsername) {
+        saveUsernameToEnv(newUsername);
+        await memorize(`New character created successfully. My name is now ${newUsername}.`, 0.95);
+        log.success(`🎉 Character creation complete! Saved as MUD_CHARACTER=${newUsername}`);
+        logDebug(`Character creation complete! Saved as MUD_CHARACTER=${newUsername}`);
+      }
+      pruneOldMemories();
+      return;
     }
-    pruneOldMemories();
-    return;
-  }
 
-  const isStuckInLoginLoop = typeof (agent as any).isStuckInLoginLoop === 'function'
-    ? (agent as any).isStuckInLoginLoop()
-    : false;
+    const isStuckInLoginLoop = typeof (agent as any).isStuckInLoginLoop === 'function'
+      ? (agent as any).isStuckInLoginLoop()
+      : false;
 
-  if (isStuckInLoginLoop && result.action) {
-    if (debugMode) {
-      log.info('🛡️ Login loop detected — forcing reflection instead of repeating failed action');
-    }
-    await doReflectAndDecide();
-  } 
-  else if (isCreationMode && result.current_state === "main_menu") {
-    if (result.action) {
+    if (isStuckInLoginLoop && result.action) {
+      if (debugMode) {
+        log.info('🛡️ Login loop detected — forcing reflection instead of repeating failed action');
+      }
+      await doReflectAndDecide();
+    } 
+    else if (isCreationMode && result.current_state === "main_menu") {
+      if (result.action) {
+        mud.sendCommand(result.action);
+      } else {
+        await doReflectAndDecide();
+      }
+    } 
+    else if (result.action && result.current_state !== "main_menu") {
       mud.sendCommand(result.action);
-    } else {
+    } 
+    else if (result.shouldReflect && result.current_state !== "main_menu") {
       await doReflectAndDecide();
     }
-  } 
-  else if (result.action && result.current_state !== "main_menu") {
-    mud.sendCommand(result.action);
-  } 
-  else if (result.shouldReflect && result.current_state !== "main_menu") {
-    await doReflectAndDecide();
+  } catch (e: any) {
+    logDebug(`Think error: ${e.message}`, 'ERROR');
   }
 
   pruneOldMemories();
 }, 300);
 
 async function doReflectAndDecide() {
-  const queries = await agent.reflect({ recent: recentMemories, persistent: persistentMemories });
-  const retrieved = await agent.queryMemories(queries);
-  const decision = await agent.decide(retrieved);
+  try {
+    const queries = await agent.reflect({ recent: recentMemories, persistent: persistentMemories });
+    const retrieved = await agent.queryMemories(queries);
+    const decision = await agent.decide(retrieved);
 
-  if (!decision.command || !loggedIn) return;
+    if (!decision.command || !loggedIn) return;
 
-  if (decision.command.startsWith('SAVE_USERNAME:')) {
-    const newUsername = decision.command.split(':')[1]?.trim();
-    if (newUsername) {
-      saveUsernameToEnv(newUsername);
-      await memorize(`New character created successfully. My name is now ${newUsername}.`, 0.95);
-      log.success(`🎉 Character creation complete! Saved as MUD_CHARACTER=${newUsername}`);
+    if (decision.command.startsWith('SAVE_USERNAME:')) {
+      const newUsername = decision.command.split(':')[1]?.trim();
+      if (newUsername) {
+        saveUsernameToEnv(newUsername);
+        await memorize(`New character created successfully. My name is now ${newUsername}.`, 0.95);
+        log.success(`🎉 Character creation complete! Saved as MUD_CHARACTER=${newUsername}`);
+        logDebug(`Character creation complete! Saved as MUD_CHARACTER=${newUsername}`);
+      }
+      return;
     }
-    return;
-  }
 
-  mud.sendCommand(decision.command);
+    mud.sendCommand(decision.command);
+  } catch (e: any) {
+    logDebug(`Reflect/Decide error: ${e.message}`, 'ERROR');
+  }
 }
 
 function pruneOldMemories() {
@@ -334,7 +380,7 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.22-creation-fix — COMMANDS                ║
+║                      MUD-AI v0.6.25-debug-logging — COMMANDS               ║
 ╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
 ║  !rules        Show current rules                                          ║
@@ -357,9 +403,10 @@ function showRules() {
 ══════════════════════════════════════════════════════════════════════════════
 REACT() → THINK() → REFLECT() → DECIDE()
 ══════════════════════════════════════════════════════════════════════════════
+• Dedicated debug.log created in each run folder
+• Errors are logged to debug.log with timestamps
 • Uses MUD_CHARACTER from .env (blank = Creation Mode)
 • Actual password value is embedded in the startup imperative
-• SAVE_USERNAME: is now properly intercepted even from direct THINK actions
 `);
 }
 
@@ -417,6 +464,7 @@ rl.on('line', async (input: string) => {
   } else if (c === '!auto' || c === '!autopilot') {
     autoMode = !autoMode;
     log.success(`Autopilot ${autoMode ? '✅ ENABLED' : '❌ DISABLED'}`);
+    logDebug(`Autopilot toggled: ${autoMode ? 'ENABLED' : 'DISABLED'}`);
   } else if (c === '!status' || c === '!st') {
     showStatus();
   } else if (c === '!memory' || c === '!mem') {
@@ -426,6 +474,7 @@ rl.on('line', async (input: string) => {
     if (text) {
       await memorize(text, 0.9);
       log.success(`💾 Manually memorized: ${text}`);
+      logDebug(`Manually memorized: ${text}`);
     } else {
       log.info('Usage: !memorize <text>');
     }
@@ -437,10 +486,12 @@ rl.on('line', async (input: string) => {
   } else if (c === '!debug') {
     debugMode = !debugMode;
     log.success(`Debug mode ${debugMode ? '✅ ON' : '❌ OFF'}`);
+    logDebug(`Debug mode toggled: ${debugMode ? 'ON' : 'OFF'}`);
   } else if (c === '!cls' || c === '!clear') {
     console.clear();
   } else if (c === '!quit' || c === '!exit') {
     log.success('👋 Shutting down MUD-AI...');
+    logDebug('Session ended by user');
     rl.close();
     process.exit(0);
   } else {
@@ -460,5 +511,5 @@ rl.on('close', () => {
 
 // ==================== BOOT ====================
 showHelp();
-log.success('Type !help or !connect — SAVE_USERNAME: is now properly intercepted');
+log.success('Type !help or !connect — Dedicated debug.log now active in run folder');
 rl.prompt();
