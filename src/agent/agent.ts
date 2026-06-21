@@ -1,4 +1,4 @@
-// src/agent/agent.ts - v0.6.6 — React → Think → Reflect → Decide + Login/Creation Support
+// src/agent/agent.ts - v0.6.7 — React → Think → Reflect → Decide + Automatic Character Creation
 import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs';
@@ -76,12 +76,12 @@ Respond with valid JSON only.`;
     }
   }
 
-  // ==================== THINK (Strong Menu Safety) ====================
+  // ==================== THINK (Now supports Automatic Character Creation) ====================
   async think(buffer: string, ctx: any) {
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
 
-    const system = `THINK MODE — MENU SAFETY MODE
+    const system = `THINK MODE — MENU + CREATION AWARENESS
 
 You are controlling a character in Achaea.
 
@@ -94,12 +94,19 @@ ${recent.length ? recent.join('\n') : 'none'}
 Persistent memories:
 ${persistent.length ? persistent.join('\n') : 'none'}
 
-CRITICAL RULES (very important):
-- If the buffer shows the main menu with options "1. Enter the game", "2. Create a new character", "3. Quit", this is the LOGIN / MAIN MENU.
-- On the MAIN MENU you should almost always do NOTHING.
-- Prefer setting "shouldReflect": false when on the main menu.
-- Only set "shouldReflect": true if something clearly changed or there is new important information.
-- Do NOT output random menu numbers (1, 2, or 3).
+CRITICAL RULES:
+
+1. If the buffer shows the main menu ("1. Enter the game", "2. Create a new character", "3. Quit"), this is the MAIN MENU.
+
+2. **Character Creation Mode**:
+   - If persistent memories clearly state that you have no character and must create one, you should be MORE WILLING to take action.
+   - In this case, it is acceptable to set "shouldReflect": true even on the main menu so you can decide to create a character (usually option 2).
+
+3. Normal behavior (when you already have a character):
+   - On the main menu you should usually do nothing.
+   - Prefer "shouldReflect": false unless something important changed.
+
+4. Never randomly output menu numbers unless you have a clear reason from memory.
 
 Output valid JSON:
 {
@@ -113,8 +120,8 @@ Output valid JSON:
       const res = await xai.chat.completions.create({
         model: "grok-4",
         messages: [{ role: "system", content: system }],
-        temperature: 0.15,
-        max_tokens: 480
+        temperature: 0.18,
+        max_tokens: 500
       });
 
       const parsed = JSON.parse(res.choices[0]?.message?.content || '{}');
