@@ -31,13 +31,12 @@ const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
 const CURRENT_RUN_LOG_DIR = path.join(logsRoot, timestamp);
 fs.mkdirSync(CURRENT_RUN_LOG_DIR, { recursive: true });
 
-// Make the current run log directory available to the agent
 process.env.CURRENT_RUN_LOG_DIR = CURRENT_RUN_LOG_DIR;
 
 console.clear();
 banner();
 log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
-log.success('🚀 MUD-AI v0.6.11-login-creation — 4-Stage Thinking System + STRICT React→Think + RELIABLE memory hand-off + Cool Temp Name Creation');
+log.success('🚀 MUD-AI v0.6.21-buffer-fix — 4-Stage Thinking System + STRICT React→Think + RELIABLE memory hand-off + Cool Temp Name Creation + Login Failure Recovery');
 
 // ==================== STRICT REACT-BEFORE-THINK SEQUENCING STATE ====================
 let hasReactedSinceLastThink = false;
@@ -54,7 +53,6 @@ let autoMode = true;
 let loggedIn = false;
 let debugMode = false;
 
-let fullBuffer = '';
 let reactBuffer = '';
 let lastReactTime = Date.now();
 let lastActivity = Date.now();
@@ -81,7 +79,6 @@ function generateCoolTempName(): string {
   const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
   const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
 
-  // Occasionally add a cool compound feel
   if (Math.random() > 0.6) {
     return prefix + suffix;
   } else {
@@ -97,7 +94,7 @@ function stripAnsi(str: string): string {
   );
 }
 
-// ==================== USERNAME PERSISTENCE ====================
+// ==================== USERNAME PERSISTENCE (now uses MUD_CHARACTER) ====================
 function saveUsernameToEnv(username: string) {
   const envPath = path.join(process.cwd(), '.env');
 
@@ -106,15 +103,15 @@ function saveUsernameToEnv(username: string) {
       ? fs.readFileSync(envPath, 'utf8')
       : '';
 
-    envContent = envContent.replace(/^USERNAME=.*$/m, '').trim();
-    envContent += `\nUSERNAME=${username}\n`;
+    envContent = envContent.replace(/^MUD_CHARACTER=.*$/m, '').trim();
+    envContent += `\nMUD_CHARACTER=${username}\n`;
 
     fs.writeFileSync(envPath, envContent);
-    process.env.USERNAME = username;
+    process.env.MUD_CHARACTER = username;
 
-    log.success(`💾 Username saved to .env → USERNAME=${username}`);
+    log.success(`💾 Character saved to .env → MUD_CHARACTER=${username}`);
   } catch (e: any) {
-    log.error('Failed to save username to .env:', e.message);
+    log.error('Failed to save character to .env:', e.message);
   }
 }
 
@@ -151,42 +148,47 @@ async function memorize(text: string, importance: number = 0.75) {
   }
 }
 
-// ==================== START / CONNECT (UPDATED WITH NEW LOGIC) ====================
+// ==================== START / CONNECT ====================
 async function start() {
-  const envUsername = process.env.USERNAME;
-  isCreationMode = !envUsername;
+  const mudCharacter = process.env.MUD_CHARACTER?.trim();
+  const actualPassword = process.env.MUD_PASSWORD || '';
 
-  if (envUsername) {
+  isCreationMode = !mudCharacter;
+
+  // Clear so the new imperative is dominant from the very first THINK
+  persistentMemories = [];
+
+  if (mudCharacter) {
     // ==================== LOGIN MODE ====================
-    await memorize(
-      `My character name is "${envUsername}". ` +
-      `The password is stored in MUD_PASSWORD. ` +
-      `When I see the login prompt or main menu, I must send my character name first, then the password.`,
-      0.95
-    );
-    log.success(`🔐 Login mode active for character: ${envUsername}`);
+    const imperative = 
+      `I'm logging on with username ${mudCharacter} and password ${actualPassword}. ` +
+      `When I see the main menu or login prompt, I must send my character name first, then the password.`;
+
+    await memorize(imperative, 0.98);
+    persistentMemories.unshift(imperative);
+
+    log.success(`🔐 Login mode active for character: ${mudCharacter}`);
   } else {
     // ==================== CREATION MODE ====================
     const tempName = generateCoolTempName();
 
-    await memorize(
-      `I am using the temporary name "${tempName}". ` +
-      `The password is stored in MUD_PASSWORD. ` +
-      `My primary mission is to create a new character. ` +
-      `On the main menu I should choose option 2 (Create a new character). ` +
-      `After I successfully create the character, I must output exactly: SAVE_USERNAME:${tempName}`,
-      0.96
-    );
+    const imperative = 
+      `I'm creating a char, with username ${tempName} and password ${actualPassword}. ` +
+      `On the main menu I must choose option 2 (Create a new character). ` +
+      `When asked for password and confirm password, send the exact same value. ` +
+      `After I successfully create the character, I must output exactly: SAVE_USERNAME:${tempName}`;
+
+    await memorize(imperative, 0.99);
+    persistentMemories.unshift(imperative);
 
     log.info(`🆕 Creation mode active — temporary name generated: ${tempName}`);
-    log.info('Agent will attempt to create a new character and then save the name to .env');
   }
 
   await memorize("System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.", 0.9);
   await loadPersistentMemories();
   loggedIn = true;
   mud.connect();
-  log.success('✅ Connected — 4-stage autopilot active (React→Think + Login/Creation modes)');
+  log.success('✅ Connected — Strong imperative memory active from first THINK');
 }
 
 // ==================== GAME DATA HANDLER ====================
@@ -200,7 +202,6 @@ mud.on('data', (data: string) => {
     const t = line.trim();
     if (t) {
       reactBuffer += line + '\n';
-      fullBuffer += line + '\n';
     }
   });
 });
@@ -252,7 +253,7 @@ function enforceReactBeforeThink(): boolean {
   return true;
 }
 
-// ==================== THINK ====================
+// ==================== THINK (ONLY RECEIVES MEMORIES — NO RAW BUFFER) ====================
 setInterval(async () => {
   if (!autoMode || !loggedIn) return;
 
@@ -263,19 +264,26 @@ setInterval(async () => {
   hasReactedSinceLastThink = false;
   lastThinkTime = Date.now();
 
-  if (Date.now() - lastActivity < 1500 || !fullBuffer.trim()) return;
-
-  const inputForThink = fullBuffer.trim();
-  fullBuffer = '';
+  if (Date.now() - lastActivity < 1500) return;
 
   const combinedRecent = [...recentMemories, ...lastFreshObservations];
   lastFreshObservations = [];
 
-  if (debugMode) log.info('🧠 Think() — fresh observations included');
+  if (debugMode) log.info('🧠 Think() — using only REACT memories (no raw buffer)');
 
-  const result = await agent.think(inputForThink, { recent: combinedRecent, persistent: persistentMemories });
+  const result = await agent.think("", { recent: combinedRecent, persistent: persistentMemories });
 
-  if (isCreationMode && result.current_state === "main_menu") {
+  const isStuckInLoginLoop = typeof (agent as any).isStuckInLoginLoop === 'function'
+    ? (agent as any).isStuckInLoginLoop()
+    : false;
+
+  if (isStuckInLoginLoop && result.action) {
+    if (debugMode) {
+      log.info('🛡️ Login loop detected — forcing reflection instead of repeating failed action');
+    }
+    await doReflectAndDecide();
+  } 
+  else if (isCreationMode && result.current_state === "main_menu") {
     if (result.action) {
       mud.sendCommand(result.action);
     } else {
@@ -320,10 +328,10 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.11-login-creation — COMMANDS              ║
+║                      MUD-AI v0.6.21-buffer-fix — COMMANDS                  ║
 ╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
-║  !rules        Show current rules (Login vs Creation modes)                ║
+║  !rules        Show current rules                                          ║
 ║  !connect      Connect to MUD                                              ║
 ║  !auto         Toggle autopilot                                            ║
 ║  !status       Show memory counts + mode + sequencing state                ║
@@ -343,17 +351,19 @@ function showRules() {
 ══════════════════════════════════════════════════════════════════════════════
 REACT() → THINK() → REFLECT() → DECIDE()
 ══════════════════════════════════════════════════════════════════════════════
-• Login vs Creation mode is decided **only** by presence of USERNAME in .env
-• Cool temporary name (no numbers) is generated automatically in creation mode
-• Always use password from MUD_PASSWORD
-• Two different core imperatives are set at boot depending on the mode
+• Uses MUD_CHARACTER from .env (blank = Creation Mode, value = Login Mode)
+• Actual MUD_PASSWORD value is now embedded in the startup imperative memory
+• THINK receives only REACT memories (no raw buffer)
 `);
 }
 
 function showStatus() {
-  console.log(`\n[STATUS] Auto=${autoMode} | Connected=${loggedIn} | Debug=${debugMode} | CreationMode=${isCreationMode}`);
-  console.log(`Memories → Ultra: ${ultraShortMemories.length} | Recent: ${recentMemories.length} | Persistent: ${persistentMemories.length}`);
-  console.log(`Sequencing → hasReactedSinceLastThink: ${hasReactedSinceLastThink} | lastFreshObs: ${lastFreshObservations.length}\n`);
+  const isStuck = typeof (agent as any).isStuckInLoginLoop === 'function' 
+    ? (agent as any).isStuckInLoginLoop() 
+    : false;
+
+  console.log(`\n[STATUS] Auto=${autoMode} | Connected=${loggedIn} | Debug=${debugMode} | CreationMode=${isCreationMode} | StuckInLoginLoop=${isStuck}`);
+  console.log(`Memories → Ultra: ${ultraShortMemories.length} | Recent: ${recentMemories.length} | Persistent: ${persistentMemories.length}\n`);
 }
 
 async function manualThink() {
@@ -366,13 +376,8 @@ async function manualThink() {
   const combinedRecent = [...recentMemories, ...lastFreshObservations];
   lastFreshObservations = [];
 
-  if (!fullBuffer.trim() && combinedRecent.length === 0) {
-    log.info('No content available for manual Think.');
-    return;
-  }
-
-  log.info('🧠 Manual Think() triggered...');
-  const result = await agent.think(fullBuffer.trim() || '', { recent: combinedRecent, persistent: persistentMemories });
+  log.info('🧠 Manual Think() triggered (memories only)...');
+  const result = await agent.think("", { recent: combinedRecent, persistent: persistentMemories });
   console.log(result);
 }
 
@@ -449,5 +454,5 @@ rl.on('close', () => {
 
 // ==================== BOOT ====================
 showHelp();
-log.success('Type !help or !connect — Login vs Creation mode now active with cool temp names');
+log.success('Type !help or !connect — Actual MUD_PASSWORD value is now in the startup memory');
 rl.prompt();

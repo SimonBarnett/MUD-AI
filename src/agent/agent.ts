@@ -1,4 +1,4 @@
-// src/agent/agent.ts - v0.6.10-login-creation
+// src/agent/agent.ts - v0.6.20-no-blind-fallback
 import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs';
@@ -6,7 +6,6 @@ import path from 'path';
 import { searchMemories } from '../context-engine/memory.js';
 import { log } from '../logger.js';
 
-// ==================== PER-RUN AI CALL LOGGING ====================
 const getLogDir = (): string => {
   if (process.env.CURRENT_RUN_LOG_DIR) {
     return process.env.CURRENT_RUN_LOG_DIR;
@@ -42,36 +41,15 @@ const xai = new OpenAI({
 
 export class MUDAgent {
 
-  // ============================================================
-  // DESIGN PHILOSOPHY (v0.6.10 - LOGIN vs CREATION MODES)
-  // ============================================================
-  /*
-    There are now TWO distinct operational modes, determined **only** by
-    whether a real character name exists in the environment at startup:
+  private lastActions: string[] = [];
+  private consecutiveSameActions = 0;
 
-    1. LOGIN MODE (USERNAME exists in .env)
-       - The agent has a real character.
-       - Core imperative: "Log in with my name + password from MUD_PASSWORD."
-       - THINK should prefer returning an `action` to progress login.
-
-    2. CREATION MODE (no USERNAME in .env)
-       - The agent must create a new character using a cool temporary name.
-       - Core imperative: "Create an account on the main menu (usually option 2).
-         Use the password from MUD_PASSWORD. After success output SAVE_USERNAME:MyTempName."
-       - THINK should be more willing to use `shouldReflect: true` or choose
-         creation actions when on the main menu.
-
-    REACT remains unchanged in responsibility (generate observations).
-    THINK must still obey the strict "ACTION or REFLECT" contract in both modes.
-  */
-
-  // ==================== REACT (Memory generation focused) ====================
   async react(input: string, ctx: any) {
     const ultraShort = ctx.ultraShort || ctx.ultraShortMemories || [];
 
-    const system = `REACT MODE — MEMORY GENERATION PRIORITY
+    const system = `REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.20)
 
-You receive recent game output (may contain multiple lines / a screen dump):
+You receive recent game output:
 ${input}
 
 Recent short-term memories (last ~10s):
@@ -79,17 +57,11 @@ ${ultraShort.length ? ultraShort.join(' | ') : 'none'}
 
 You are playing Achaea (MUD).
 
-YOUR PRIMARY JOB:
-Generate useful, savable observations that describe the current game state.
-These observations will be stored as memories and fed to THINK later.
+PRIMARY JOB: Generate useful, savable observations.
 
-SECONDARY JOB (only when truly needed):
-If the output shows REAL immediate danger (you are being attacked, health is critically low, you are falling, dying, poisoned badly, etc.) then return an "immediateAction" with the exact command to survive.
-
-STRICT RULES:
-- On login / main menu screens: Describe what you see (menu options, prompts). Do NOT treat repetitive lines as noise — they are state.
-- Only use immediateAction for genuine emergencies. Prefer observations in all other cases.
-- Never invent danger that isn't there.
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
 
 Respond with valid JSON only:
 {
@@ -101,8 +73,8 @@ Respond with valid JSON only:
       const res = await xai.chat.completions.create({
         model: "grok-4",
         messages: [{ role: "system", content: system }],
-        temperature: 0.12,
-        max_tokens: 220
+        temperature: 0.1,
+        max_tokens: 280
       });
 
       let parsed = JSON.parse(res.choices[0]?.message?.content || '{}');
@@ -123,18 +95,14 @@ Respond with valid JSON only:
   }
 
   private getEmptyReactResponse() {
-    return {
-      immediateAction: null,
-      observations: ["Screen state unclear or error during REACT"]
-    };
+    return { immediateAction: null, observations: ["Screen state unclear"] };
   }
 
-  // ==================== THINK (STRICT ACTION OR REFLECT + LOGIN/CREATION AWARENESS) ====================
   async think(buffer: string, ctx: any) {
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
 
-    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + LOGIN/CREATION AWARENESS (v0.6.10)
+    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + TEMP NAME + PASSWORD RULES (v0.6.20)
 
 You are controlling a character in Achaea.
 
@@ -147,37 +115,19 @@ ${recent.length ? recent.join('\n') : 'none'}
 Persistent / long-term memories:
 ${persistent.length ? persistent.join('\n') : 'none'}
 
-══════════════════════════════════════════════════════════════════════════════
-CRITICAL CONTRACT — YOU MUST OBEY THIS
-══════════════════════════════════════════════════════════════════════════════
+You must choose exactly one of two paths:
 
-You have exactly TWO valid response paths. Choose ONE:
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
 
-PATH A — RETURN AN ACTION
-  If you have enough context and it is reasonable/safe:
-  → Set "action": "the exact command to send"
+FORBIDDEN: Returning neither or both.
 
-PATH B — REQUEST DEEPER THINKING
-  If you need more long-term memory, the situation is ambiguous, or you are on
-  the main menu in creation mode:
-  → Set "shouldReflect": true
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name (e.g. "I am using the temporary name XXX"), you MUST use exactly that name during creation.
+- Never send your Windows login name.
+- When the game asks for password and then "confirm your password", you MUST send the exact same value from MUD_PASSWORD both times.
 
-FORBIDDEN: Returning neither action nor shouldReflect.
-
-══════════════════════════════════════════════════════════════════════════════
-LOGIN vs CREATION MODE (determined only by persistent memories)
-══════════════════════════════════════════════════════════════════════════════
-
-- If persistent memories contain a real character name (e.g. "My character name is X"):
-    → You are in LOGIN MODE. Your job is to log in.
-    → Prefer returning an action to progress login when possible.
-
-- If persistent memories say you have no character and must create one:
-    → You are in CREATION MODE. Your job is to create an account.
-    → On the main menu you should usually choose option 2 (create character).
-    → After successful creation you must output exactly: SAVE_USERNAME:YourTempName
-
-Be decisive but safe. Never return neither action nor shouldReflect.
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
 
 Output ONLY valid JSON.`;
 
@@ -186,11 +136,12 @@ Output ONLY valid JSON.`;
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.15,
-        max_tokens: 580
+        max_tokens: 780
       });
 
       let parsed = JSON.parse(res.choices[0]?.message?.content || '{}');
       parsed = this.validateAndEnforceThinkContract(parsed);
+      parsed = this.trackActionHistory(parsed);
       logAICall('THINK', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
@@ -199,38 +150,47 @@ Output ONLY valid JSON.`;
     }
   }
 
-  // Contract enforcement (unchanged but still critical)
   private validateAndEnforceThinkContract(result: any): any {
     if (!result) result = {};
-
     const hasAction = result.action && typeof result.action === 'string' && result.action.trim().length > 0;
     const hasReflect = result.shouldReflect === true;
 
     if (!hasAction && !hasReflect) {
       result.shouldReflect = true;
       if (!Array.isArray(result.observations)) result.observations = [];
-      result.observations.push("THINK contract violation — forced shouldReflect: true");
+      result.observations.push("Contract violation — forced shouldReflect");
     }
-
-    if (hasAction && hasReflect) {
-      result.shouldReflect = false;
-    }
-
+    if (hasAction && hasReflect) result.shouldReflect = false;
     if (!result.current_state) result.current_state = "unknown";
     if (!Array.isArray(result.observations)) result.observations = [];
+    return result;
+  }
 
+  private trackActionHistory(result: any) {
+    if (result.action && typeof result.action === 'string') {
+      const action = result.action.trim();
+      if (this.lastActions.length > 0 && this.lastActions[this.lastActions.length - 1] === action) {
+        this.consecutiveSameActions++;
+      } else {
+        this.consecutiveSameActions = 1;
+      }
+      this.lastActions.push(action);
+      if (this.lastActions.length > 8) this.lastActions.shift();
+
+      if (this.consecutiveSameActions >= 3 && result.shouldReflect !== true) {
+        result.shouldReflect = true;
+        result.action = null;
+        if (!result.observations) result.observations = [];
+        result.observations.push("Repeated failed action — forcing reflection");
+      }
+    }
     return result;
   }
 
   private getSafeDefaultThinkResult() {
-    return {
-      observations: ["Error during THINK — defaulting to reflection for safety"],
-      current_state: "unknown",
-      shouldReflect: true
-    };
+    return { observations: ["Error — defaulting to reflection"], current_state: "unknown", shouldReflect: true };
   }
 
-  // ==================== REFLECT ====================
   async reflect(ctx: any) {
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
@@ -243,98 +203,120 @@ ${recent.length ? recent.join('\n') : 'none'}
 Persistent memories:
 ${persistent.length ? persistent.join('\n') : 'none'}
 
-Return ONLY a valid JSON array of 4-7 useful memory queries.
-
-Example: ["What do I know about my current location?", "What is my current goal?"]`;
+Return ONLY a valid JSON array of 4-7 useful memory queries.`;
 
     try {
       const res = await xai.chat.completions.create({
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.15,
-        max_tokens: 300
+        max_tokens: 360
       });
 
-      const content = res.choices[0]?.message?.content || '[]';
-      let parsed: string[];
+      let parsed;
       try {
-        parsed = JSON.parse(content);
+        parsed = JSON.parse(res.choices[0]?.message?.content || '[]');
         if (!Array.isArray(parsed)) parsed = [];
       } catch {
-        parsed = [
-          "What is my current location and situation?",
-          "What are my active goals or quests?",
-          "What important events have happened recently?"
-        ];
+        parsed = ["What is my current situation?", "What should I do next?"];
       }
 
       logAICall('REFLECT', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
       log.error('Reflect error:', e.message);
-      return [
-        "What do I know about my current location?",
-        "Any active goals or threats?",
-        "What is my current health and status?"
-      ];
+      return ["What is my current situation?", "What should I do next?"];
     }
   }
 
-  // ==================== DECIDE ====================
   async decide(retrievedMemories: any[]) {
     const memoriesText = retrievedMemories
       .map((m, i) => `${i + 1}. ${m.content || m}`)
       .join('\n');
 
-    const system = `DECIDE MODE — FINAL ACTION
+    const system = `DECIDE MODE — FINAL ACTION (MUST RETURN A COMMAND v0.6.20)
 
 Fresh memories from Reflect:
 ${memoriesText || 'No useful memories retrieved'}
 
-You are playing Achaea.
+You are playing Achaea and are on the main menu or in character creation.
 
-Special rule: If you have successfully created a new character, you MUST output:
-{ "command": "SAVE_USERNAME:YourNewName" }
+MANDATORY RULES:
+1. You MUST return a command. Never return null or an empty command.
+2. If persistent memory contains a temporary name (example: "I am using the temporary name XXX"), you MUST use exactly that name.
+3. Never send your Windows login name during creation.
+4. When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
+5. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
 
-Otherwise return a normal command or null if you have insufficient information.`;
+Return a valid JSON object containing a "command" field.`;
 
     try {
       const res = await xai.chat.completions.create({
         model: "grok-4",
         messages: [{ role: "system", content: system }],
-        temperature: 0.1,
-        max_tokens: 120
+        temperature: 0.12,
+        max_tokens: 280
       });
 
-      const parsed = JSON.parse(res.choices[0]?.message?.content || '{"command":null}');
+      let content = res.choices[0]?.message?.content || '';
+      let parsed;
+
+      try {
+        parsed = JSON.parse(content);
+      } catch {
+        // Try to extract command if model returned raw text
+        const match = content.match(/"command"\s*:\s*"([^"]+)"/);
+        if (match) {
+          parsed = { command: match[1] };
+        } else {
+          const trimmed = content.trim().replace(/^"|"$/g, '');
+          parsed = trimmed ? { command: trimmed } : null;
+        }
+      }
+
+      if (typeof parsed === 'string' || typeof parsed === 'number') {
+        parsed = { command: String(parsed) };
+      }
+
+      if (!parsed || typeof parsed !== 'object' || !parsed.command) {
+        // Last resort: force reflection path by returning a safe creation command
+        // but only if we are clearly in creation flow. Otherwise let it fail cleanly.
+        parsed = { command: null };
+      }
+
       logAICall('DECIDE', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
       log.error('Decide error:', e.message);
-      return { command: null, reasoning: "error fallback" };
+      return { command: null };
     }
   }
 
-  // ==================== QUERY MEMORIES ====================
   async queryMemories(queries: string[]) {
     log.info(`🔍 Searching memories for ${queries.length} queries`);
 
     try {
       const results = await Promise.all(queries.map(q => searchMemories(q, 5)));
       const flat = results.flat();
-      return Array.from(new Map(flat.map(m => [m.id, m])).values());
+      return Array.from(new Map(flat.map(m => [m.id, m])).values()).slice(0, 25);
     } catch (e: any) {
       log.error('queryMemories error:', e.message);
       return [];
     }
   }
 
-  // ==================== HELPERS ====================
   isOnMainMenu(input: string): boolean {
     const lower = input.toLowerCase();
-    return lower.includes('1. enter the game') &&
-           lower.includes('2. create a new character') &&
-           lower.includes('3. quit');
+    return lower.includes('1. enter the game') && lower.includes('2. create a new character');
+  }
+
+  isStuckInLoginLoop(): boolean {
+    return this.consecutiveSameActions >= 3;
+  }
+
+  resetActionHistory() {
+    this.lastActions = [];
+    this.consecutiveSameActions = 0;
   }
 }
 

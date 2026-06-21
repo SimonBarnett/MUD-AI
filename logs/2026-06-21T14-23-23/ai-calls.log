@@ -1,0 +1,641 @@
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:23:45.527Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.20)
+
+You receive recent game output:
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           79 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent short-term memories (last ~10s):
+none
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "At main menu of Achaea MUD (Rapture Runtime v2.4.9.1)",
+    "79 adventurers currently online",
+    "Menu options: 1=Enter game, 2=Create character, 3=Quit",
+    "Server IP: 50.31.100.8",
+    "Support contact: support@achaea.com"
+  ]
+}
+USAGE: {"prompt_tokens":397,"completion_tokens":94,"total_tokens":774,"prompt_tokens_details":{"text_tokens":397,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":283,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":13043500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:23:51.201Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + TEMP NAME + PASSWORD RULES (v0.6.20)
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+
+
+Recent memories (from REACT):
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am in LOGIN MODE. My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the main menu or login prompt, I must send my character name first, then the password.
+Still in authentication phase, outside character selection
+Server provided recovery link: http://www.achaea.com/game/recover
+Currently at password prompt after name entry; last password attempt was incorrect
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+Rapture Runtime v2.4.9.1, server IP 50.31.100.8, ~79-80 players online
+At Achaea main menu: options are 1. Enter the game, 2. Create a new character, 3. Quit
+Still at password prompt during authentication phase
+Recovery link provided by server: http://www.achaea.com/game/recover
+Password entered was incorrect
+Still outside character selection; authentication phase active
+Server is prompting: 'What is your password?'
+Currently at Achaea login/password prompt after name entry
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+80 adventurers currently online
+Server IP: 50.31.100.8
+Menu options available: 1. Enter the game, 2. Create a new character, 3. Quit
+Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am logging in. My character name is "medatech.si". Password is stored in MUD_PASSWORD. On the main menu or login prompt I must send my character name first, then the password.
+Not yet logged into any character; no active session
+80 adventurers currently online
+Prompt shows: 'Enter an option or enter your character's name.' followed by garbled characters then 'What is your password?'
+Currently at Achaea login screen after main menu (Rapture Runtime Environment v2.4.9.1)
+Not yet logged into any character
+Server IP listed as 50.31.100.8
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+80 adventurers currently online
+Currently at Achaea main menu / login screen (Rapture Runtime Environment v2.4.9.1)
+
+You must choose exactly one of two paths:
+
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
+
+FORBIDDEN: Returning neither or both.
+
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name (e.g. "I am using the temporary name XXX"), you MUST use exactly that name during creation.
+- Never send your Windows login name.
+- When the game asks for password and then "confirm your password", you MUST send the exact same value from MUD_PASSWORD both times.
+
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
+
+Output ONLY valid JSON.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "shouldReflect": true,
+  "current_state": "unknown",
+  "observations": []
+}
+USAGE: {"prompt_tokens":984,"completion_tokens":6,"total_tokens":1619,"prompt_tokens_details":{"text_tokens":984,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":629,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":26831000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:23:54.577Z] STAGE: REFLECT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REFLECT MODE
+
+Recent memories:
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+
+Persistent memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am in LOGIN MODE. My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the main menu or login prompt, I must send my character name first, then the password.
+Still in authentication phase, outside character selection
+Server provided recovery link: http://www.achaea.com/game/recover
+Currently at password prompt after name entry; last password attempt was incorrect
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+Rapture Runtime v2.4.9.1, server IP 50.31.100.8, ~79-80 players online
+At Achaea main menu: options are 1. Enter the game, 2. Create a new character, 3. Quit
+Still at password prompt during authentication phase
+Recovery link provided by server: http://www.achaea.com/game/recover
+Password entered was incorrect
+Still outside character selection; authentication phase active
+Server is prompting: 'What is your password?'
+Currently at Achaea login/password prompt after name entry
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+80 adventurers currently online
+Server IP: 50.31.100.8
+Menu options available: 1. Enter the game, 2. Create a new character, 3. Quit
+Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am logging in. My character name is "medatech.si". Password is stored in MUD_PASSWORD. On the main menu or login prompt I must send my character name first, then the password.
+Not yet logged into any character; no active session
+80 adventurers currently online
+Prompt shows: 'Enter an option or enter your character's name.' followed by garbled characters then 'What is your password?'
+Currently at Achaea login screen after main menu (Rapture Runtime Environment v2.4.9.1)
+Not yet logged into any character
+Server IP listed as 50.31.100.8
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+80 adventurers currently online
+Currently at Achaea main menu / login screen (Rapture Runtime Environment v2.4.9.1)
+
+Return ONLY a valid JSON array of 4-7 useful memory queries.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+[
+  "Achaea MUD login credentials and character name",
+  "Current authentication state and password prompt status",
+  "Achaea server connection details IP and port",
+  "MUD recovery link and password reset information",
+  "Login sequence instructions for medatech.si",
+  "Achaea main menu options and navigation",
+  "Rapture Runtime version and player count context"
+]
+USAGE: {"prompt_tokens":752,"completion_tokens":71,"total_tokens":1095,"prompt_tokens_details":{"text_tokens":752,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":272,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":16631000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:23:58.926Z] STAGE: DECIDE
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+DECIDE MODE — FINAL ACTION (MUST RETURN A COMMAND v0.6.20)
+
+Fresh memories from Reflect:
+No useful memories retrieved
+
+You are playing Achaea and are on the main menu or in character creation.
+
+MANDATORY RULES:
+1. You MUST return a command. Never return null or an empty command.
+2. If persistent memory contains a temporary name (example: "I am using the temporary name XXX"), you MUST use exactly that name.
+3. Never send your Windows login name during creation.
+4. When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
+5. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
+
+Return a valid JSON object containing a "command" field.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "command": "create"
+}
+USAGE: {"prompt_tokens":292,"completion_tokens":6,"total_tokens":811,"prompt_tokens_details":{"text_tokens":292,"audio_tokens":0,"image_tokens":0,"cached_tokens":256},"completion_tokens_details":{"reasoning_tokens":513,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":13937000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:24:08.908Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + TEMP NAME + PASSWORD RULES (v0.6.20)
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+
+
+Recent memories (from REACT):
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+Screen state unclear
+Screen state unclear
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am in LOGIN MODE. My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the main menu or login prompt, I must send my character name first, then the password.
+Still in authentication phase, outside character selection
+Server provided recovery link: http://www.achaea.com/game/recover
+Currently at password prompt after name entry; last password attempt was incorrect
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+Rapture Runtime v2.4.9.1, server IP 50.31.100.8, ~79-80 players online
+At Achaea main menu: options are 1. Enter the game, 2. Create a new character, 3. Quit
+Still at password prompt during authentication phase
+Recovery link provided by server: http://www.achaea.com/game/recover
+Password entered was incorrect
+Still outside character selection; authentication phase active
+Server is prompting: 'What is your password?'
+Currently at Achaea login/password prompt after name entry
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+80 adventurers currently online
+Server IP: 50.31.100.8
+Menu options available: 1. Enter the game, 2. Create a new character, 3. Quit
+Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am logging in. My character name is "medatech.si". Password is stored in MUD_PASSWORD. On the main menu or login prompt I must send my character name first, then the password.
+Not yet logged into any character; no active session
+80 adventurers currently online
+Prompt shows: 'Enter an option or enter your character's name.' followed by garbled characters then 'What is your password?'
+Currently at Achaea login screen after main menu (Rapture Runtime Environment v2.4.9.1)
+Not yet logged into any character
+Server IP listed as 50.31.100.8
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+80 adventurers currently online
+Currently at Achaea main menu / login screen (Rapture Runtime Environment v2.4.9.1)
+
+You must choose exactly one of two paths:
+
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
+
+FORBIDDEN: Returning neither or both.
+
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name (e.g. "I am using the temporary name XXX"), you MUST use exactly that name during creation.
+- Never send your Windows login name.
+- When the game asks for password and then "confirm your password", you MUST send the exact same value from MUD_PASSWORD both times.
+
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
+
+Output ONLY valid JSON.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "shouldReflect": true,
+  "current_state": "unknown",
+  "observations": []
+}
+USAGE: {"prompt_tokens":924,"completion_tokens":9,"total_tokens":1746,"prompt_tokens_details":{"text_tokens":924,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":813,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":30756000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:24:12.237Z] STAGE: REFLECT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REFLECT MODE
+
+Recent memories:
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+Screen state unclear
+
+Persistent memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am in LOGIN MODE. My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the main menu or login prompt, I must send my character name first, then the password.
+Still in authentication phase, outside character selection
+Server provided recovery link: http://www.achaea.com/game/recover
+Currently at password prompt after name entry; last password attempt was incorrect
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+Rapture Runtime v2.4.9.1, server IP 50.31.100.8, ~79-80 players online
+At Achaea main menu: options are 1. Enter the game, 2. Create a new character, 3. Quit
+Still at password prompt during authentication phase
+Recovery link provided by server: http://www.achaea.com/game/recover
+Password entered was incorrect
+Still outside character selection; authentication phase active
+Server is prompting: 'What is your password?'
+Currently at Achaea login/password prompt after name entry
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+80 adventurers currently online
+Server IP: 50.31.100.8
+Menu options available: 1. Enter the game, 2. Create a new character, 3. Quit
+Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am logging in. My character name is "medatech.si". Password is stored in MUD_PASSWORD. On the main menu or login prompt I must send my character name first, then the password.
+Not yet logged into any character; no active session
+80 adventurers currently online
+Prompt shows: 'Enter an option or enter your character's name.' followed by garbled characters then 'What is your password?'
+Currently at Achaea login screen after main menu (Rapture Runtime Environment v2.4.9.1)
+Not yet logged into any character
+Server IP listed as 50.31.100.8
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+80 adventurers currently online
+Currently at Achaea main menu / login screen (Rapture Runtime Environment v2.4.9.1)
+
+Return ONLY a valid JSON array of 4-7 useful memory queries.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+[
+  "What is the current login state or authentication phase?",
+  "What is the character name to use for login?",
+  "Where is the MUD_PASSWORD stored or how to access it?",
+  "What server IP and port should be used for connection?",
+  "What menu options are currently displayed?",
+  "Has there been a recent failed password attempt?",
+  "What is the password recovery link provided by the server?"
+]
+USAGE: {"prompt_tokens":756,"completion_tokens":79,"total_tokens":1128,"prompt_tokens_details":{"text_tokens":756,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":293,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":17406000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:24:16.783Z] STAGE: DECIDE
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+DECIDE MODE — FINAL ACTION (MUST RETURN A COMMAND v0.6.20)
+
+Fresh memories from Reflect:
+No useful memories retrieved
+
+You are playing Achaea and are on the main menu or in character creation.
+
+MANDATORY RULES:
+1. You MUST return a command. Never return null or an empty command.
+2. If persistent memory contains a temporary name (example: "I am using the temporary name XXX"), you MUST use exactly that name.
+3. Never send your Windows login name during creation.
+4. When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
+5. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
+
+Return a valid JSON object containing a "command" field.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "command": "new"
+}
+USAGE: {"prompt_tokens":292,"completion_tokens":6,"total_tokens":802,"prompt_tokens_details":{"text_tokens":292,"audio_tokens":0,"image_tokens":0,"cached_tokens":256},"completion_tokens_details":{"reasoning_tokens":504,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":13712000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:24:20.336Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.20)
+
+You receive recent game output:
+> ����Password incorrect. For recovery, see http://www.achaea.com/game/recover
+
+Recent short-term memories (last ~10s):
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1) | 79 adventurers currently online | Menu options: 1=Enter game, 2=Create character, 3=Quit | Server IP: 50.31.100.8 | Support contact: support@achaea.com | Screen state unclear
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "Password attempt failed with message: 'Password incorrect. For recovery, see http://www.achaea.com/game/recover'",
+    "Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)",
+    "79 adventurers currently online",
+    "Menu options available: 1=Enter game, 2=Create character, 3=Quit",
+    "Server IP: 50.31.100.8",
+    "Support contact: support@achaea.com"
+  ]
+}
+USAGE: {"prompt_tokens":349,"completion_tokens":123,"total_tokens":773,"prompt_tokens_details":{"text_tokens":349,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":301,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":13618500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:24:24.818Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.20)
+
+You receive recent game output:
+������������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           82 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent short-term memories (last ~10s):
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1) | 79 adventurers currently online | Menu options: 1=Enter game, 2=Create character, 3=Quit | Server IP: 50.31.100.8 | Support contact: support@achaea.com | Screen state unclear
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "At main menu of Achaea MUD (Rapture Runtime v2.4.9.1, (c) 2026 Iron Realms Entertainment)",
+    "82 adventurers currently in the realms",
+    "Menu options: 1=Enter the game, 2=Create a new character, 3=Quit",
+    "Server IP: 50.31.100.8 | Support contact: support@achaea.com",
+    "Game tagline: \"Your fate and fame shall be an echo and a light unto eternity.\""
+  ]
+}
+USAGE: {"prompt_tokens":469,"completion_tokens":129,"total_tokens":1012,"prompt_tokens_details":{"text_tokens":469,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":414,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":18093500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:24:31.078Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + TEMP NAME + PASSWORD RULES (v0.6.20)
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+
+
+Recent memories (from REACT):
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+Screen state unclear
+Password attempt failed with message: 'Password incorrect. For recovery, see http://www.achaea.com/game/recover'
+Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options available: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1, (c) 2026 Iron Realms Entertainment)
+82 adventurers currently in the realms
+Menu options: 1=Enter the game, 2=Create a new character, 3=Quit
+Server IP: 50.31.100.8 | Support contact: support@achaea.com
+Game tagline: "Your fate and fame shall be an echo and a light unto eternity."
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1, (c) 2026 Iron Realms Entertainment)
+82 adventurers currently in the realms
+Menu options: 1=Enter the game, 2=Create a new character, 3=Quit
+Server IP: 50.31.100.8 | Support contact: support@achaea.com
+Game tagline: "Your fate and fame shall be an echo and a light unto eternity."
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am in LOGIN MODE. My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the main menu or login prompt, I must send my character name first, then the password.
+Still in authentication phase, outside character selection
+Server provided recovery link: http://www.achaea.com/game/recover
+Currently at password prompt after name entry; last password attempt was incorrect
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+Rapture Runtime v2.4.9.1, server IP 50.31.100.8, ~79-80 players online
+At Achaea main menu: options are 1. Enter the game, 2. Create a new character, 3. Quit
+Still at password prompt during authentication phase
+Recovery link provided by server: http://www.achaea.com/game/recover
+Password entered was incorrect
+Still outside character selection; authentication phase active
+Server is prompting: 'What is your password?'
+Currently at Achaea login/password prompt after name entry
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+80 adventurers currently online
+Server IP: 50.31.100.8
+Menu options available: 1. Enter the game, 2. Create a new character, 3. Quit
+Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am logging in. My character name is "medatech.si". Password is stored in MUD_PASSWORD. On the main menu or login prompt I must send my character name first, then the password.
+Not yet logged into any character; no active session
+80 adventurers currently online
+Prompt shows: 'Enter an option or enter your character's name.' followed by garbled characters then 'What is your password?'
+Currently at Achaea login screen after main menu (Rapture Runtime Environment v2.4.9.1)
+Not yet logged into any character
+Server IP listed as 50.31.100.8
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+80 adventurers currently online
+Currently at Achaea main menu / login screen (Rapture Runtime Environment v2.4.9.1)
+
+You must choose exactly one of two paths:
+
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
+
+FORBIDDEN: Returning neither or both.
+
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name (e.g. "I am using the temporary name XXX"), you MUST use exactly that name during creation.
+- Never send your Windows login name.
+- When the game asks for password and then "confirm your password", you MUST send the exact same value from MUD_PASSWORD both times.
+
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
+
+Output ONLY valid JSON.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "shouldReflect": true,
+  "current_state": "unknown",
+  "observations": []
+}
+USAGE: {"prompt_tokens":1221,"completion_tokens":6,"total_tokens":1994,"prompt_tokens_details":{"text_tokens":1221,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":767,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":33243500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:24:35.132Z] STAGE: REFLECT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REFLECT MODE
+
+Recent memories:
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+Screen state unclear
+Password attempt failed with message: 'Password incorrect. For recovery, see http://www.achaea.com/game/recover'
+Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+79 adventurers currently online
+Menu options available: 1=Enter game, 2=Create character, 3=Quit
+Server IP: 50.31.100.8
+Support contact: support@achaea.com
+At main menu of Achaea MUD (Rapture Runtime v2.4.9.1, (c) 2026 Iron Realms Entertainment)
+82 adventurers currently in the realms
+Menu options: 1=Enter the game, 2=Create a new character, 3=Quit
+Server IP: 50.31.100.8 | Support contact: support@achaea.com
+Game tagline: "Your fate and fame shall be an echo and a light unto eternity."
+
+Persistent memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am in LOGIN MODE. My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the main menu or login prompt, I must send my character name first, then the password.
+Still in authentication phase, outside character selection
+Server provided recovery link: http://www.achaea.com/game/recover
+Currently at password prompt after name entry; last password attempt was incorrect
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+Rapture Runtime v2.4.9.1, server IP 50.31.100.8, ~79-80 players online
+At Achaea main menu: options are 1. Enter the game, 2. Create a new character, 3. Quit
+Still at password prompt during authentication phase
+Recovery link provided by server: http://www.achaea.com/game/recover
+Password entered was incorrect
+Still outside character selection; authentication phase active
+Server is prompting: 'What is your password?'
+Currently at Achaea login/password prompt after name entry
+Game tagline: 'Your fate and fame shall be an echo and a light unto eternity.'
+80 adventurers currently online
+Server IP: 50.31.100.8
+Menu options available: 1. Enter the game, 2. Create a new character, 3. Quit
+Currently at main menu of Achaea MUD (Rapture Runtime v2.4.9.1)
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+IMPERATIVE: I am logging in. My character name is "medatech.si". Password is stored in MUD_PASSWORD. On the main menu or login prompt I must send my character name first, then the password.
+Not yet logged into any character; no active session
+80 adventurers currently online
+Prompt shows: 'Enter an option or enter your character's name.' followed by garbled characters then 'What is your password?'
+Currently at Achaea login screen after main menu (Rapture Runtime Environment v2.4.9.1)
+Not yet logged into any character
+Server IP listed as 50.31.100.8
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+80 adventurers currently online
+Currently at Achaea main menu / login screen (Rapture Runtime Environment v2.4.9.1)
+
+Return ONLY a valid JSON array of 4-7 useful memory queries.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+[
+  "Achaea MUD login procedure character medatech.si",
+  "Achaea password recovery http://www.achaea.com/game/recover",
+  "Rapture Runtime v2.4.9.1 main menu options and navigation",
+  "Achaea server IP 50.31.100.8 connection details",
+  "MUD authentication phase password prompt handling",
+  "Current Achaea player count and online status",
+  "medatech.si character name entry sequence"
+]
+USAGE: {"prompt_tokens":954,"completion_tokens":94,"total_tokens":1441,"prompt_tokens_details":{"text_tokens":954,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":393,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":22756000}
+══════════════════════════════════════════════════════════════════════════════
