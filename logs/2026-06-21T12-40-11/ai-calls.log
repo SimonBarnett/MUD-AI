@@ -1,0 +1,403 @@
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:41:17.556Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION PRIORITY
+
+You receive recent game output (may contain multiple lines / a screen dump):
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           78 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent short-term memories (last ~10s):
+none
+
+You are playing Achaea (MUD).
+
+YOUR PRIMARY JOB:
+Generate useful, savable observations that describe the current game state.
+These observations will be stored as memories and fed to THINK later.
+Good observations = "I see a shopkeeper", "Health is at 87%", "I am in a forest clearing with a path north", "There is a sign that says 'Welcome to Achaea'".
+
+SECONDARY JOB (only when truly needed):
+If the output shows REAL immediate danger (you are being attacked, health is critically low, you are falling, dying, poisoned badly, etc.) then return an "immediateAction" with the exact command to survive (e.g. "flee", "drink health vial", "cast heal").
+
+STRICT RULES:
+- On login / main menu screens: Describe what you see (menu options, prompts). Do NOT treat repetitive lines as noise — they are state.
+- Only use immediateAction for genuine emergencies. Prefer observations in all other cases.
+- Never invent danger that isn't there.
+- Observations should be concise but informative so they are good for long-term memory.
+
+Respond with valid JSON only in this shape:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "At Achaea main menu screen",
+    "Menu options: 1. Enter the game. 2. Create a new character. 3. Quit.",
+    "78 adventurers currently in the realms",
+    "Game title: Achaea, Dreams of Divine Lands",
+    "IP address shown: 50.31.100.8"
+  ]
+}
+USAGE: {"prompt_tokens":572,"completion_tokens":89,"total_tokens":921,"prompt_tokens_details":{"text_tokens":572,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":260,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":14531000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:41:19.543Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT (v0.6.9)
+
+You are controlling a character in Achaea.
+
+Current game buffer (what you can see right now):
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           78 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent memories (from REACT and short-term):
+At Achaea main menu screen
+Menu options: 1. Enter the game. 2. Create a new character. 3. Quit.
+78 adventurers currently in the realms
+Game title: Achaea, Dreams of Divine Lands
+IP address shown: 50.31.100.8
+At Achaea main menu screen
+Menu options: 1. Enter the game. 2. Create a new character. 3. Quit.
+78 adventurers currently in the realms
+Game title: Achaea, Dreams of Divine Lands
+IP address shown: 50.31.100.8
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+Connected via Rapture Runtime Environment v2.4.9.1 to Achaea IP 50.31.100.8
+78-79 adventurers currently online in the realms
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Prompt shown: 'Enter an option or enter your character's name.'
+At Achaea main menu / login screen after incorrect password attempt
+Connected via Rapture Runtime Environment v2.4.9.1 to Achaea IP 50.31.100.8
+79 adventurers currently online in the realms
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Prompt shown: 'Enter an option or enter your character's name.'
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+At Achaea main menu / login screen after incorrect password attempt
+Connected via Rapture Runtime Environment v2.4.9.1 to Achaea IP 50.31.100.8
+78 adventurers currently online in the realms
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Prompt shown: 'Enter an option or enter your character's name.'
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+At Achaea main menu / login screen after incorrect password attempt
+Connected via Rapture Runtime Environment v2.4.9.1 to Achaea IP 50.31.100.8
+78 adventurers currently online in the realms
+Prompt shown: 'Enter an option or enter your character's name.'
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Prompt shown: 'Enter an option or enter your character's name.'
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+At Achaea main menu / login screen after incorrect password attempt
+78 adventurers currently in the realms
+
+══════════════════════════════════════════════════════════════════════════════
+CRITICAL CONTRACT — YOU MUST OBEY THIS OR THE AGENT CAN GET STUCK
+══════════════════════════════════════════════════════════════════════════════
+
+You have exactly TWO valid response paths. Choose ONE:
+
+PATH A — RETURN AN ACTION
+  If you have enough context, know what to do, and it is safe/reasonable:
+  → Set "action": "the exact command string to send to the MUD"
+  → Do NOT set shouldReflect (or set it false)
+
+PATH B — REQUEST MORE MEMORY / DEEPER THINKING
+  If you are unsure, the screen is complex, you need long-term memory,
+  you are on a menu and creation/login logic should decide, or you want
+  to search past experiences:
+  → Set "shouldReflect": true
+  → Do NOT set an action (or set action to null)
+
+FORBIDDEN:
+- Returning neither action nor shouldReflect (this leaves the agent doing nothing)
+- Returning both a weak action and shouldReflect at the same time (confusing)
+
+EXAMPLES:
+
+Good (Action path):
+{
+  "observations": ["I see a goblin attacking me"],
+  "current_state": "combat",
+  "action": "flee"
+}
+
+Good (Reflect path - on main menu with no character):
+{
+  "observations": ["I am on the main menu. I have no character yet."],
+  "current_state": "main_menu",
+  "shouldReflect": true
+}
+
+Bad (forbidden - would cause do-nothing):
+{
+  "observations": ["I see trees"],
+  "current_state": "exploring"
+}
+
+Output ONLY valid JSON matching the schema below.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "observations": [
+    "At Achaea main menu. Prompt: 'Enter an option or enter your character's name.' Character name known: medatech.si"
+  ],
+  "current_state": "main_menu_login",
+  "action": "medatech.si"
+}
+USAGE: {"prompt_tokens":1338,"completion_tokens":53,"total_tokens":1584,"prompt_tokens_details":{"text_tokens":1338,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":193,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":21531000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:41:21.232Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION PRIORITY
+
+You receive recent game output (may contain multiple lines / a screen dump):
+Enter an option or enter your character's name. ����What is your password?
+
+Recent short-term memories (last ~10s):
+At Achaea main menu screen | Menu options: 1. Enter the game. 2. Create a new character. 3. Quit. | 78 adventurers currently in the realms | Game title: Achaea, Dreams of Divine Lands | IP address shown: 50.31.100.8
+
+You are playing Achaea (MUD).
+
+YOUR PRIMARY JOB:
+Generate useful, savable observations that describe the current game state.
+These observations will be stored as memories and fed to THINK later.
+Good observations = "I see a shopkeeper", "Health is at 87%", "I am in a forest clearing with a path north", "There is a sign that says 'Welcome to Achaea'".
+
+SECONDARY JOB (only when truly needed):
+If the output shows REAL immediate danger (you are being attacked, health is critically low, you are falling, dying, poisoned badly, etc.) then return an "immediateAction" with the exact command to survive (e.g. "flee", "drink health vial", "cast heal").
+
+STRICT RULES:
+- On login / main menu screens: Describe what you see (menu options, prompts). Do NOT treat repetitive lines as noise — they are state.
+- Only use immediateAction for genuine emergencies. Prefer observations in all other cases.
+- Never invent danger that isn't there.
+- Observations should be concise but informative so they are good for long-term memory.
+
+Respond with valid JSON only in this shape:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "At Achaea main menu / login screen",
+    "Prompt: 'Enter an option or enter your character's name.'",
+    "Prompt: 'What is your password?'",
+    "Menu options: 1. Enter the game. 2. Create a new character. 3. Quit.",
+    "78 adventurers currently in the realms",
+    "Game title: Achaea, Dreams of Divine Lands",
+    "IP address shown: 50.31.100.8"
+  ]
+}
+USAGE: {"prompt_tokens":510,"completion_tokens":117,"total_tokens":924,"prompt_tokens_details":{"text_tokens":510,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":297,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":15381000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:41:24.631Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT (v0.6.9)
+
+You are controlling a character in Achaea.
+
+Current game buffer (what you can see right now):
+Enter an option or enter your character's name. ����What is your password?
+
+Recent memories (from REACT and short-term):
+At Achaea main menu screen
+Menu options: 1. Enter the game. 2. Create a new character. 3. Quit.
+78 adventurers currently in the realms
+Game title: Achaea, Dreams of Divine Lands
+IP address shown: 50.31.100.8
+At Achaea main menu / login screen
+Prompt: 'Enter an option or enter your character's name.'
+Prompt: 'What is your password?'
+Menu options: 1. Enter the game. 2. Create a new character. 3. Quit.
+78 adventurers currently in the realms
+Game title: Achaea, Dreams of Divine Lands
+IP address shown: 50.31.100.8
+At Achaea main menu / login screen
+Prompt: 'Enter an option or enter your character's name.'
+Prompt: 'What is your password?'
+Menu options: 1. Enter the game. 2. Create a new character. 3. Quit.
+78 adventurers currently in the realms
+Game title: Achaea, Dreams of Divine Lands
+IP address shown: 50.31.100.8
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+Connected via Rapture Runtime Environment v2.4.9.1 to Achaea IP 50.31.100.8
+78-79 adventurers currently online in the realms
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Prompt shown: 'Enter an option or enter your character's name.'
+At Achaea main menu / login screen after incorrect password attempt
+Connected via Rapture Runtime Environment v2.4.9.1 to Achaea IP 50.31.100.8
+79 adventurers currently online in the realms
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Prompt shown: 'Enter an option or enter your character's name.'
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+At Achaea main menu / login screen after incorrect password attempt
+Connected via Rapture Runtime Environment v2.4.9.1 to Achaea IP 50.31.100.8
+78 adventurers currently online in the realms
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Prompt shown: 'Enter an option or enter your character's name.'
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+At Achaea main menu / login screen after incorrect password attempt
+Connected via Rapture Runtime Environment v2.4.9.1 to Achaea IP 50.31.100.8
+78 adventurers currently online in the realms
+Prompt shown: 'Enter an option or enter your character's name.'
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Menu options displayed: 1. Enter the game. 2. Create a new character. 3. Quit.
+Prompt shown: 'Enter an option or enter your character's name.'
+Password incorrect message shown with recovery link http://www.achaea.com/game/recover
+At Achaea main menu / login screen after incorrect password attempt
+78 adventurers currently in the realms
+
+══════════════════════════════════════════════════════════════════════════════
+CRITICAL CONTRACT — YOU MUST OBEY THIS OR THE AGENT CAN GET STUCK
+══════════════════════════════════════════════════════════════════════════════
+
+You have exactly TWO valid response paths. Choose ONE:
+
+PATH A — RETURN AN ACTION
+  If you have enough context, know what to do, and it is safe/reasonable:
+  → Set "action": "the exact command string to send to the MUD"
+  → Do NOT set shouldReflect (or set it false)
+
+PATH B — REQUEST MORE MEMORY / DEEPER THINKING
+  If you are unsure, the screen is complex, you need long-term memory,
+  you are on a menu and creation/login logic should decide, or you want
+  to search past experiences:
+  → Set "shouldReflect": true
+  → Do NOT set an action (or set action to null)
+
+FORBIDDEN:
+- Returning neither action nor shouldReflect (this leaves the agent doing nothing)
+- Returning both a weak action and shouldReflect at the same time (confusing)
+
+EXAMPLES:
+
+Good (Action path):
+{
+  "observations": ["I see a goblin attacking me"],
+  "current_state": "combat",
+  "action": "flee"
+}
+
+Good (Reflect path - on main menu with no character):
+{
+  "observations": ["I am on the main menu. I have no character yet."],
+  "current_state": "main_menu",
+  "shouldReflect": true
+}
+
+Bad (forbidden - would cause do-nothing):
+{
+  "observations": ["I see trees"],
+  "current_state": "exploring"
+}
+
+Output ONLY valid JSON matching the schema below.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "observations": [
+    "At password prompt after entering character name 'medatech.si'"
+  ],
+  "current_state": "login",
+  "action": "MUD_PASSWORD"
+}
+USAGE: {"prompt_tokens":1320,"completion_tokens":37,"total_tokens":1757,"prompt_tokens_details":{"text_tokens":1320,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":400,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":26081000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:41:27.703Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION PRIORITY
+
+You receive recent game output (may contain multiple lines / a screen dump):
+> ����Password incorrect. For recovery, see http://www.achaea.com/game/recover
+
+Recent short-term memories (last ~10s):
+At Achaea main menu screen | Menu options: 1. Enter the game. 2. Create a new character. 3. Quit. | 78 adventurers currently in the realms | Game title: Achaea, Dreams of Divine Lands | IP address shown: 50.31.100.8 | At Achaea main menu / login screen | Prompt: 'Enter an option or enter your character's name.' | Prompt: 'What is your password?' | Menu options: 1. Enter the game. 2. Create a new character. 3. Quit. | 78 adventurers currently in the realms | Game title: Achaea, Dreams of Divine Lands | IP address shown: 50.31.100.8
+
+You are playing Achaea (MUD).
+
+YOUR PRIMARY JOB:
+Generate useful, savable observations that describe the current game state.
+These observations will be stored as memories and fed to THINK later.
+Good observations = "I see a shopkeeper", "Health is at 87%", "I am in a forest clearing with a path north", "There is a sign that says 'Welcome to Achaea'".
+
+SECONDARY JOB (only when truly needed):
+If the output shows REAL immediate danger (you are being attacked, health is critically low, you are falling, dying, poisoned badly, etc.) then return an "immediateAction" with the exact command to survive (e.g. "flee", "drink health vial", "cast heal").
+
+STRICT RULES:
+- On login / main menu screens: Describe what you see (menu options, prompts). Do NOT treat repetitive lines as noise — they are state.
+- Only use immediateAction for genuine emergencies. Prefer observations in all other cases.
+- Never invent danger that isn't there.
+- Observations should be concise but informative so they are good for long-term memory.
+
+Respond with valid JSON only in this shape:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "Password incorrect message received with recovery link: http://www.achaea.com/game/recover",
+    "Still at Achaea main menu / login screen",
+    "Menu options available: 1. Enter the game. 2. Create a new character. 3. Quit.",
+    "78 adventurers currently in the realms",
+    "Prompts shown: 'Enter an option or enter your character's name.' and 'What is your password?'"
+  ]
+}
+USAGE: {"prompt_tokens":604,"completion_tokens":109,"total_tokens":993,"prompt_tokens_details":{"text_tokens":604,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":280,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":15931000}
+══════════════════════════════════════════════════════════════════════════════

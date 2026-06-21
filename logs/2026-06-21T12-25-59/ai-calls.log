@@ -1,0 +1,460 @@
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:26:12.238Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE
+
+You receive recent game output (may contain multiple lines):
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           78 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Last 10 seconds memories: none
+
+You are playing Achaea.
+
+Rules:
+- If the output shows a numbered menu (especially 1. Enter, 2. Create, 3. Quit), this is the MAIN MENU. Usually just observe.
+- Only return "immediateAction" for real immediate danger (attacked, dying, falling, very low health).
+- Otherwise return observations only if something meaningful happened.
+- Do NOT create observations for repetitive menu lines like "3. Quit."
+
+Respond with valid JSON only.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "observation": null,
+  "immediateAction": null
+}
+USAGE: {"prompt_tokens":392,"completion_tokens":15,"total_tokens":1045,"prompt_tokens_details":{"text_tokens":392,"audio_tokens":0,"image_tokens":0,"cached_tokens":192},"completion_tokens_details":{"reasoning_tokens":638,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":19209000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:26:15.921Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — MENU + CREATION AWARENESS
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           78 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent memories:
+none
+
+Persistent memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+
+CRITICAL RULES:
+
+1. If the buffer shows the main menu ("1. Enter the game", "2. Create a new character", "3. Quit"), this is the MAIN MENU.
+
+2. **Character Creation Mode**:
+   - If persistent memories clearly state that you have no character and must create one, you should be MORE WILLING to take action.
+   - In this case, it is acceptable to set "shouldReflect": true even on the main menu so you can decide to create a character (usually option 2).
+
+3. Normal behavior (when you already have a character):
+   - On the main menu you should usually do nothing.
+   - Prefer "shouldReflect": false unless something important changed.
+
+4. Never randomly output menu numbers unless you have a clear reason from memory.
+
+Output valid JSON:
+{
+  "observations": ["obs1", "obs2"],
+  "current_state": "main_menu" | "character_creation" | "logged_in" | "unknown",
+  "action"?: "command",
+  "shouldReflect"?: boolean
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "observations": [
+    "Main menu displayed with options: 1. Enter the game, 2. Create a new character, 3. Quit.",
+    "No login prompt visible; menu is presented directly."
+  ],
+  "current_state": "main_menu",
+  "shouldReflect": false
+}
+USAGE: {"prompt_tokens":1296,"completion_tokens":61,"total_tokens":1779,"prompt_tokens_details":{"text_tokens":1296,"audio_tokens":0,"image_tokens":0,"cached_tokens":256},"completion_tokens_details":{"reasoning_tokens":422,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":25587000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:28:14.132Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE
+
+You receive recent game output (may contain multiple lines):
+Enter an option or enter your character's name. ����
+This line is assumed to be inactive, and is being cut. Please reconnect if this
+is in error.
+
+Last 10 seconds memories: none
+
+You are playing Achaea.
+
+Rules:
+- If the output shows a numbered menu (especially 1. Enter, 2. Create, 3. Quit), this is the MAIN MENU. Usually just observe.
+- Only return "immediateAction" for real immediate danger (attacked, dying, falling, very low health).
+- Otherwise return observations only if something meaningful happened.
+- Do NOT create observations for repetitive menu lines like "3. Quit."
+
+Respond with valid JSON only.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observation": null
+}
+USAGE: {"prompt_tokens":285,"completion_tokens":15,"total_tokens":1023,"prompt_tokens_details":{"text_tokens":285,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":723,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":20668500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:28:15.797Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE
+
+You receive recent game output (may contain multiple lines):
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           78 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Last 10 seconds memories: none
+
+You are playing Achaea.
+
+Rules:
+- If the output shows a numbered menu (especially 1. Enter, 2. Create, 3. Quit), this is the MAIN MENU. Usually just observe.
+- Only return "immediateAction" for real immediate danger (attacked, dying, falling, very low health).
+- Otherwise return observations only if something meaningful happened.
+- Do NOT create observations for repetitive menu lines like "3. Quit."
+
+Respond with valid JSON only.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{}
+USAGE: {"prompt_tokens":392,"completion_tokens":1,"total_tokens":909,"prompt_tokens_details":{"text_tokens":392,"audio_tokens":0,"image_tokens":0,"cached_tokens":192},"completion_tokens_details":{"reasoning_tokens":516,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":15809000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:28:18.301Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — MENU + CREATION AWARENESS
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+Enter an option or enter your character's name. ����
+This line is assumed to be inactive, and is being cut. Please reconnect if this
+is in error.
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           78 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent memories:
+none
+
+Persistent memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+
+CRITICAL RULES:
+
+1. If the buffer shows the main menu ("1. Enter the game", "2. Create a new character", "3. Quit"), this is the MAIN MENU.
+
+2. **Character Creation Mode**:
+   - If persistent memories clearly state that you have no character and must create one, you should be MORE WILLING to take action.
+   - In this case, it is acceptable to set "shouldReflect": true even on the main menu so you can decide to create a character (usually option 2).
+
+3. Normal behavior (when you already have a character):
+   - On the main menu you should usually do nothing.
+   - Prefer "shouldReflect": false unless something important changed.
+
+4. Never randomly output menu numbers unless you have a clear reason from memory.
+
+Output valid JSON:
+{
+  "observations": ["obs1", "obs2"],
+  "current_state": "main_menu" | "character_creation" | "logged_in" | "unknown",
+  "action"?: "command",
+  "shouldReflect"?: boolean
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "observations": [
+    "Main menu displayed with options 1. Enter the game, 2. Create a new character, 3. Quit",
+    "Prompt allows entering character's name directly to log in"
+  ],
+  "current_state": "main_menu",
+  "action": "medatech.si",
+  "shouldReflect": false
+}
+USAGE: {"prompt_tokens":1330,"completion_tokens":68,"total_tokens":1824,"prompt_tokens_details":{"text_tokens":1330,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":426,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":27631000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:30:19.178Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE
+
+You receive recent game output (may contain multiple lines):
+Enter an option or enter your character's name. ����
+This line is assumed to be inactive, and is being cut. Please reconnect if this
+is in error.
+
+Last 10 seconds memories: none
+
+You are playing Achaea.
+
+Rules:
+- If the output shows a numbered menu (especially 1. Enter, 2. Create, 3. Quit), this is the MAIN MENU. Usually just observe.
+- Only return "immediateAction" for real immediate danger (attacked, dying, falling, very low health).
+- Otherwise return observations only if something meaningful happened.
+- Do NOT create observations for repetitive menu lines like "3. Quit."
+
+Respond with valid JSON only.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{}
+USAGE: {"prompt_tokens":285,"completion_tokens":1,"total_tokens":913,"prompt_tokens_details":{"text_tokens":285,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":627,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":17918500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:30:21.563Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE
+
+You receive recent game output (may contain multiple lines):
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           80 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Last 10 seconds memories: none
+
+You are playing Achaea.
+
+Rules:
+- If the output shows a numbered menu (especially 1. Enter, 2. Create, 3. Quit), this is the MAIN MENU. Usually just observe.
+- Only return "immediateAction" for real immediate danger (attacked, dying, falling, very low health).
+- Otherwise return observations only if something meaningful happened.
+- Do NOT create observations for repetitive menu lines like "3. Quit."
+
+Respond with valid JSON only.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{}
+USAGE: {"prompt_tokens":392,"completion_tokens":1,"total_tokens":925,"prompt_tokens_details":{"text_tokens":392,"audio_tokens":0,"image_tokens":0,"cached_tokens":192},"completion_tokens_details":{"reasoning_tokens":532,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":16209000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T12:30:22.662Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — MENU + CREATION AWARENESS
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+Enter an option or enter your character's name. ����
+This line is assumed to be inactive, and is being cut. Please reconnect if this
+is in error.
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           80 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent memories:
+none
+
+Persistent memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+System: Follow the exact 4-stage thinking system.
+My character name is "medatech.si". The password is stored in MUD_PASSWORD. When I see the login prompt or main menu, I must send my character name first, then the password.
+
+CRITICAL RULES:
+
+1. If the buffer shows the main menu ("1. Enter the game", "2. Create a new character", "3. Quit"), this is the MAIN MENU.
+
+2. **Character Creation Mode**:
+   - If persistent memories clearly state that you have no character and must create one, you should be MORE WILLING to take action.
+   - In this case, it is acceptable to set "shouldReflect": true even on the main menu so you can decide to create a character (usually option 2).
+
+3. Normal behavior (when you already have a character):
+   - On the main menu you should usually do nothing.
+   - Prefer "shouldReflect": false unless something important changed.
+
+4. Never randomly output menu numbers unless you have a clear reason from memory.
+
+Output valid JSON:
+{
+  "observations": ["obs1", "obs2"],
+  "current_state": "main_menu" | "character_creation" | "logged_in" | "unknown",
+  "action"?: "command",
+  "shouldReflect"?: boolean
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "observations": [
+    "Main menu displayed with options 1. Enter the game, 2. Create a new character, 3. Quit",
+    "Prompt allows entering character's name directly"
+  ],
+  "current_state": "main_menu",
+  "action": "medatech.si",
+  "shouldReflect": false
+}
+USAGE: {"prompt_tokens":1330,"completion_tokens":65,"total_tokens":1706,"prompt_tokens_details":{"text_tokens":1330,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":311,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":24681000}
+══════════════════════════════════════════════════════════════════════════════

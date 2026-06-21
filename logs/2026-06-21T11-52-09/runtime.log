@@ -273,3 +273,47 @@
 [2026-06-21T12:19:40.768Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
 [2026-06-21T12:19:40.772Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
 [2026-06-21T12:19:40.775Z] [INFO] 📥 MUD:            [32m3.[37m Quit.
+[2026-06-21T12:21:42.767Z] [INFO] 📥 MUD: Enter an option or enter your character's name. ����
+[2026-06-21T12:21:42.772Z] [INFO] 📥 MUD: This line is assumed to be inactive, and is being cut. Please reconnect if this
+[2026-06-21T12:21:42.775Z] [INFO] 📥 MUD: is in error.
+[2026-06-21T12:21:42.779Z] [INFO] Connection closed - auto-reconnecting...
+[2026-06-21T12:21:45.782Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-21T12:21:45.878Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-21T12:21:46.015Z] [INFO] 📥 MUD: ����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-21T12:21:46.019Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-21T12:21:46.023Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-21T12:21:46.026Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-21T12:21:46.031Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-21T12:21:46.035Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-21T12:21:46.038Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-21T12:21:46.042Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-21T12:21:46.046Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-21T12:21:46.048Z] [INFO] 📥 MUD:            74 adventurers are currently in the realms.
+[2026-06-21T12:21:46.053Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-21T12:21:46.056Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-21T12:21:46.059Z] [INFO] 📥 MUD:            [32m3.[37m Quit.
+[2026-06-21T12:23:48.067Z] [INFO] 📥 MUD: Enter an option or enter your character's name. ����
+[2026-06-21T12:23:48.070Z] [INFO] 📥 MUD: This line is assumed to be inactive, and is being cut. Please reconnect if this
+[2026-06-21T12:23:48.073Z] [INFO] 📥 MUD: is in error.
+[2026-06-21T12:23:48.076Z] [INFO] Connection closed - auto-reconnecting...
+[2026-06-21T12:23:51.077Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-21T12:23:51.173Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-21T12:23:51.285Z] [INFO] 📥 MUD: ����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-21T12:23:51.290Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-21T12:23:51.293Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-21T12:23:51.296Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-21T12:23:51.301Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-21T12:23:51.304Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-21T12:23:51.307Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-21T12:23:51.311Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-21T12:23:51.315Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-21T12:23:51.318Z] [INFO] 📥 MUD:            74 adventurers are currently in the realms.
+[2026-06-21T12:23:51.322Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-21T12:23:51.326Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-21T12:23:51.329Z] [INFO] 📥 MUD:            [32m3.[37m Quit.
+[2026-06-21T12:23:52.120Z] [SUCCESS] ✅ Sent: medatech.si
+[2026-06-21T12:23:52.214Z] [INFO] 📥 MUD: Enter an option or enter your character's name. ����What is your password?
+[2026-06-21T12:25:53.373Z] [INFO] 📥 MUD: > ����
+[2026-06-21T12:25:53.377Z] [INFO] 📥 MUD: This line is assumed to be inactive, and is being cut. Please reconnect if this
+[2026-06-21T12:25:53.380Z] [INFO] 📥 MUD: is in error.
+[2026-06-21T12:25:53.383Z] [INFO] Connection closed - auto-reconnecting...
