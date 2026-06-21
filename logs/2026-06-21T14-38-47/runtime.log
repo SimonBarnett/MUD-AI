@@ -1,0 +1,229 @@
+=== MUD-AI SESSION STARTED: 2026-06-21T14:38:47.168Z ===
+[2026-06-21T14:38:47.168Z] [SUCCESS] 📄 Logs → C:\Users\medatech.si\mud - Copy\logs\2026-06-21T14-38-47
+[2026-06-21T14:38:47.169Z] [SUCCESS] 🚀 MUD-AI v0.6.21-buffer-fix — 4-Stage Thinking System + STRICT React→Think + RELIABLE memory hand-off + Cool Temp Name Creation + Login Failure Recovery
+[2026-06-21T14:38:47.175Z] [SUCCESS] Type !help or !connect — Actual MUD_PASSWORD value is now in the startup memory
+[2026-06-21T14:38:49.710Z] [INFO] 🆕 Creation mode active — temporary name generated: frostroot
+[2026-06-21T14:38:49.888Z] [SUCCESS] 📦 Loaded 2 persistent memories
+[2026-06-21T14:38:49.894Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-21T14:38:49.898Z] [SUCCESS] ✅ Connected — Strong imperative memory active from first THINK
+[2026-06-21T14:38:49.997Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-21T14:38:50.091Z] [INFO] 📥 MUD: ����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-21T14:38:50.097Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-21T14:38:50.101Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-21T14:38:50.105Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-21T14:38:50.109Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-21T14:38:50.113Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-21T14:38:50.119Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-21T14:38:50.123Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-21T14:38:50.127Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-21T14:38:50.128Z] [INFO] 📥 MUD:            87 adventurers are currently in the realms.
+[2026-06-21T14:38:50.133Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-21T14:38:50.137Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-21T14:38:50.141Z] [INFO] 📥 MUD:            [32m3.[37m Quit.
+[2026-06-21T14:38:56.170Z] [SUCCESS] ✅ Sent: 2
+[2026-06-21T14:38:56.282Z] [INFO] 📥 MUD: Enter an option or enter your character's name. ����
+[2026-06-21T14:38:56.287Z] [INFO] 📥 MUD: Please be aware that you must be 13 years of age or older to play Achaea.
+[2026-06-21T14:38:56.291Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 1 of 7): Name Selection ***
+[2026-06-21T14:38:56.295Z] [INFO] 📥 MUD: Pick your name with care! This is a fantasy world. Names must sound like 
+[2026-06-21T14:38:56.296Z] [INFO] 📥 MUD: fantasy names, not be taken from extremely famous characters in other places 
+[2026-06-21T14:38:56.300Z] [INFO] 📥 MUD: (real world, books, movies, video games) and musn't be too silly. We reserve 
+[2026-06-21T14:38:56.304Z] [INFO] 📥 MUD: the right to change any name we deem unfit.
+[2026-06-21T14:39:02.492Z] [SUCCESS] ✅ Sent: 2
+[2026-06-21T14:39:02.604Z] [INFO] 📥 MUD: What is the name you wish to use? > ��Your name must have between 3 and 12 letters.
+[2026-06-21T14:39:02.608Z] [INFO] 📥 MUD: Please be aware that you must be 13 years of age or older to play Achaea.
+[2026-06-21T14:39:02.611Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 1 of 7): Name Selection ***
+[2026-06-21T14:39:02.615Z] [INFO] 📥 MUD: Pick your name with care! This is a fantasy world. Names must sound like 
+[2026-06-21T14:39:02.619Z] [INFO] 📥 MUD: fantasy names, not be taken from extremely famous characters in other places 
+[2026-06-21T14:39:02.622Z] [INFO] 📥 MUD: (real world, books, movies, video games) and musn't be too silly. We reserve 
+[2026-06-21T14:39:02.625Z] [INFO] 📥 MUD: the right to change any name we deem unfit.
+[2026-06-21T14:39:12.103Z] [INFO] 🔍 Searching memories for 5 queries
+[2026-06-21T14:39:16.370Z] [SUCCESS] ✅ Sent: new
+[2026-06-21T14:39:16.533Z] [INFO] 📥 MUD: What is the name you wish to use? > ��
+[2026-06-21T14:39:24.554Z] [SUCCESS] ✅ Sent: frostroot
+[2026-06-21T14:39:24.666Z] [INFO] 📥 MUD: Enter a new password. > ������
+[2026-06-21T14:39:31.130Z] [ERROR] React error:
+[2026-06-21T14:39:35.121Z] [SUCCESS] ✅ Sent: frostroot
+[2026-06-21T14:39:35.214Z] [INFO] 📥 MUD: Please confirm your password. > ������
+[2026-06-21T14:39:35.219Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 2 of 7): Gender Selection ***
+[2026-06-21T14:39:35.223Z] [INFO] 📥 MUD:                   1. Male
+[2026-06-21T14:39:35.228Z] [INFO] 📥 MUD:                   2. Female
+[2026-06-21T14:39:45.346Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:39:48.481Z] [SUCCESS] ✅ Sent: new
+[2026-06-21T14:39:48.574Z] [INFO] 📥 MUD: What sex will you be? > ��Either type 1 for MALE or 2 for FEMALE.
+[2026-06-21T14:39:48.578Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 2 of 7): Gender Selection ***
+[2026-06-21T14:39:48.581Z] [INFO] 📥 MUD:                   1. Male
+[2026-06-21T14:39:48.584Z] [INFO] 📥 MUD:                   2. Female
+[2026-06-21T14:40:00.719Z] [INFO] 🔍 Searching memories for 5 queries
+[2026-06-21T14:40:07.066Z] [SUCCESS] ✅ Sent: new
+[2026-06-21T14:40:07.159Z] [INFO] 📥 MUD: What sex will you be? > ��Either type 1 for MALE or 2 for FEMALE.
+[2026-06-21T14:40:07.164Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 2 of 7): Gender Selection ***
+[2026-06-21T14:40:07.169Z] [INFO] 📥 MUD:                   1. Male
+[2026-06-21T14:40:07.170Z] [INFO] 📥 MUD:                   2. Female
+[2026-06-21T14:40:19.762Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:40:23.608Z] [SUCCESS] ✅ Sent: create
+[2026-06-21T14:40:23.710Z] [INFO] 📥 MUD: What sex will you be? > ��Either type 1 for MALE or 2 for FEMALE.
+[2026-06-21T14:40:23.717Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 2 of 7): Gender Selection ***
+[2026-06-21T14:40:23.722Z] [INFO] 📥 MUD:                   1. Male
+[2026-06-21T14:40:23.728Z] [INFO] 📥 MUD:                   2. Female
+[2026-06-21T14:40:32.015Z] [SUCCESS] ✅ Sent: 1
+[2026-06-21T14:40:32.108Z] [INFO] 📥 MUD: What sex will you be? > ��
+[2026-06-21T14:40:32.110Z] [INFO] 📥 MUD: Welcome to Achaea, Sir.
+[2026-06-21T14:40:32.115Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 3 of 7): Race Selection ***
+[2026-06-21T14:40:32.119Z] [INFO] 📥 MUD:      HELP          will show you the general race help file.
+[2026-06-21T14:40:32.125Z] [INFO] 📥 MUD:      RACES         will list you the available races.
+[2026-06-21T14:40:32.129Z] [INFO] 📥 MUD:      INFO   <race> will give you information on the race.
+[2026-06-21T14:40:32.133Z] [INFO] 📥 MUD:      SELECT <race> will make your character of the given race.
+[2026-06-21T14:40:32.135Z] [INFO] 📥 MUD: You must select a race now, but if you find later that you would rather be a 
+[2026-06-21T14:40:32.138Z] [INFO] 📥 MUD: different race, you will have a chance to change your race.
+[2026-06-21T14:40:38.660Z] [SUCCESS] ✅ Sent: RACES
+[2026-06-21T14:40:38.753Z] [INFO] 📥 MUD: Race> ��You can choose from the following races:
+[2026-06-21T14:40:38.758Z] [INFO] 📥 MUD:      Human:    The most populous race in the land.
+[2026-06-21T14:40:38.762Z] [INFO] 📥 MUD:      Atavian:  A race of winged humanoids.
+[2026-06-21T14:40:38.765Z] [INFO] 📥 MUD:      Dwarf:    A doughty, bearded, and hearty race.
+[2026-06-21T14:40:38.769Z] [INFO] 📥 MUD:      Fayad:    Half-fairy, half-dryad seekers after their own path.
+[2026-06-21T14:40:38.772Z] [INFO] 📥 MUD:      Grook:    Frog-like beings of superior intellect.
+[2026-06-21T14:40:38.775Z] [INFO] 📥 MUD:      Horkval:  A naturally armoured race of insect-like humanoids.
+[2026-06-21T14:40:38.780Z] [INFO] 📥 MUD:      Mhun:     Lithe and quick demi-humans.
+[2026-06-21T14:40:38.783Z] [INFO] 📥 MUD:      Rajamala: A race of tiger-men.
+[2026-06-21T14:40:38.786Z] [INFO] 📥 MUD:      Satyr:    The male-only race with the lower body of a goat.
+[2026-06-21T14:40:38.790Z] [INFO] 📥 MUD:      Siren:    A race composed entirely of females.
+[2026-06-21T14:40:38.793Z] [INFO] 📥 MUD:      Troll:    Large, strong, and regenerative.
+[2026-06-21T14:40:38.796Z] [INFO] 📥 MUD:      Tash'la:  Lithic warriors hailing from a distant plane.
+[2026-06-21T14:40:38.800Z] [INFO] 📥 MUD:      Tsol'aa:  Lithe, graceful, and intelligent.
+[2026-06-21T14:40:38.803Z] [INFO] 📥 MUD:      Xoran:    Fire-breathing lizardmen.
+[2026-06-21T14:40:38.807Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 3 of 7): Race Selection ***
+[2026-06-21T14:40:38.811Z] [INFO] 📥 MUD:      HELP          will show you the general race help file.
+[2026-06-21T14:40:38.814Z] [INFO] 📥 MUD:      RACES         will list you the available races.
+[2026-06-21T14:40:38.817Z] [INFO] 📥 MUD:      INFO   <race> will give you information on the race.
+[2026-06-21T14:40:38.821Z] [INFO] 📥 MUD:      SELECT <race> will make your character of the given race.
+[2026-06-21T14:40:38.824Z] [INFO] 📥 MUD: You must select a race now, but if you find later that you would rather be a 
+[2026-06-21T14:40:38.827Z] [INFO] 📥 MUD: different race, you will have a chance to change your race.
+[2026-06-21T14:40:47.433Z] [SUCCESS] ✅ Sent: SELECT Human
+[2026-06-21T14:40:47.547Z] [INFO] 📥 MUD: Race> ��Excellent, excellent. You are now a Human.
+[2026-06-21T14:40:47.551Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 4 of 7): Class Selection ***
+[2026-06-21T14:40:47.554Z] [INFO] 📥 MUD:      HELP           will show you the general class help file.
+[2026-06-21T14:40:47.557Z] [INFO] 📥 MUD:      CLASSES        will list you the available classes.
+[2026-06-21T14:40:47.562Z] [INFO] 📥 MUD:      SELECT <class> will make your character of the given class.
+[2026-06-21T14:40:47.565Z] [INFO] 📥 MUD: You may select a class now, but if you find later that you would rather in be a
+[2026-06-21T14:40:47.568Z] [INFO] 📥 MUD: different class, you will be able to change.
+[2026-06-21T14:41:02.429Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:41:06.442Z] [SUCCESS] ✅ Sent: new
+[2026-06-21T14:41:06.535Z] [INFO] 📥 MUD: Class> ��Invalid choice.
+[2026-06-21T14:41:06.540Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 4 of 7): Class Selection ***
+[2026-06-21T14:41:06.543Z] [INFO] 📥 MUD:      HELP           will show you the general class help file.
+[2026-06-21T14:41:06.546Z] [INFO] 📥 MUD:      CLASSES        will list you the available classes.
+[2026-06-21T14:41:06.549Z] [INFO] 📥 MUD:      SELECT <class> will make your character of the given class.
+[2026-06-21T14:41:06.553Z] [INFO] 📥 MUD: You may select a class now, but if you find later that you would rather in be a
+[2026-06-21T14:41:06.556Z] [INFO] 📥 MUD: different class, you will be able to change.
+[2026-06-21T14:41:20.879Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:41:26.440Z] [SUCCESS] ✅ Sent: create
+[2026-06-21T14:41:26.544Z] [INFO] 📥 MUD: Class> ��Invalid choice.
+[2026-06-21T14:41:26.549Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 4 of 7): Class Selection ***
+[2026-06-21T14:41:26.553Z] [INFO] 📥 MUD:      HELP           will show you the general class help file.
+[2026-06-21T14:41:26.557Z] [INFO] 📥 MUD:      CLASSES        will list you the available classes.
+[2026-06-21T14:41:26.562Z] [INFO] 📥 MUD:      SELECT <class> will make your character of the given class.
+[2026-06-21T14:41:26.565Z] [INFO] 📥 MUD: You may select a class now, but if you find later that you would rather in be a
+[2026-06-21T14:41:26.569Z] [INFO] 📥 MUD: different class, you will be able to change.
+[2026-06-21T14:41:38.149Z] [SUCCESS] ✅ Sent: CLASSES
+[2026-06-21T14:41:38.285Z] [INFO] 📥 MUD: Class> ��You can choose from the following classes:
+[2026-06-21T14:41:38.287Z] [INFO] 📥 MUD: Alchemist   Enigmatic figures wielding the power of the ether.
+[2026-06-21T14:41:38.292Z] [INFO] 📥 MUD: Apostate    Evil, necromantic daemon summoners.
+[2026-06-21T14:41:38.296Z] [INFO] 📥 MUD: Bard        Troubadour adventurers.
+[2026-06-21T14:41:38.302Z] [INFO] 📥 MUD: Blademaster Masters of the legendary Two Arts.
+[2026-06-21T14:41:38.306Z] [INFO] 📥 MUD: DepthswalkerThe deadly Tsol'teth-taught warriors.
+[2026-06-21T14:41:38.312Z] [INFO] 📥 MUD: Druid       Forest-loving metamorphs.
+[2026-06-21T14:41:38.316Z] [INFO] 📥 MUD: Infernal    Evil warriors wielding dark sorcery.
+[2026-06-21T14:41:38.321Z] [INFO] 📥 MUD: Jester      Happy-go-lucky pranksters and rogueish entertainers.
+[2026-06-21T14:41:38.325Z] [INFO] 📥 MUD: Magi        Masters of the four elements and crystalline vibrations.
+[2026-06-21T14:41:38.330Z] [INFO] 📥 MUD: Monk        A class that forges mind, body, and spirit into a unified whole.
+[2026-06-21T14:41:38.334Z] [INFO] 📥 MUD: Occultist   Chaos-loving summoners of extra-planar entities.
+[2026-06-21T14:41:38.339Z] [INFO] 📥 MUD: Paladin     Noble warriors wielding dual weapons with a falcon companion.
+[2026-06-21T14:41:38.344Z] [INFO] 📥 MUD: Pariah      Desert sorcerers who dabble in arts most malign.
+[2026-06-21T14:41:38.348Z] [INFO] 📥 MUD: Priest      Holy warriors with a fearsome guardian angel by their side.
+[2026-06-21T14:41:38.353Z] [INFO] 📥 MUD: Psion       Weavers of Creation who wield an ancient and mysterious power.
+[2026-06-21T14:41:38.357Z] [INFO] 📥 MUD: Runewarden  Mystic warriors who employ runic lore alongside their swords.
+[2026-06-21T14:41:38.361Z] [INFO] 📥 MUD: Sentinel    Metamorphing forest rangers with animals for assistance.
+[2026-06-21T14:41:38.365Z] [INFO] 📥 MUD: Serpent     Masters of venoms and subterfuge. Perhaps the trickiest class.
+[2026-06-21T14:41:38.370Z] [INFO] 📥 MUD: Shaman      Mystical users of Vodun dolls, curses, and bound spirits.
+[2026-06-21T14:41:38.374Z] [INFO] 📥 MUD: Sylvan      Forest-lovers who meld in mastery of three elements.
+[2026-06-21T14:41:38.378Z] [INFO] 📥 MUD: Unnamable   Warriors who aspire to power most profane.
+[2026-06-21T14:41:38.383Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 4 of 7): Class Selection ***
+[2026-06-21T14:41:38.387Z] [INFO] 📥 MUD:      HELP           will show you the general class help file.
+[2026-06-21T14:41:38.391Z] [INFO] 📥 MUD:      CLASSES        will list you the available classes.
+[2026-06-21T14:41:38.396Z] [INFO] 📥 MUD:      SELECT <class> will make your character of the given class.
+[2026-06-21T14:41:38.397Z] [INFO] 📥 MUD: You may select a class now, but if you find later that you would rather in be a
+[2026-06-21T14:41:38.401Z] [INFO] 📥 MUD: different class, you will be able to change.
+[2026-06-21T14:41:54.983Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:41:59.550Z] [SUCCESS] ✅ Sent: new
+[2026-06-21T14:41:59.645Z] [INFO] 📥 MUD: Class> ��Invalid choice.
+[2026-06-21T14:41:59.651Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 4 of 7): Class Selection ***
+[2026-06-21T14:41:59.655Z] [INFO] 📥 MUD:      HELP           will show you the general class help file.
+[2026-06-21T14:41:59.660Z] [INFO] 📥 MUD:      CLASSES        will list you the available classes.
+[2026-06-21T14:41:59.663Z] [INFO] 📥 MUD:      SELECT <class> will make your character of the given class.
+[2026-06-21T14:41:59.667Z] [INFO] 📥 MUD: You may select a class now, but if you find later that you would rather in be a
+[2026-06-21T14:41:59.673Z] [INFO] 📥 MUD: different class, you will be able to change.
+[2026-06-21T14:42:17.188Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:42:21.264Z] [SUCCESS] ✅ Sent: create
+[2026-06-21T14:42:21.379Z] [INFO] 📥 MUD: Class> ��Invalid choice.
+[2026-06-21T14:42:21.384Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 4 of 7): Class Selection ***
+[2026-06-21T14:42:21.387Z] [INFO] 📥 MUD:      HELP           will show you the general class help file.
+[2026-06-21T14:42:21.391Z] [INFO] 📥 MUD:      CLASSES        will list you the available classes.
+[2026-06-21T14:42:21.397Z] [INFO] 📥 MUD:      SELECT <class> will make your character of the given class.
+[2026-06-21T14:42:21.400Z] [INFO] 📥 MUD: You may select a class now, but if you find later that you would rather in be a
+[2026-06-21T14:42:21.404Z] [INFO] 📥 MUD: different class, you will be able to change.
+[2026-06-21T14:42:32.414Z] [SUCCESS] ✅ Sent: SELECT Alchemist
+[2026-06-21T14:42:32.593Z] [INFO] 📥 MUD: Class> ��
+[2026-06-21T14:42:32.599Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 5 of 7): City Selection ***
+[2026-06-21T14:42:32.604Z] [INFO] 📥 MUD:      HELP          will show you the general city help file.
+[2026-06-21T14:42:32.609Z] [INFO] 📥 MUD:      CITIES        will list you the available cities.
+[2026-06-21T14:42:32.614Z] [INFO] 📥 MUD:      SELECT <city> will make your character of the given city.
+[2026-06-21T14:42:32.619Z] [INFO] 📥 MUD:      SELECT NONE   will forgo city selection for the time being.
+[2026-06-21T14:42:32.623Z] [INFO] 📥 MUD: You may select a city now, but if you find later that you would rather in be a 
+[2026-06-21T14:42:32.625Z] [INFO] 📥 MUD: different city, you will be able to change.
+[2026-06-21T14:42:40.486Z] [SUCCESS] ✅ Sent: SELECT NONE
+[2026-06-21T14:42:40.592Z] [INFO] 📥 MUD: City> ��You forgo city selection for the time being.
+[2026-06-21T14:42:40.598Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 6 of 7): Screenreader Tools ***
+[2026-06-21T14:42:40.603Z] [INFO] 📥 MUD: Achaea is dedicated to creating an accessible and inclusive environment for all
+[2026-06-21T14:42:40.609Z] [INFO] 📥 MUD: players, and has a suite of tools available to make gameplay easier for 
+[2026-06-21T14:42:40.614Z] [INFO] 📥 MUD: visually-impaired players, especially those accessing the game via 
+[2026-06-21T14:42:40.618Z] [INFO] 📥 MUD: screenreader. This includes changes to layouts, removal of certain symbols or 
+[2026-06-21T14:42:40.623Z] [INFO] 📥 MUD: ASCII art, and a number of other tweaks to make the game more accessible via 
+[2026-06-21T14:42:40.626Z] [INFO] 📥 MUD: audio cues. Please be aware that these tools disable layouts and colourations 
+[2026-06-21T14:42:40.631Z] [INFO] 📥 MUD: that are more visually friendly, and enabling this option is NOT recommended 
+[2026-06-21T14:42:40.635Z] [INFO] 📥 MUD: for players who are not using a screenreader.
+[2026-06-21T14:42:40.640Z] [INFO] 📥 MUD: If you would like to enable these tools, enter YES. Otherwise, enter NO.
+[2026-06-21T14:42:48.016Z] [SUCCESS] ✅ Sent: NO
+[2026-06-21T14:42:48.132Z] [INFO] 📥 MUD: Enable screenreader tools?> ��Screenreader tools disabled.
+[2026-06-21T14:42:48.137Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 7 of 7): Service Agreement ***
+[2026-06-21T14:42:48.141Z] [INFO] 📥 MUD: In order to finish character creation, you must read and agree to the Terms of 
+[2026-06-21T14:42:48.145Z] [INFO] 📥 MUD: Service at http://www.achaea.com/TOS. Do you agree without reservation to these
+[2026-06-21T14:42:55.675Z] [SUCCESS] ✅ Sent: YES
+[2026-06-21T14:42:55.785Z] [INFO] 📥 MUD: Terms? (yes/no)> > ��Congratulations! Your new character has been created.
+[2026-06-21T14:42:55.793Z] [INFO] 📥 MUD: Well met and welcome to Achaea!��
+[2026-06-21T14:42:58.287Z] [INFO] 📥 MUD: [32m350h, [37m[32m350m, [37m[32m600e, [37m[32m600w [37mex-��
+[2026-06-21T14:42:58.293Z] [INFO] 📥 MUD: [1;36mAn old man in dirty grey robes says, "Ahh, you're awake at last! Been tryin' to
+[2026-06-21T14:42:58.299Z] [INFO] 📥 MUD: rouse you for an hour. Thought maybe you were dead."[0;37m
+[2026-06-21T14:43:08.460Z] [SUCCESS] ✅ Sent: SAVE_USERNAME:frostroot
+[2026-06-21T14:43:08.554Z] [INFO] 📥 MUD: [32m350h, [37m[32m350m, [37m[32m600e, [37m[32m600w [37mex-��Your head swims in the darkness of your own consciousness.
+[2026-06-21T14:43:08.687Z] [INFO] 📥 MUD: [32m350h, [37m[32m350m, [37m[32m600e, [37m[32m600w [37mex-��
+[2026-06-21T14:43:08.691Z] [INFO] 📥 MUD: [1;36mAn old man in dirty grey robes says, "Well, time to get started, don't you 
+[2026-06-21T14:43:08.695Z] [INFO] 📥 MUD: think? Have a LOOK around."[0;37m
+[2026-06-21T14:43:16.268Z] [INFO] 📥 MUD: [32m350h, [37m[32m350m, [37m[32m600e, [37m[32m600w [37mex-��
+[2026-06-21T14:43:16.275Z] [INFO] 📥 MUD: [1;36mAn old man in dirty grey robes exclaims, "Hurry up. You can't do a damn thing 
+[2026-06-21T14:43:16.280Z] [INFO] 📥 MUD: if you don't know where you are!"[0;37m
+[2026-06-21T14:43:16.287Z] [INFO] 📥 MUD: [1;33m[Tip]: [0;37mType L or LOOK to see the room you're in and what's in the room.
+[2026-06-21T14:43:17.348Z] [SUCCESS] ✅ Sent: SAVE_USERNAME:frostroot
+[2026-06-21T14:43:17.442Z] [INFO] 📥 MUD: [32m350h, [37m[32m350m, [37m[32m600e, [37m[32m600w [37mex-��Save_username:frostroot is not a valid command.
+[2026-06-21T14:43:17.447Z] [INFO] 📥 MUD: Unsure of what to do next? Try HINT for a reminder.
+[2026-06-21T14:43:22.050Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:43:26.703Z] [SUCCESS] ✅ Sent: create
+[2026-06-21T14:43:26.813Z] [INFO] 📥 MUD: [32m350h, [37m[32m350m, [37m[32m600e, [37m[32m600w [37mex-��Create is not a valid command.
+[2026-06-21T14:43:26.820Z] [INFO] 📥 MUD: Did you perhaps mean [1;37mDATE[0;37m, [1;37mGREET[0;37m, or [1;37mCREDIT[0;37m?
+[2026-06-21T14:43:27.368Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:43:29.954Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T14:43:31.283Z] [SUCCESS] ✅ Sent: new
+[2026-06-21T14:43:31.380Z] [INFO] 📥 MUD: [32m350h, [37m[32m350m, [37m[32m600e, [37m[32m600w [37mex-��New is not a valid command.
+[2026-06-21T14:43:31.386Z] [INFO] 📥 MUD: Did you perhaps mean [1;37mNEWS[0;37m, [1;37mDEF[0;37m, or [1;37mMED[0;37m?
+[2026-06-21T14:43:33.101Z] [SUCCESS] ✅ Sent: new
+[2026-06-21T14:43:33.202Z] [INFO] 📥 MUD: [32m350h, [37m[32m350m, [37m[32m600e, [37m[32m600w [37mex-��New is not a valid command.
+[2026-06-21T14:43:33.209Z] [INFO] 📥 MUD: Did you perhaps mean [1;37mNEWS[0;37m, [1;37mDEF[0;37m, or [1;37mMED[0;37m?

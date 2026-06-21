@@ -36,7 +36,7 @@ process.env.CURRENT_RUN_LOG_DIR = CURRENT_RUN_LOG_DIR;
 console.clear();
 banner();
 log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
-log.success('🚀 MUD-AI v0.6.21-buffer-fix — 4-Stage Thinking System + STRICT React→Think + RELIABLE memory hand-off + Cool Temp Name Creation + Login Failure Recovery');
+log.success('🚀 MUD-AI v0.6.22-creation-fix — 4-Stage Thinking System + STRICT React→Think + RELIABLE memory hand-off + Cool Temp Name + SAVE_USERNAME Handling');
 
 // ==================== STRICT REACT-BEFORE-THINK SEQUENCING STATE ====================
 let hasReactedSinceLastThink = false;
@@ -94,7 +94,7 @@ function stripAnsi(str: string): string {
   );
 }
 
-// ==================== USERNAME PERSISTENCE (now uses MUD_CHARACTER) ====================
+// ==================== USERNAME PERSISTENCE (MUD_CHARACTER) ====================
 function saveUsernameToEnv(username: string) {
   const envPath = path.join(process.cwd(), '.env');
 
@@ -155,11 +155,9 @@ async function start() {
 
   isCreationMode = !mudCharacter;
 
-  // Clear so the new imperative is dominant from the very first THINK
   persistentMemories = [];
 
   if (mudCharacter) {
-    // ==================== LOGIN MODE ====================
     const imperative = 
       `I'm logging on with username ${mudCharacter} and password ${actualPassword}. ` +
       `When I see the main menu or login prompt, I must send my character name first, then the password.`;
@@ -169,19 +167,18 @@ async function start() {
 
     log.success(`🔐 Login mode active for character: ${mudCharacter}`);
   } else {
-    // ==================== CREATION MODE ====================
     const tempName = generateCoolTempName();
 
     const imperative = 
       `I'm creating a char, with username ${tempName} and password ${actualPassword}. ` +
-      `On the main menu I must choose option 2 (Create a new character). ` +
+      `On the main menu I must choose option 2. ` +
       `When asked for password and confirm password, send the exact same value. ` +
-      `After I successfully create the character, I must output exactly: SAVE_USERNAME:${tempName}`;
+      `After success, output exactly: SAVE_USERNAME:${tempName}`;
 
     await memorize(imperative, 0.99);
     persistentMemories.unshift(imperative);
 
-    log.info(`🆕 Creation mode active — temporary name generated: ${tempName}`);
+    log.info(`🆕 Creation mode active — temporary name: ${tempName}`);
   }
 
   await memorize("System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.", 0.9);
@@ -215,8 +212,6 @@ setInterval(async () => {
   const inputForReact = reactBuffer.trim();
   reactBuffer = '';
   lastReactTime = Date.now();
-
-  if (debugMode) log.info('⚡ React()');
 
   const result = await agent.react(inputForReact, { ultraShort: ultraShortMemories });
 
@@ -269,9 +264,19 @@ setInterval(async () => {
   const combinedRecent = [...recentMemories, ...lastFreshObservations];
   lastFreshObservations = [];
 
-  if (debugMode) log.info('🧠 Think() — using only REACT memories (no raw buffer)');
-
   const result = await agent.think("", { recent: combinedRecent, persistent: persistentMemories });
+
+  // === SAFETY NET: Catch SAVE_USERNAME even if it comes directly from THINK ===
+  if (result.action && typeof result.action === 'string' && result.action.startsWith('SAVE_USERNAME:')) {
+    const newUsername = result.action.split(':')[1]?.trim();
+    if (newUsername) {
+      saveUsernameToEnv(newUsername);
+      await memorize(`New character created successfully. My name is now ${newUsername}.`, 0.95);
+      log.success(`🎉 Character creation complete! Saved as MUD_CHARACTER=${newUsername}`);
+    }
+    pruneOldMemories();
+    return;
+  }
 
   const isStuckInLoginLoop = typeof (agent as any).isStuckInLoginLoop === 'function'
     ? (agent as any).isStuckInLoginLoop()
@@ -312,6 +317,7 @@ async function doReflectAndDecide() {
     if (newUsername) {
       saveUsernameToEnv(newUsername);
       await memorize(`New character created successfully. My name is now ${newUsername}.`, 0.95);
+      log.success(`🎉 Character creation complete! Saved as MUD_CHARACTER=${newUsername}`);
     }
     return;
   }
@@ -328,7 +334,7 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.21-buffer-fix — COMMANDS                  ║
+║                      MUD-AI v0.6.22-creation-fix — COMMANDS                ║
 ╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
 ║  !rules        Show current rules                                          ║
@@ -351,9 +357,9 @@ function showRules() {
 ══════════════════════════════════════════════════════════════════════════════
 REACT() → THINK() → REFLECT() → DECIDE()
 ══════════════════════════════════════════════════════════════════════════════
-• Uses MUD_CHARACTER from .env (blank = Creation Mode, value = Login Mode)
-• Actual MUD_PASSWORD value is now embedded in the startup imperative memory
-• THINK receives only REACT memories (no raw buffer)
+• Uses MUD_CHARACTER from .env (blank = Creation Mode)
+• Actual password value is embedded in the startup imperative
+• SAVE_USERNAME: is now properly intercepted even from direct THINK actions
 `);
 }
 
@@ -454,5 +460,5 @@ rl.on('close', () => {
 
 // ==================== BOOT ====================
 showHelp();
-log.success('Type !help or !connect — Actual MUD_PASSWORD value is now in the startup memory');
+log.success('Type !help or !connect — SAVE_USERNAME: is now properly intercepted');
 rl.prompt();

@@ -1,0 +1,43 @@
+=== MUD-AI SESSION STARTED: 2026-06-21T14:48:07.847Z ===
+[2026-06-21T14:48:07.848Z] [SUCCESS] 📄 Logs → C:\Users\medatech.si\mud - Copy\logs\2026-06-21T14-48-07
+[2026-06-21T14:48:07.849Z] [SUCCESS] 🚀 MUD-AI v0.6.22-creation-fix — 4-Stage Thinking System + STRICT React→Think + RELIABLE memory hand-off + Cool Temp Name + SAVE_USERNAME Handling
+[2026-06-21T14:48:07.853Z] [SUCCESS] Type !help or !connect — SAVE_USERNAME: is now properly intercepted
+[2026-06-21T14:48:14.497Z] [SUCCESS] 🔐 Login mode active for character: frostroot
+[2026-06-21T14:48:14.666Z] [SUCCESS] 📦 Loaded 30 persistent memories
+[2026-06-21T14:48:14.671Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-21T14:48:14.676Z] [SUCCESS] ✅ Connected — Strong imperative memory active from first THINK
+[2026-06-21T14:48:14.783Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-21T14:48:14.881Z] [INFO] 📥 MUD: ����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-21T14:48:14.887Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-21T14:48:14.892Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-21T14:48:14.897Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-21T14:48:14.899Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-21T14:48:14.903Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-21T14:48:14.908Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-21T14:48:14.912Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-21T14:48:14.919Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-21T14:48:14.924Z] [INFO] 📥 MUD:            91 adventurers are currently in the realms.
+[2026-06-21T14:48:14.929Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-21T14:48:14.933Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-21T14:48:14.936Z] [INFO] 📥 MUD:            [32m3.[37m Quit.
+[2026-06-21T14:48:20.272Z] [SUCCESS] ✅ Sent: frostroot
+[2026-06-21T14:48:20.391Z] [INFO] 📥 MUD: Enter an option or enter your character's name. ����What is your password?
+[2026-06-21T14:48:23.175Z] [ERROR] React error:
+[2026-06-21T14:48:26.394Z] [SUCCESS] ✅ Sent: frostroot
+[2026-06-21T14:48:26.493Z] [INFO] 📥 MUD: > ����Password incorrect. For recovery, see http://www.achaea.com/game/recover
+[2026-06-21T14:48:26.497Z] [INFO] Connection closed - auto-reconnecting...
+[2026-06-21T14:48:29.502Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-21T14:48:29.598Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-21T14:48:29.751Z] [INFO] 📥 MUD: ������������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-21T14:48:29.756Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-21T14:48:29.759Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-21T14:48:29.762Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-21T14:48:29.765Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-21T14:48:29.768Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-21T14:48:29.772Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-21T14:48:29.776Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-21T14:48:29.779Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-21T14:48:29.782Z] [INFO] 📥 MUD:            91 adventurers are currently in the realms.
+[2026-06-21T14:48:29.785Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-21T14:48:29.788Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-21T14:48:29.793Z] [INFO] 📥 MUD:            [32m3.[37m Quit.

@@ -1,11 +1,10 @@
-// src/context-engine/memory.ts - FULL VERSION WITH LAZY SUPABASE CLIENT
-import ws from 'ws';   // <-- Add this import at the top
+// src/context-engine/memory.ts - Vector Embeddings + Semantic Search
+import ws from 'ws';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
 
 let supabase: SupabaseClient | null = null;
 let openai: OpenAI | null = null;
-
 
 function getSupabase(): SupabaseClient {
   if (!supabase) {
@@ -27,7 +26,7 @@ function getSupabase(): SupabaseClient {
           },
         },
         realtime: {
-          transport: ws,           // ← This is the important line
+          transport: ws,
         },
       }
     );
@@ -47,7 +46,7 @@ function getOpenAI(): OpenAI {
   return openai;
 }
 
-// ==================== Memory Functions ====================
+// ==================== Types ====================
 
 export interface Memory {
   id?: string;
@@ -59,9 +58,25 @@ export interface Memory {
   updated_at?: string;
 }
 
+// ==================== Embedding Generation ====================
+
+async function generateEmbedding(text: string): Promise<number[]> {
+  const openaiClient = getOpenAI();
+
+  const response = await openaiClient.embeddings.create({
+    model: "text-embedding-3-small", // 1536 dimensions - good balance of quality and cost
+    input: text.replace(/\n/g, " "),
+    encoding_format: "float",
+  });
+
+  return response.data[0].embedding;
+}
+
+// ==================== Memory Functions ====================
+
 /**
  * Store a new memory.
- * Always inserts `entities` as a proper text[] array.
+ * Automatically generates vector embedding if none is provided.
  */
 export async function storeMemory(
   content: string,
@@ -72,13 +87,26 @@ export async function storeMemory(
 ): Promise<void> {
   const supabaseClient = getSupabase();
 
+  let finalEmbedding = embedding;
+
+  // Auto-generate embedding if not provided
+  if (!finalEmbedding) {
+    try {
+      finalEmbedding = await generateEmbedding(content);
+    } catch (err) {
+      console.error('Failed to generate embedding for memory:', err);
+      // Continue without embedding (graceful fallback)
+      finalEmbedding = undefined;
+    }
+  }
+
   const { error } = await supabaseClient
     .from('grok_mud_memories')
     .insert({
-      content: content,
+      content,
       importance,
-      entities: entities,
-      embedding,
+      entities,
+      embedding: finalEmbedding,
       created_at: timestamp || new Date().toISOString(),
     });
 
@@ -138,7 +166,7 @@ export async function getMemoryById(id: string): Promise<Memory | null> {
     .single();
 
   if (error) {
-    console.error('Failed to get memory:', error);
+    console.error('Failed to get memory by ID:', error);
     return null;
   }
 
@@ -146,7 +174,7 @@ export async function getMemoryById(id: string): Promise<Memory | null> {
 }
 
 /**
- * Get recent memories
+ * Get recent memories (no vector search)
  */
 export async function getRecentMemories(limit: number = 10): Promise<Memory[]> {
   const supabaseClient = getSupabase();
@@ -166,9 +194,48 @@ export async function getRecentMemories(limit: number = 10): Promise<Memory[]> {
 }
 
 /**
- * Simple text search on content
+ * Semantic vector search using embeddings (recommended)
+ */
+export async function searchSimilarMemories(
+  query: string,
+  limit: number = 10,
+  threshold: number = 0.72
+): Promise<Memory[]> {
+  const supabaseClient = getSupabase();
+
+  try {
+    const queryEmbedding = await generateEmbedding(query);
+
+    const { data, error } = await supabaseClient.rpc('match_memories', {
+      query_embedding: queryEmbedding,
+      match_threshold: threshold,
+      match_count: limit,
+    });
+
+    if (error) {
+      console.error('Vector search (match_memories) failed:', error);
+      return [];
+    }
+
+    return (data as Memory[]) || [];
+  } catch (err) {
+    console.error('Error in searchSimilarMemories:', err);
+    return [];
+  }
+}
+
+/**
+ * Hybrid search: tries vector search first, falls back to text search
  */
 export async function searchMemories(query: string, limit: number = 10): Promise<Memory[]> {
+  // Try semantic vector search first
+  const vectorResults = await searchSimilarMemories(query, limit);
+
+  if (vectorResults.length > 0) {
+    return vectorResults;
+  }
+
+  // Fallback to simple text search
   const supabaseClient = getSupabase();
 
   const { data, error } = await supabaseClient
@@ -179,7 +246,7 @@ export async function searchMemories(query: string, limit: number = 10): Promise
     .limit(limit);
 
   if (error) {
-    console.error('Failed to search memories:', error);
+    console.error('Text search fallback failed:', error);
     return [];
   }
 
@@ -193,4 +260,5 @@ export default {
   getMemoryById,
   getRecentMemories,
   searchMemories,
+  searchSimilarMemories,
 };

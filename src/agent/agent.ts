@@ -1,4 +1,4 @@
-// src/agent/agent.ts - v0.6.20-no-blind-fallback
+// src/agent/agent.ts - v0.6.23-menu-navigation-fix
 import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs';
@@ -47,7 +47,7 @@ export class MUDAgent {
   async react(input: string, ctx: any) {
     const ultraShort = ctx.ultraShort || ctx.ultraShortMemories || [];
 
-    const system = `REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.20)
+    const system = `REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.23)
 
 You receive recent game output:
 ${input}
@@ -102,7 +102,7 @@ Respond with valid JSON only:
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
 
-    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + TEMP NAME + PASSWORD RULES (v0.6.20)
+    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + MENU NAVIGATION + TEMP NAME RULES (v0.6.23)
 
 You are controlling a character in Achaea.
 
@@ -122,6 +122,16 @@ PATH B — Set "shouldReflect": true
 
 FORBIDDEN: Returning neither or both.
 
+MAIN MENU NAVIGATION RULES (MANDATORY):
+- When you see the main menu with these options:
+  1. Enter the game
+  2. Create a new character
+  3. Quit
+  → Login Mode (you have a saved character) → You MUST send "1" first.
+  → Creation Mode (no saved character) → You MUST send "2" first.
+- Never send the username or temporary name directly from the main menu.
+- Only send the character name when the game explicitly prompts for it (e.g. "Enter an option or enter your character's name").
+
 TEMP NAME + PASSWORD RULES (MANDATORY):
 - If persistent memory says you are using a temporary name (e.g. "I am using the temporary name XXX"), you MUST use exactly that name during creation.
 - Never send your Windows login name.
@@ -136,7 +146,7 @@ Output ONLY valid JSON.`;
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.15,
-        max_tokens: 780
+        max_tokens: 820
       });
 
       let parsed = JSON.parse(res.choices[0]?.message?.content || '{}');
@@ -234,7 +244,7 @@ Return ONLY a valid JSON array of 4-7 useful memory queries.`;
       .map((m, i) => `${i + 1}. ${m.content || m}`)
       .join('\n');
 
-    const system = `DECIDE MODE — FINAL ACTION (MUST RETURN A COMMAND v0.6.20)
+    const system = `DECIDE MODE — FINAL ACTION + MENU NAVIGATION (v0.6.23)
 
 Fresh memories from Reflect:
 ${memoriesText || 'No useful memories retrieved'}
@@ -243,10 +253,15 @@ You are playing Achaea and are on the main menu or in character creation.
 
 MANDATORY RULES:
 1. You MUST return a command. Never return null or an empty command.
-2. If persistent memory contains a temporary name (example: "I am using the temporary name XXX"), you MUST use exactly that name.
-3. Never send your Windows login name during creation.
-4. When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
-5. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
+2. MAIN MENU NAVIGATION:
+   - If you see options "1. Enter the game", "2. Create a new character", "3. Quit":
+     → Login Mode → send "1"
+     → Creation Mode → send "2"
+   - Never send the username or temp name directly from the main menu.
+3. If persistent memory contains a temporary name, you MUST use exactly that name during creation.
+4. Never send your Windows login name during creation.
+5. When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
+6. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
 
 Return a valid JSON object containing a "command" field.`;
 
@@ -255,7 +270,7 @@ Return a valid JSON object containing a "command" field.`;
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.12,
-        max_tokens: 280
+        max_tokens: 320
       });
 
       let content = res.choices[0]?.message?.content || '';
@@ -264,7 +279,6 @@ Return a valid JSON object containing a "command" field.`;
       try {
         parsed = JSON.parse(content);
       } catch {
-        // Try to extract command if model returned raw text
         const match = content.match(/"command"\s*:\s*"([^"]+)"/);
         if (match) {
           parsed = { command: match[1] };
@@ -279,8 +293,6 @@ Return a valid JSON object containing a "command" field.`;
       }
 
       if (!parsed || typeof parsed !== 'object' || !parsed.command) {
-        // Last resort: force reflection path by returning a safe creation command
-        // but only if we are clearly in creation flow. Otherwise let it fail cleanly.
         parsed = { command: null };
       }
 

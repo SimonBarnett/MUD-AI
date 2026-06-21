@@ -1,0 +1,246 @@
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:48:17.172Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.20)
+
+You receive recent game output:
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           91 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent short-term memories (last ~10s):
+none
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "Connected to Achaea MUD at IP 50.31.100.8",
+    "Running Rapture Runtime Environment v2.4.9.1 (c) 2026 Iron Realms Entertainment",
+    "Currently 91 adventurers online",
+    "Main menu displayed with options: 1. Enter the game, 2. Create a new character, 3. Quit",
+    "Game tagline: \"Your fate and fame shall be an echo and a light unto eternity.\""
+  ]
+}
+USAGE: {"prompt_tokens":397,"completion_tokens":119,"total_tokens":794,"prompt_tokens_details":{"text_tokens":397,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":278,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":13543500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:48:20.271Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + TEMP NAME + PASSWORD RULES (v0.6.20)
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+
+
+Recent memories (from REACT):
+Connected to Achaea MUD at IP 50.31.100.8
+Running Rapture Runtime Environment v2.4.9.1 (c) 2026 Iron Realms Entertainment
+Currently 91 adventurers online
+Main menu displayed with options: 1. Enter the game, 2. Create a new character, 3. Quit
+Game tagline: "Your fate and fame shall be an echo and a light unto eternity."
+Connected to Achaea MUD at IP 50.31.100.8
+Running Rapture Runtime Environment v2.4.9.1 (c) 2026 Iron Realms Entertainment
+Currently 91 adventurers online
+Main menu displayed with options: 1. Enter the game, 2. Create a new character, 3. Quit
+Game tagline: "Your fate and fame shall be an echo and a light unto eternity."
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+I'm logging on with username frostroot and password MySecretPassword. When I see the main menu or login prompt, I must send my character name first, then the password.
+City selection skipped but available later via command
+Character fully created as male human; visual mode active; now in starting game area
+Invalid command 'New' received; game suggested alternatives NEWS, DEF, or MED
+Tutorial phase active; game suggests using LOOK or L to examine room
+Old man in dirty grey robes present; dialogue: 'Well, time to get started, don't you think? Have a LOOK around.'
+Vitals at full starting values: 350h, 350m, 600e, 600w ex-
+City selection skipped but available later via command
+Character fully created as male human; now in starting game area with visual mode active
+Invalid command 'Create' received; game suggested alternatives DATE, GREET, or CREDIT
+Tutorial phase active; game suggests using LOOK or L to examine room
+Vitals at full starting values: 350h, 350m, 600e, 600w ex-
+Old man in dirty grey robes present; delivered dialogue: 'Well, time to get started, don't you think? Have a LOOK around.'
+Game suggests using HINT command when unsure of next steps
+Invalid command received: 'Save_username:frostroot is not a valid command'
+Player is male human with class already chosen; visual mode active, screenreader declined
+City selection skipped but available later
+Old man in dirty grey robes present; dialogue: 'Well, time to get started, don't you think? Have a LOOK around.'
+Vitals at full starting values: 350h, 350m, 600e, 600w ex-
+Character creation fully complete; now in game world after old man NPC dialogue
+Visual mode active; screenreader tools disabled
+Post-creation state: character fully created as male human, city selection skipped for later, now in starting game area
+Tutorial tip received: type L or LOOK to examine current room and contents
+Old man in dirty grey robes present and speaking; delivered dialogue about needing to know location and urging player to LOOK around
+Vitals at full starting values: 350h 350m 600e 600w ex-��
+NPC dialogue signals start of in-game tutorial/exploration phase
+Character creation fully complete; player is now in the game world as male human
+Old man in dirty grey robes present and has spoken: 'Well, time to get started, don't you think? Have a LOOK around.'
+Vitals shown as 350h 350m 600e 600w ex-�� indicating full starting resources
+
+You must choose exactly one of two paths:
+
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
+
+FORBIDDEN: Returning neither or both.
+
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name (e.g. "I am using the temporary name XXX"), you MUST use exactly that name during creation.
+- Never send your Windows login name.
+- When the game asks for password and then "confirm your password", you MUST send the exact same value from MUD_PASSWORD both times.
+
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
+
+Output ONLY valid JSON.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "action": "frostroot",
+  "current_state": "unknown",
+  "observations": []
+}
+USAGE: {"prompt_tokens":1064,"completion_tokens":7,"total_tokens":1422,"prompt_tokens_details":{"text_tokens":1064,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":351,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":20906000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:48:26.393Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + TEMP NAME + PASSWORD RULES (v0.6.20)
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+
+
+Recent memories (from REACT):
+Connected to Achaea MUD at IP 50.31.100.8
+Running Rapture Runtime Environment v2.4.9.1 (c) 2026 Iron Realms Entertainment
+Currently 91 adventurers online
+Main menu displayed with options: 1. Enter the game, 2. Create a new character, 3. Quit
+Game tagline: "Your fate and fame shall be an echo and a light unto eternity."
+Screen state unclear
+Screen state unclear
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+I'm logging on with username frostroot and password MySecretPassword. When I see the main menu or login prompt, I must send my character name first, then the password.
+City selection skipped but available later via command
+Character fully created as male human; visual mode active; now in starting game area
+Invalid command 'New' received; game suggested alternatives NEWS, DEF, or MED
+Tutorial phase active; game suggests using LOOK or L to examine room
+Old man in dirty grey robes present; dialogue: 'Well, time to get started, don't you think? Have a LOOK around.'
+Vitals at full starting values: 350h, 350m, 600e, 600w ex-
+City selection skipped but available later via command
+Character fully created as male human; now in starting game area with visual mode active
+Invalid command 'Create' received; game suggested alternatives DATE, GREET, or CREDIT
+Tutorial phase active; game suggests using LOOK or L to examine room
+Vitals at full starting values: 350h, 350m, 600e, 600w ex-
+Old man in dirty grey robes present; delivered dialogue: 'Well, time to get started, don't you think? Have a LOOK around.'
+Game suggests using HINT command when unsure of next steps
+Invalid command received: 'Save_username:frostroot is not a valid command'
+Player is male human with class already chosen; visual mode active, screenreader declined
+City selection skipped but available later
+Old man in dirty grey robes present; dialogue: 'Well, time to get started, don't you think? Have a LOOK around.'
+Vitals at full starting values: 350h, 350m, 600e, 600w ex-
+Character creation fully complete; now in game world after old man NPC dialogue
+Visual mode active; screenreader tools disabled
+Post-creation state: character fully created as male human, city selection skipped for later, now in starting game area
+Tutorial tip received: type L or LOOK to examine current room and contents
+Old man in dirty grey robes present and speaking; delivered dialogue about needing to know location and urging player to LOOK around
+Vitals at full starting values: 350h 350m 600e 600w ex-��
+NPC dialogue signals start of in-game tutorial/exploration phase
+Character creation fully complete; player is now in the game world as male human
+Old man in dirty grey robes present and has spoken: 'Well, time to get started, don't you think? Have a LOOK around.'
+Vitals shown as 350h 350m 600e 600w ex-�� indicating full starting resources
+
+You must choose exactly one of two paths:
+
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
+
+FORBIDDEN: Returning neither or both.
+
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name (e.g. "I am using the temporary name XXX"), you MUST use exactly that name during creation.
+- Never send your Windows login name.
+- When the game asks for password and then "confirm your password", you MUST send the exact same value from MUD_PASSWORD both times.
+
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
+
+Output ONLY valid JSON.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "action": "frostroot",
+  "current_state": "unknown",
+  "observations": []
+}
+USAGE: {"prompt_tokens":979,"completion_tokens":7,"total_tokens":1399,"prompt_tokens_details":{"text_tokens":979,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":413,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":21393500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T14:48:31.197Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.20)
+
+You receive recent game output:
+> ����Password incorrect. For recovery, see http://www.achaea.com/game/recover
+
+Recent short-term memories (last ~10s):
+Connected to Achaea MUD at IP 50.31.100.8 | Running Rapture Runtime Environment v2.4.9.1 (c) 2026 Iron Realms Entertainment | Currently 91 adventurers online | Main menu displayed with options: 1. Enter the game, 2. Create a new character, 3. Quit | Game tagline: "Your fate and fame shall be an echo and a light unto eternity." | Screen state unclear
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "Password attempt failed: 'Password incorrect. For recovery, see http://www.achaea.com/game/recover'",
+    "Still at login/main menu state after failed password entry"
+  ]
+}
+USAGE: {"prompt_tokens":373,"completion_tokens":54,"total_tokens":731,"prompt_tokens_details":{"text_tokens":373,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":304,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":12268500}
+══════════════════════════════════════════════════════════════════════════════
