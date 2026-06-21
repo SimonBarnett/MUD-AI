@@ -1,92 +1,79 @@
-// src/memory-store.ts - Full implementation for 4-stage system
+// src/memory-store.ts
+import ws from 'ws';
+(global as any).WebSocket = ws;   // ← MUST stay at the very top
+
+import 'dotenv/config';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
 export async function initMemoryDB() {
-  console.log('🗄️ Memory DB initialised (Supabase + pgvector)');
+  console.log('🗄️ Supabase memory store initialized');
 }
 
+// Save memory
 export async function memorizeFromUser(text: string, meta: any = {}) {
-  const boost = meta.boost || false;
-
-  // Duplicate detection + persistence boost
-  const { data: existing } = await supabase
+  const { error } = await supabase
     .from('memories')
-    .select('persistence')
-    .eq('content', text)
-    .single();
-
-  const persistence = existing ? Math.min(10, (existing.persistence || 5) + 2) : 6;
-
-  await supabase.from('memories').insert({
-    content: text,
-    memory_type: meta.type || 'observation',
-    persistence: persistence,
-    importance: meta.importance || 7,
-    tags: meta.tags || ['user_input', 'recent'],
-    embedding: null // would be generated in real ingestion
-  });
-
-  console.log(`💾 MEMORIZED [persistence=${persistence}]: ${text.substring(0, 60)}...`);
-  return { success: true, boosted: !!existing };
-}
-
-export async function queryMemories(queries: string[]) {
-  console.log(`🔍 Reflect → querying ${queries.length} specific memories from Supabase`);
-  
-  const results = [];
-  for (const q of queries) {
-    const { data } = await supabase
-      .from('memories')
-      .select('*')
-      .textSearch('content', q)
-      .order('persistence', { ascending: false })
-      .limit(3);
-
-    results.push({
-      query: q,
-      content: data?.[0]?.content || `Recall for "${q}": [detailed memory from DB]`,
-      persistence: data?.[0]?.persistence || 9
+    .insert({
+      content: text,
+      memory_type: meta.type || 'observation',
+      persistence: meta.boost ? 10 : 6,
+      importance: meta.importance || 7,
+      tags: meta.tags || ['recent'],
+      created_at: new Date().toISOString()
     });
-  }
-  return results;
+
+  if (error) console.error('💥 Supabase insert error:', error.message);
+  else console.log(`💾 MEMORIZED → ${text.substring(0, 70)}...`);
 }
 
-export async function queryMemoriesByTag(tag: string, opts: any = {}) {
+// Search memories
+export async function queryMemories(queries: string[]) {
+  const { data, error } = await supabase
+    .from('memories')
+    .select('*')
+    .textSearch('content', queries.join(' | '))
+    .order('persistence', { ascending: false })
+    .limit(10);
+
+  if (error) console.error('Query error:', error);
+  return data || [];
+}
+
+// Tag-based query
+export async function queryMemoriesByTag(tag: string) {
   const { data } = await supabase
     .from('memories')
     .select('*')
     .contains('tags', [tag])
-    .gte('persistence', opts.minScore || 7)
-    .order('persistence', { ascending: false })
-    .limit(opts.limit || 20);
+    .order('created_at', { ascending: false })
+    .limit(15);
 
-  return data || [
-    { content: "Primary goal: Survive, explore, and complete quests", persistence: 10 },
-    { content: "I am an adventurer in the MUD world", persistence: 10 },
-    { content: "Location awareness and NPC relationships are critical", persistence: 9 }
-  ];
+  console.log(`📚 Loaded ${data?.length || 0} memories with tag: ${tag}`);
+  return data || [];
 }
 
-export async function getRecentMemories(seconds: number) {
-  // In real version this would filter by timestamp
-  return recentMemoriesCache.slice(-15);
+// ← THESE ARE THE ONES YOU ASKED ABOUT
+export async function getRecentMemories(limit = 20) {
+  const { data } = await supabase
+    .from('memories')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  return data || [];
 }
 
-export async function getPersistentMemories() {
-  return queryMemoriesByTag('persistent', { minScore: 8 });
+export async function getPersistentMemories(threshold = 8) {
+  const { data } = await supabase
+    .from('memories')
+    .select('*')
+    .gte('persistence', threshold)
+    .order('persistence', { ascending: false });
+
+  return data || [];
 }
-
-// In-memory cache for speed (synced with DB)
-let recentMemoriesCache: string[] = [];
-
-export function addToRecentMemory(text: string) {
-  recentMemoriesCache.push(text);
-  if (recentMemoriesCache.length > 100) recentMemoriesCache.shift();
-}
-
-export { memorizeFromUser, queryMemories, queryMemoriesByTag, getRecentMemories, getPersistentMemories, initMemoryDB };
