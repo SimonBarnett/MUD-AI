@@ -1,4 +1,4 @@
-// src/agent/agent.ts - v0.6.5 — React → Think → Reflect → Decide + Strong Menu Handling
+// src/agent/agent.ts - v0.6.6 — React → Think → Reflect → Decide + Login/Creation Support
 import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs';
@@ -76,7 +76,7 @@ Respond with valid JSON only.`;
     }
   }
 
-  // ==================== THINK (Stronger Menu Safety) ====================
+  // ==================== THINK (Strong Menu Safety) ====================
   async think(buffer: string, ctx: any) {
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
@@ -184,27 +184,34 @@ Do not add any explanation or text outside the JSON array.`;
     }
   }
 
-  // ==================== DECIDE (Safer when no good memories) ====================
+  // ==================== DECIDE (With Login & Character Creation Support) ====================
   async decide(retrievedMemories: any[]) {
     const memoriesText = retrievedMemories
       .map((m, i) => `${i + 1}. ${m.content || m}`)
       .join('\n');
 
     const system = `DECIDE MODE — FINAL ACTION
+
 Fresh memories from Reflect:
 ${memoriesText || 'No useful memories retrieved'}
+
+You are playing Achaea.
+
+Special Commands:
+- If you have successfully created a new character, output: SAVE_USERNAME:NewCharacterName
+- If you need to log in, just send normal commands (character name, then password).
 
 If you have no good information or context, return:
 { "command": null, "reasoning": "insufficient information" }
 
-Otherwise return a useful command.`;
+Otherwise return a useful command or the special SAVE_USERNAME command when appropriate.`;
 
     try {
       const res = await xai.chat.completions.create({
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.1,
-        max_tokens: 110
+        max_tokens: 120
       });
 
       const parsed = JSON.parse(res.choices[0]?.message?.content || '{"command":null}');
