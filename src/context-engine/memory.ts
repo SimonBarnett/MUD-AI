@@ -1,18 +1,35 @@
 // src/context-engine/memory.ts - FULL VERSION WITH LAZY SUPABASE CLIENT
+import ws from 'ws';   // <-- Add this import at the top
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
 
 let supabase: SupabaseClient | null = null;
 let openai: OpenAI | null = null;
 
+
 function getSupabase(): SupabaseClient {
   if (!supabase) {
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env file');
     }
+
     supabase = createClient(
       process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+        global: {
+          headers: {
+            'X-Client-Info': 'mud-ai-memory',
+          },
+        },
+        realtime: {
+          transport: ws,           // ← This is the important line
+        },
+      }
     );
   }
   return supabase;

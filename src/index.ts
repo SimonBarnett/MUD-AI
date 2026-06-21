@@ -1,8 +1,18 @@
-// src/index.ts - v0.6.1 — React → Think → Reflect → Decide (Full Modernized - context-engine/memory.ts)
-// Silence OpenAI SDK debug output
+// src/index.ts
+// ==================== SILENCE ALL AI DEBUG OUTPUT ====================
 process.env.DEBUG = '';
+process.env.OPENAI_LOG = 'none';
+process.env.NODE_DEBUG = '';
+
+// Force silence before any imports that might use debug
+import debug from 'debug';
+debug.disable();
+
+// Now safe to import everything else
 import 'dotenv/config';
 import readline from 'readline';
+import fs from 'fs';
+import path from 'path';
 import { MUDAgent } from './agent/agent.js';
 import { MUDClient } from './mud-client/client.js';
 import {
@@ -11,9 +21,23 @@ import {
 } from './context-engine/memory.js';
 import { log, banner } from './logger.js';
 
+// ==================== PER-RUN LOG FOLDER SETUP ====================
+const logsRoot = path.join(process.cwd(), 'logs');
+if (!fs.existsSync(logsRoot)) {
+  fs.mkdirSync(logsRoot, { recursive: true });
+}
+
+const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+const CURRENT_RUN_LOG_DIR = path.join(logsRoot, timestamp);
+fs.mkdirSync(CURRENT_RUN_LOG_DIR, { recursive: true });
+
+// Make the current run log directory available to the agent
+process.env.CURRENT_RUN_LOG_DIR = CURRENT_RUN_LOG_DIR;
+
 console.clear();
 banner();
-log.success('🚀 MUD-AI v0.6.1 — 4-Stage Thinking System (context-engine)');
+log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
+log.success('🚀 MUD-AI v0.6.5 — 4-Stage Thinking System (context-engine)');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
@@ -31,7 +55,7 @@ let ultraShortMemories: string[] = [];
 let recentMemories: string[] = [];
 let persistentMemories: string[] = [];
 
-// ==================== MEMORY (using context-engine/memory.ts) ====================
+// ==================== MEMORY ====================
 async function loadPersistentMemories() {
   try {
     const memories = await getRecentMemories(30);
@@ -120,15 +144,10 @@ setInterval(async () => {
 
   const result = await agent.think(fullBuffer.trim(), { recent: recentMemories, persistent: persistentMemories });
 
-  if (result.observations) {
-    for (const obs of result.observations) {
-      await memorize(obs, 0.75);
-    }
-  }
-
-  if (result.action) {
+  if (result.action && result.current_state !== "main_menu") {
     mud.sendCommand(result.action);
-  } else if (result.shouldReflect) {
+  } 
+  else if (result.shouldReflect && result.current_state !== "main_menu") {
     await doReflectAndDecide();
   }
 
@@ -155,8 +174,8 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.1 — COMMANDS (context-engine)             ║
-╠════════════════════════════════════════════════════════════════════════════╣
+║                      MUD-AI v0.6.5 — COMMANDS (context-engine)             ║
+╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
 ║  !rules        Show 4-stage thinking rules                                 ║
 ║  !connect      Connect to MUD                                              ║
@@ -196,7 +215,7 @@ async function showMemories() {
   });
 }
 
-// ==================== READLINE (KEYBOARD INPUT) ====================
+// ==================== READLINE ====================
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -252,7 +271,7 @@ rl.on('line', async (input: string) => {
     process.exit(0);
   } else {
     if (loggedIn) {
-      mud.sendCommand({ action: 'send_command', command: line });
+      mud.sendCommand(line);
     } else {
       log.info('Not connected yet. Type !connect or !login first.');
     }

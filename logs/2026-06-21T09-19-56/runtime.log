@@ -1,0 +1,82 @@
+=== MUD-AI SESSION STARTED: 2026-06-21T09:19:56.853Z ===
+[2026-06-21T09:19:56.854Z] [SUCCESS] 📄 Logs → C:\Users\medatech.si\mud - Copy\logs\2026-06-21T09-19-56
+[2026-06-21T09:19:56.854Z] [SUCCESS] 🚀 MUD-AI v0.6.2 — 4-Stage Thinking System (context-engine)
+[2026-06-21T09:19:56.858Z] [SUCCESS] Type !help or !connect
+[2026-06-21T09:22:23.699Z] [SUCCESS] 📦 Loaded 30 persistent memories
+[2026-06-21T09:22:23.703Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-21T09:22:23.706Z] [SUCCESS] ✅ Connected — 4-stage autopilot active
+[2026-06-21T09:22:23.804Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-21T09:22:23.897Z] [INFO] 📥 MUD: ����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-21T09:22:23.902Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-21T09:22:23.905Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-21T09:22:23.909Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-21T09:22:23.912Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-21T09:22:23.915Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-21T09:22:23.919Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-21T09:22:23.923Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-21T09:22:23.926Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-21T09:22:23.930Z] [INFO] 📥 MUD:            62 adventurers are currently in the realms.
+[2026-06-21T09:22:23.933Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-21T09:22:23.936Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-21T09:22:23.941Z] [INFO] 📥 MUD:            [32m3.[37m Quit.
+[2026-06-21T09:22:30.598Z] [ERROR] Reflect error:
+[2026-06-21T09:22:30.602Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:30.979Z] [ERROR] Reflect error:
+[2026-06-21T09:22:30.983Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:31.530Z] [ERROR] Reflect error:
+[2026-06-21T09:22:31.533Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:31.641Z] [ERROR] Reflect error:
+[2026-06-21T09:22:31.644Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:32.236Z] [ERROR] Reflect error:
+[2026-06-21T09:22:32.239Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:32.496Z] [ERROR] Reflect error:
+[2026-06-21T09:22:32.499Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:32.561Z] [ERROR] Reflect error:
+[2026-06-21T09:22:32.565Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:32.974Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T09:22:33.691Z] [ERROR] Reflect error:
+[2026-06-21T09:22:33.694Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:33.743Z] [ERROR] Reflect error:
+[2026-06-21T09:22:33.747Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:34.227Z] [SUCCESS] ✅ Sent: none
+[2026-06-21T09:22:34.319Z] [INFO] 📥 MUD: Enter an option or enter your character's name. ����What is your password?
+[2026-06-21T09:22:34.521Z] [ERROR] Reflect error:
+[2026-06-21T09:22:34.524Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:34.582Z] [ERROR] Reflect error:
+[2026-06-21T09:22:34.585Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:34.932Z] [ERROR] Reflect error:
+[2026-06-21T09:22:34.936Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:34.996Z] [ERROR] Reflect error:
+[2026-06-21T09:22:34.999Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:35.133Z] [ERROR] Reflect error:
+[2026-06-21T09:22:35.136Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:35.193Z] [ERROR] Reflect error:
+[2026-06-21T09:22:35.196Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:35.943Z] [SUCCESS] ✅ Sent: idle
+[2026-06-21T09:22:36.020Z] [ERROR] Reflect error:
+[2026-06-21T09:22:36.024Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:36.081Z] [INFO] 📥 MUD: > ����Password incorrect. For recovery, see http://www.achaea.com/game/recover
+[2026-06-21T09:22:36.104Z] [INFO] Connection closed - auto-reconnecting...
+[2026-06-21T09:22:36.146Z] [ERROR] Reflect error:
+[2026-06-21T09:22:36.149Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:36.535Z] [SUCCESS] ✅ Sent: none
+[2026-06-21T09:22:36.704Z] [ERROR] Reflect error:
+[2026-06-21T09:22:36.708Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:36.896Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T09:22:36.989Z] [SUCCESS] ✅ Sent: noop
+[2026-06-21T09:22:37.107Z] [ERROR] Reflect error:
+[2026-06-21T09:22:37.110Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:37.170Z] [ERROR] Reflect error:
+[2026-06-21T09:22:37.174Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:37.686Z] [SUCCESS] ✅ Sent: idle
+[2026-06-21T09:22:37.791Z] [ERROR] Reflect error:
+[2026-06-21T09:22:37.792Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:37.943Z] [ERROR] Reflect error:
+[2026-06-21T09:22:37.944Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:38.078Z] [ERROR] Reflect error:
+[2026-06-21T09:22:38.079Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:38.255Z] [ERROR] Reflect error:
+[2026-06-21T09:22:38.256Z] [INFO] 🔍 Searching memories for 2 queries
+[2026-06-21T09:22:38.468Z] [SUCCESS] ✅ Sent: idle
+[2026-06-21T09:22:38.706Z] [ERROR] Reflect error:
+[2026-06-21T09:22:38.706Z] [INFO] 🔍 Searching memories for 2 queries
