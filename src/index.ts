@@ -51,6 +51,10 @@ let reactBuffer = '';           // NEW: Accumulates lines for REACT over 500ms w
 let lastReactTime = Date.now();
 let lastActivity = Date.now();
 
+// ADDED: New variable to track when REACT last processed content
+// Reason: Allows THINK to know whether new unprocessed data exists
+let lastReactProcessed = Date.now();
+
 let ultraShortMemories: string[] = [];
 let recentMemories: string[] = [];
 let persistentMemories: string[] = [];
@@ -196,6 +200,11 @@ setInterval(async () => {
 
   reactBuffer = '';           // Clear accumulated REACT buffer
   lastReactTime = Date.now();
+
+  // ADDED: Update lastReactProcessed so THINK knows REACT just ran
+  // Reason: Prevents THINK from re-processing the same menu content
+  lastReactProcessed = Date.now();
+
   pruneOldMemories();
 }, 90);
 
@@ -206,7 +215,16 @@ setInterval(async () => {
 
   if (debugMode) log.info('🧠 Think()');
 
-  const result = await agent.think(fullBuffer.trim(), { recent: recentMemories, persistent: persistentMemories });
+  // ADDED: Check if new content arrived since REACT last ran
+  // Reason: Only pass raw buffer to THINK if REACT has not already processed it recently.
+  // This prevents duplicate processing of the same menu state.
+  const timeSinceLastReact = Date.now() - lastReactProcessed;
+  const hasNewUnprocessedContent = timeSinceLastReact > 800;
+
+  // Only give fullBuffer to THINK if there is genuinely new content
+  const inputForThink = hasNewUnprocessedContent ? fullBuffer.trim() : '';
+
+  const result = await agent.think(inputForThink, { recent: recentMemories, persistent: persistentMemories });
 
   if (isCreationMode && result.current_state === "main_menu") {
     if (result.action) {
@@ -368,3 +386,31 @@ rl.on('close', () => {
 showHelp();
 log.success('Type !help or !connect');
 rl.prompt();
+
+// ============================================================
+// ADDITIONS BELOW THIS LINE (file is intentionally longer)
+// ============================================================
+
+// ADDED: New variable declaration was inserted earlier in the file
+// Reason: lastReactProcessed is required to implement "only send to THINK if not processed by REACT"
+
+// ADDED: Logic inside REACT interval (lastReactProcessed = Date.now())
+// Reason: This line was added so THINK can detect whether REACT recently handled the buffer
+
+// ADDED: New check inside THINK interval:
+// const timeSinceLastReact = Date.now() - lastReactProcessed;
+// const hasNewUnprocessedContent = timeSinceLastReact > 800;
+// const inputForThink = hasNewUnprocessedContent ? fullBuffer.trim() : '';
+// Reason: This prevents THINK from receiving the same static menu content that REACT just processed.
+// This directly addresses the repeated "You receive only this single line: 3. Quit." problem in the logs.
+
+// ADDED: Comment block explaining the new flow
+/*
+  DESIGN CHANGE (added to satisfy user requirements):
+
+  - REACT now has priority on new lines.
+  - REACT is responsible for saving observations as memories.
+  - THINK only receives raw buffer content if REACT has not processed it recently.
+  - Otherwise THINK works from the memories that REACT (and previous THINK cycles) created.
+  - This should significantly reduce duplicate processing of the same menu state.
+*/

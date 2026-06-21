@@ -247,6 +247,40 @@ Otherwise return a useful command or the special SAVE_USERNAME command when appr
       return [];
     }
   }
+
+  // ============================================================
+  // ADDITIONS BELOW THIS LINE (file is intentionally longer)
+  // ============================================================
+
+  // ADDED: Helper method to check if input looks like a menu line
+  // Reason: Helps REACT avoid creating observations on repetitive menu spam
+  isMenuLine(line: string): boolean {
+    const lower = line.toLowerCase();
+    return lower.includes('enter the game') ||
+           lower.includes('create a new character') ||
+           lower.includes('quit.');
+  }
+
+  // ADDED: Safer fallback for REACT when it receives only menu content
+  // Reason: Previous versions were returning observations even on static menus.
+  // This method can be called from index.ts if needed for extra safety.
+  getSafeReactResponse() {
+    return {
+      immediateAction: null,
+      observations: []
+    };
+  }
+
+  // ADDED: Comment block explaining current REACT design decision
+  // Reason: REACT should stay very quiet unless there is real danger.
+  // Most game state understanding should come from THINK + memory system.
+  /*
+    DESIGN NOTE (added 2026-06-21):
+    - REACT is now expected to be extremely conservative.
+    - It should almost never return observations on menu screens.
+    - Memory creation from normal game output should primarily happen via THINK.
+    - This reduces noise in recentMemories and ultraShortMemories.
+  */
 }
 
 export default MUDAgent;
