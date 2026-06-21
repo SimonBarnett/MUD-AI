@@ -37,7 +37,7 @@ process.env.CURRENT_RUN_LOG_DIR = CURRENT_RUN_LOG_DIR;
 console.clear();
 banner();
 log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
-log.success('🚀 MUD-AI v0.6.6 — 4-Stage Thinking System (context-engine)');
+log.success('🚀 MUD-AI v0.6.7 — 4-Stage Thinking System (context-engine)');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
@@ -54,6 +54,8 @@ let lastActivity = Date.now();
 let ultraShortMemories: string[] = [];
 let recentMemories: string[] = [];
 let persistentMemories: string[] = [];
+
+let isCreationMode = false; // NEW: Controls automatic character creation
 
 // ==================== ANSI STRIPPER ====================
 function stripAnsi(str: string): string {
@@ -72,15 +74,10 @@ function saveUsernameToEnv(username: string) {
       ? fs.readFileSync(envPath, 'utf8')
       : '';
 
-    // Remove existing USERNAME line
     envContent = envContent.replace(/^USERNAME=.*$/m, '').trim();
-
-    // Append new USERNAME
     envContent += `\nUSERNAME=${username}\n`;
 
     fs.writeFileSync(envPath, envContent);
-
-    // Update runtime environment
     process.env.USERNAME = username;
 
     log.success(`💾 Username saved to .env → USERNAME=${username}`);
@@ -125,7 +122,7 @@ async function memorize(text: string, importance: number = 0.75) {
 // ==================== START / CONNECT ====================
 async function start() {
   const username = process.env.USERNAME;
-  const fixedPassword = process.env.MUD_PASSWORD || 'DefaultPass123';
+  isCreationMode = !username; // Set creation mode flag
 
   if (username) {
     // === LOGIN MODE ===
@@ -137,14 +134,15 @@ async function start() {
     );
     log.success(`🔐 Login mode active for character: ${username}`);
   } else {
-    // === CHARACTER CREATION MODE ===
+    // === CHARACTER CREATION MODE (MUST AUTO CREATE) ===
     await memorize(
-      `I do not have a character yet. I should create a new one from the main menu (choose option 2). ` +
-      `Use the password from MUD_PASSWORD when asked for a password. ` +
+      `CRITICAL INSTRUCTION: I have no character. I MUST create one immediately. ` +
+      `On the main menu I should choose option 2 to create a new character. ` +
+      `Use the password from MUD_PASSWORD when asked during creation. ` +
       `After successfully creating a character, output exactly: SAVE_USERNAME:MyNewCharacterName`,
-      0.92
+      0.96
     );
-    log.info('No USERNAME found in .env — agent will attempt to create a new character');
+    log.info('No USERNAME found — agent will AUTOMATICALLY attempt to create a new character');
   }
 
   await memorize("System: Follow the exact 4-stage thinking system.", 0.9);
@@ -194,7 +192,7 @@ setInterval(async () => {
   pruneOldMemories();
 }, 90);
 
-// ==================== THINK ====================
+// ==================== THINK (With Automatic Character Creation) ====================
 setInterval(async () => {
   if (!autoMode || !loggedIn) return;
   if (Date.now() - lastActivity < 1500 || !fullBuffer.trim()) return;
@@ -203,7 +201,16 @@ setInterval(async () => {
 
   const result = await agent.think(fullBuffer.trim(), { recent: recentMemories, persistent: persistentMemories });
 
-  if (result.action && result.current_state !== "main_menu") {
+  // === NEW: Force character creation when in creation mode ===
+  if (isCreationMode && result.current_state === "main_menu") {
+    if (result.action) {
+      mud.sendCommand(result.action);
+    } else {
+      // Proactively trigger Reflect → Decide so the agent can choose to create a character
+      await doReflectAndDecide();
+    }
+  } 
+  else if (result.action && result.current_state !== "main_menu") {
     mud.sendCommand(result.action);
   } 
   else if (result.shouldReflect && result.current_state !== "main_menu") {
@@ -221,7 +228,6 @@ async function doReflectAndDecide() {
 
   if (!decision.command || !loggedIn) return;
 
-  // Handle saving new username after character creation
   if (decision.command.startsWith('SAVE_USERNAME:')) {
     const newUsername = decision.command.split(':')[1]?.trim();
     if (newUsername) {
@@ -231,7 +237,6 @@ async function doReflectAndDecide() {
     return;
   }
 
-  // Normal game command
   mud.sendCommand(decision.command);
 }
 
@@ -244,7 +249,7 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.6 — COMMANDS (context-engine)             ║
+║                      MUD-AI v0.6.7 — COMMANDS (context-engine)             ║
 ╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
 ║  !rules        Show 4-stage thinking rules                                 ║
@@ -273,7 +278,7 @@ REACT() → THINK() → REFLECT() → DECIDE()
 }
 
 function showStatus() {
-  console.log(`\n[STATUS] Auto=${autoMode} | Connected=${loggedIn} | Debug=${debugMode}`);
+  console.log(`\n[STATUS] Auto=${autoMode} | Connected=${loggedIn} | Debug=${debugMode} | CreationMode=${isCreationMode}`);
   console.log(`Memories → Ultra: ${ultraShortMemories.length} | Recent: ${recentMemories.length} | Persistent: ${persistentMemories.length}\n`);
 }
 
