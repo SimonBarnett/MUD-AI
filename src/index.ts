@@ -1,17 +1,17 @@
-// src/index.ts - v0.5.5 — React → Think → Reflect → Decide (Full Interactive CLI)
+// src/index.ts - v0.6.1 — React → Think → Reflect → Decide (Full Modernized - context-engine/memory.ts)
+import 'dotenv/config';
+import readline from 'readline';
 import { MUDAgent } from './agent/agent.js';
 import { MUDClient } from './mud-client/client.js';
 import {
-  memorizeFromUser,
-  queryMemoriesByTag,
-} from './memory-store.js';
+  storeMemory,
+  getRecentMemories,
+} from './context-engine/memory.js';
 import { log, banner } from './logger.js';
 
-// Clear screen before anything
 console.clear();
-
 banner();
-log.success('🚀 MUD-AI v0.5.5 — 4-Stage Thinking System ready');
+log.success('🚀 MUD-AI v0.6.1 — 4-Stage Thinking System (context-engine)');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
@@ -25,15 +25,17 @@ let currentLine = '';
 let lastLineTime = Date.now();
 let lastActivity = Date.now();
 
-// Memory windows
-let ultraShortMemories: string[] = [];   // last ~10s (React)
-let recentMemories: string[] = [];       // last ~2min (Think/Reflect)
-let persistentMemories: string[] = [];   // long-term from Supabase
+let ultraShortMemories: string[] = [];
+let recentMemories: string[] = [];
+let persistentMemories: string[] = [];
 
-// ==================== PERSISTENT MEMORIES ====================
+// ==================== MEMORY (using context-engine/memory.ts) ====================
 async function loadPersistentMemories() {
   try {
-    persistentMemories = await queryMemoriesByTag('persistent');
+    const memories = await getRecentMemories(30);
+    persistentMemories = memories
+      .map(m => m.content)
+      .filter((c): c is string => !!c);
 
     if (persistentMemories.length === 0) {
       persistentMemories = [
@@ -42,7 +44,7 @@ async function loadPersistentMemories() {
         "I must stay aware of my location, health, and threats"
       ];
     }
-    log.success(`📦 Loaded ${persistentMemories.length} persistent memories from Supabase`);
+    log.success(`📦 Loaded ${persistentMemories.length} persistent memories`);
   } catch (e: any) {
     log.error('Failed to load persistent memories:', e.message);
     persistentMemories = [
@@ -52,13 +54,21 @@ async function loadPersistentMemories() {
   }
 }
 
+async function memorize(text: string, importance: number = 0.75) {
+  try {
+    await storeMemory(text, importance, []);
+  } catch (e: any) {
+    log.error('Failed to store memory:', e.message);
+  }
+}
+
 // ==================== START / CONNECT ====================
 async function start() {
-  await memorizeFromUser("System prompt: Follow the exact 4-stage thinking system (React → Think → Reflect → Decide).");
+  await memorize("System: Follow the exact 4-stage thinking system.", 0.9);
   await loadPersistentMemories();
   loggedIn = true;
   mud.connect();
-  log.success('✅ Connected — 4-stage autopilot is now active');
+  log.success('✅ Connected — 4-stage autopilot active');
 }
 
 // ==================== GAME DATA HANDLER ====================
@@ -66,65 +76,57 @@ mud.on('data', (data: string) => {
   if (!autoMode || !loggedIn) return;
   lastActivity = Date.now();
 
-  const lines = data.split('\n');
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed) {
-      currentLine = trimmed;
+  data.split('\n').forEach(line => {
+    const t = line.trim();
+    if (t) {
+      currentLine = t;
       fullBuffer += line + '\n';
     }
-  }
+  });
 });
 
-// ==================== REACT() — every new line ====================
+// ==================== REACT ====================
 setInterval(async () => {
   if (!autoMode || !loggedIn || !currentLine) return;
+  if (Date.now() - lastLineTime < 80) return;
 
-  const now = Date.now();
-  if (now - lastLineTime < 80) return; // debounce
+  if (debugMode) log.info('⚡ React()');
 
-  if (debugMode) log.info('⚡ React() triggered');
-
-  const ctx = { ultraShort: ultraShortMemories, persistent: persistentMemories };
-  const result = await agent.react(currentLine, ctx);
+  const result = await agent.react(currentLine, { ultraShort: ultraShortMemories });
 
   if (result.immediateAction) {
     mud.sendCommand(result.immediateAction);
-    log.success(`🚨 Immediate action: ${result.immediateAction}`);
-  } else {
+  } else if (result.observations) {
     for (const obs of result.observations) {
-      await memorizeFromUser(obs);
+      await memorize(obs, 0.7);
       recentMemories.push(obs);
       ultraShortMemories.push(obs);
     }
   }
 
   currentLine = '';
-  lastLineTime = now;
+  lastLineTime = Date.now();
   pruneOldMemories();
 }, 90);
 
-// ==================== THINK() — on silence ====================
+// ==================== THINK ====================
 setInterval(async () => {
   if (!autoMode || !loggedIn) return;
-  if (Date.now() - lastActivity < 1500) return;
-  if (!fullBuffer.trim()) return;
+  if (Date.now() - lastActivity < 1500 || !fullBuffer.trim()) return;
 
-  if (debugMode) log.info('🧠 Think() triggered');
+  if (debugMode) log.info('🧠 Think()');
 
-  const ctx = { recent: recentMemories, persistent: persistentMemories };
-  const result = await agent.think(fullBuffer.trim(), ctx);
+  const result = await agent.think(fullBuffer.trim(), { recent: recentMemories, persistent: persistentMemories });
 
-  for (const obs of result.observations) {
-    await memorizeFromUser(obs);
-    recentMemories.push(obs);
+  if (result.observations) {
+    for (const obs of result.observations) {
+      await memorize(obs, 0.75);
+    }
   }
 
   if (result.action) {
     mud.sendCommand(result.action);
-    log.success(`📤 Think() → ${result.action}`);
   } else if (result.shouldReflect) {
-    if (debugMode) log.info('🔎 Reflect() triggered from Think()');
     await doReflectAndDecide();
   }
 
@@ -132,181 +134,136 @@ setInterval(async () => {
   pruneOldMemories();
 }, 300);
 
-// ==================== REFLECT + DECIDE ====================
 async function doReflectAndDecide() {
   const queries = await agent.reflect({ recent: recentMemories, persistent: persistentMemories });
   const retrieved = await agent.queryMemories(queries);
-  const decision = await agent.decide(retrieved, { context: fullBuffer });
+  const decision = await agent.decide(retrieved);
 
-  if (decision.command) {
+  if (decision.command && loggedIn) {
     mud.sendCommand(decision.command);
-    log.success(`📤 Decide() → ${decision.command}`);
   }
 }
 
-// ==================== HELPERS ====================
 function pruneOldMemories() {
   ultraShortMemories = ultraShortMemories.slice(-15);
   recentMemories = recentMemories.slice(-80);
 }
 
-function showRules() {
+// ==================== UI HELPERS ====================
+function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                        MUD-AI 4-STAGE THINKING RULES                       ║
+║                      MUD-AI v0.6.1 — COMMANDS (context-engine)             ║
 ╠════════════════════════════════════════════════════════════════════════════╣
-║  1. REACT()     → Instant reaction to new lines (every ~90ms)              ║
-║  2. THINK()     → Deeper analysis when the game goes silent (~1.5s)        ║
-║  3. REFLECT()   → Query long-term memory when THINK() needs more context   ║
-║  4. DECIDE()    → Final action after reflection                            ║
-║                                                                            ║
-║  • Ultra-short memory = last ~10 seconds                                   ║
-║  • Recent memory      = last ~2 minutes                                    ║
-║  • Persistent memory  = loaded from Supabase (life goals, quests, facts)   ║
-║  • Type !memorize <text> to manually save important information            ║
+║  !help, !h     Show this help                                              ║
+║  !rules        Show 4-stage thinking rules                                 ║
+║  !connect      Connect to MUD                                              ║
+║  !auto         Toggle autopilot                                            ║
+║  !status       Show memory counts + state                                  ║
+║  !memory       Dump recent memories                                        ║
+║  !memorize <text>   Manually save memory                                   ║
+║  !think        Manually trigger Think()                                    ║
+║  !reflect      Manually trigger Reflect + Decide                           ║
+║  !debug        Toggle debug mode                                           ║
+║  !cls          Clear screen                                                ║
+║  !quit         Exit                                                        ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 `);
 }
 
-function showHelp() {
+function showRules() {
   console.log(`
-╔════════════════════════════════════════════════════════════════════════════╗
-║                         MUD-AI v0.5.5 — AVAILABLE COMMANDS                 ║
-╠════════════════════════════════════════════════════════════════════════════╣
-║  !help, !h          → Show this help                                       ║
-║  !rules             → Show the 4-stage thinking rules                      ║
-║  !connect, !login   → Connect to MUD + load persistent memories            ║
-║  !auto              → Toggle autopilot (React / Think / Reflect / Decide)  ║
-║  !status, !st       → Show current state + memory counts                   ║
-║  !memory, !mem      → Dump persistent + recent + ultra-short memories      ║
-║  !memorize <text>   → Manually save something to long-term memory          ║
-║  !think             → Manually trigger Think() stage                       ║
-║  !reflect           → Manually trigger Reflect + Decide                    ║
-║  !debug             → Toggle debug logging                                 ║
-║  !cls, !clear       → Clear the console                                    ║
-║  !quit, !exit       → Exit MUD-AI                                          ║
-╠════════════════════════════════════════════════════════════════════════════╣
-║  Any other text     → Sent directly as a command to the MUD                ║
-╚════════════════════════════════════════════════════════════════════════════╝
+REACT() → THINK() → REFLECT() → DECIDE()
+- REACT: Instant reaction to new lines
+- THINK: Deeper analysis after silence
+- REFLECT: Query long-term memory
+- DECIDE: Final command sent to MUD
 `);
 }
 
 function showStatus() {
-  console.log(`
-┌────────────────────────────────────────────────────────────────────────────┐
-│  MUD-AI v0.5.5 Status                                                      │
-├────────────────────────────────────────────────────────────────────────────┤
-│  Autopilot:     ${autoMode ? '✅ ON' : '❌ OFF'}                                                    │
-│  Connected:     ${loggedIn ? '✅ YES' : '❌ NO'}                                                    │
-│  Debug mode:    ${debugMode ? '✅ ON' : '❌ OFF'}                                                    │
-├────────────────────────────────────────────────────────────────────────────┤
-│  Ultra-short memories: ${ultraShortMemories.length.toString().padEnd(3)} (last ~10 seconds)             │
-│  Recent memories:      ${recentMemories.length.toString().padEnd(3)} (last ~2 minutes)               │
-│  Persistent memories:  ${persistentMemories.length.toString().padEnd(3)} (from Supabase)             │
-└────────────────────────────────────────────────────────────────────────────┘
-`);
+  console.log(`\n[STATUS] Auto=${autoMode} | Connected=${loggedIn} | Debug=${debugMode}`);
+  console.log(`Memories → Ultra: ${ultraShortMemories.length} | Recent: ${recentMemories.length} | Persistent: ${persistentMemories.length}\n`);
 }
 
 async function showMemories() {
-  console.log('\n📦 === PERSISTENT MEMORIES (from Supabase) ===');
-  persistentMemories.forEach((m, i) => console.log(`  ${i + 1}. ${m}`));
-
-  console.log('\n🧠 === RECENT MEMORIES (last 10) ===');
-  recentMemories.slice(-10).forEach((m, i) => console.log(`  ${i + 1}. ${m}`));
-
-  console.log('\n⚡ === ULTRA-SHORT MEMORIES (last 5) ===');
-  ultraShortMemories.slice(-5).forEach((m, i) => console.log(`  ${i + 1}. ${m}`));
-  console.log('');
+  const memories = await getRecentMemories(15);
+  console.log('\n=== RECENT MEMORIES ===');
+  memories.forEach((m, i) => {
+    if (m.content) console.log(`${i + 1}. ${m.content.substring(0, 100)}`);
+  });
 }
 
-// ==================== CLI COMMAND HANDLER ====================
-mud.onCLICommand = async (input: string) => {
-  const c = input.trim().toLowerCase();
+// ==================== READLINE (KEYBOARD INPUT) ====================
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: 'MUD-AI> '
+});
+
+rl.on('line', async (input: string) => {
+  const line = input.trim();
+  if (!line) { rl.prompt(); return; }
+
+  const c = line.toLowerCase();
 
   if (c === '!help' || c === '!h') {
     showHelp();
-    return;
-  }
-
-  if (c === '!rules') {
+  } else if (c === '!rules') {
     showRules();
-    return;
-  }
-
-  if (c === '!connect' || c === '!login') {
+  } else if (c === '!connect' || c === '!login') {
     await start();
-    return;
-  }
-
-  if (c === '!auto' || c === '!autopilot') {
+  } else if (c === '!auto' || c === '!autopilot') {
     autoMode = !autoMode;
     log.success(`Autopilot ${autoMode ? '✅ ENABLED' : '❌ DISABLED'}`);
-    return;
-  }
-
-  if (c === '!status' || c === '!st') {
+  } else if (c === '!status' || c === '!st') {
     showStatus();
-    return;
-  }
-
-  if (c === '!memory' || c === '!mem') {
+  } else if (c === '!memory' || c === '!mem') {
     await showMemories();
-    return;
-  }
-
-  if (c.startsWith('!memorize ')) {
-    const text = input.slice(10).trim();
-    if (!text) {
-      log.warn('Usage: !memorize <text you want to remember>');
-      return;
+  } else if (c.startsWith('!memorize ')) {
+    const text = line.slice(10).trim();
+    if (text) {
+      await memorize(text, 0.9);
+      log.success(`💾 Manually memorized: ${text}`);
+    } else {
+      log.info('Usage: !memorize <text>');
     }
-    await memorizeFromUser(text, { type: 'manual', boost: true });
-    log.success(`💾 Manually memorized: ${text}`);
-    return;
-  }
-
-  if (c === '!think') {
+  } else if (c === '!think') {
     if (!fullBuffer.trim()) {
-      log.warn('No game output in buffer yet. Wait for some MUD text first.');
-      return;
+      log.info('No game output in buffer yet.');
+    } else {
+      log.info('🧠 Manual Think() triggered...');
+      const result = await agent.think(fullBuffer.trim(), { recent: recentMemories, persistent: persistentMemories });
+      console.log(result);
     }
-    log.info('🧠 Manual Think() triggered...');
-    const ctx = { recent: recentMemories, persistent: persistentMemories };
-    const result = await agent.think(fullBuffer.trim(), ctx);
-    console.log('Think() result:', result);
-    return;
-  }
-
-  if (c === '!reflect') {
+  } else if (c === '!reflect') {
     log.info('🔎 Manual Reflect + Decide triggered...');
     await doReflectAndDecide();
-    return;
-  }
-
-  if (c === '!debug') {
+  } else if (c === '!debug') {
     debugMode = !debugMode;
     log.success(`Debug mode ${debugMode ? '✅ ON' : '❌ OFF'}`);
-    return;
-  }
-
-  if (c === '!cls' || c === '!clear') {
+  } else if (c === '!cls' || c === '!clear') {
     console.clear();
-    return;
-  }
-
-  if (c === '!quit' || c === '!exit') {
+  } else if (c === '!quit' || c === '!exit') {
     log.success('👋 Shutting down MUD-AI...');
+    rl.close();
     process.exit(0);
+  } else {
+    if (loggedIn) {
+      mud.sendCommand({ action: 'send_command', command: line });
+    } else {
+      log.info('Not connected yet. Type !connect or !login first.');
+    }
   }
 
-  // Default → send to MUD
-  if (loggedIn) {
-    mud.sendCommand({ action: 'send_command', command: input });
-  } else {
-    log.warn('Not connected yet. Type !connect or !login first.');
-  }
-};
+  rl.prompt();
+});
+
+rl.on('close', () => {
+  process.exit(0);
+});
 
 // ==================== BOOT ====================
 showHelp();
-log.success('Type !help for commands • !connect to start • !rules to see the thinking system');
+log.success('Type !help or !connect');
+rl.prompt();

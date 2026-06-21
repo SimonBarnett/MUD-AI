@@ -1,0 +1,8 @@
+=== MUD-AI SESSION STARTED: 2026-06-21T08:19:59.350Z ===
+[2026-06-21T08:19:59.350Z] [SUCCESS] 🚀 MUD-AI v0.5.9 — 4-Stage Thinking System (Fully Working)
+[2026-06-21T08:19:59.355Z] [SUCCESS] Type !help or !connect
+[2026-06-21T08:20:06.340Z] [INFO] No game output in buffer yet. Wait for some MUD text.
+[2026-06-21T08:20:32.503Z] [INFO] 🔎 Manual Reflect + Decide triggered...
+[2026-06-21T08:20:36.954Z] [INFO] 🔍 Querying Supabase for 5 memories
+[2026-06-21T08:20:43.323Z] [ERROR] Cannot send - not connected
+[2026-06-21T08:22:08.795Z] [SUCCESS] 👋 Shutting down MUD-AI...

@@ -1,6 +1,7 @@
+// src/agent/agent.ts - v0.6.1 — React → Think → Reflect → Decide (context-engine)
 import 'dotenv/config';
 import OpenAI from 'openai';
-import { queryMemories } from '../memory-store.js';
+import { searchMemories } from '../context-engine/memory.js';
 import { log } from '../logger.js';
 
 // xAI Grok client (for all reasoning)
@@ -143,11 +144,23 @@ Return JSON: { "command": "exact command", "reasoning": "short reason" }`;
     }
   }
 
-  // ==================== REAL MEMORY QUERY ====================
+  // ==================== REAL MEMORY QUERY (using context-engine) ====================
   async queryMemories(queries: string[]) {
-    log.info(`🔍 Querying Supabase for ${queries.length} memories`);
-    return await queryMemories(queries);
+    log.info(`🔍 Searching memories for ${queries.length} queries`);
+
+    try {
+      const results = await Promise.all(
+        queries.map(query => searchMemories(query, 5))
+      );
+      // Flatten and deduplicate results
+      const flat = results.flat();
+      const unique = Array.from(new Map(flat.map(m => [m.id, m])).values());
+      return unique;
+    } catch (e: any) {
+      log.error('queryMemories error:', e.message);
+      return [];
+    }
   }
 }
 
-export default MUDAgent;
+export default MUDAgent;l

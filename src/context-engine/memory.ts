@@ -44,12 +44,12 @@ export interface Memory {
 
 /**
  * Store a new memory.
- * Always inserts `entities` as a proper text[] array (never jsonb or null).
+ * Always inserts `entities` as a proper text[] array.
  */
 export async function storeMemory(
   content: string,
   importance: number = 0.8,
-  entities: string[] = [],           // ← Always defaults to empty array
+  entities: string[] = [],
   embedding?: number[],
   timestamp?: string
 ): Promise<void> {
@@ -60,7 +60,7 @@ export async function storeMemory(
     .insert({
       content: content,
       importance,
-      entities: entities,                    // ← Always passed as array (text[])
+      entities: entities,
       embedding,
       created_at: timestamp || new Date().toISOString(),
     });
