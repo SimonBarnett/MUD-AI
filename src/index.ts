@@ -47,15 +47,15 @@ let loggedIn = false;
 let debugMode = false;
 
 let fullBuffer = '';
-let currentLine = '';
-let lastLineTime = Date.now();
+let reactBuffer = '';           // NEW: Accumulates lines for REACT over 500ms window
+let lastReactTime = Date.now();
 let lastActivity = Date.now();
 
 let ultraShortMemories: string[] = [];
 let recentMemories: string[] = [];
 let persistentMemories: string[] = [];
 
-let isCreationMode = false; // NEW: Controls automatic character creation
+let isCreationMode = false;
 
 // ==================== ANSI STRIPPER ====================
 function stripAnsi(str: string): string {
@@ -122,10 +122,9 @@ async function memorize(text: string, importance: number = 0.75) {
 // ==================== START / CONNECT ====================
 async function start() {
   const username = process.env.USERNAME;
-  isCreationMode = !username; // Set creation mode flag
+  isCreationMode = !username;
 
   if (username) {
-    // === LOGIN MODE ===
     await memorize(
       `My character name is "${username}". ` +
       `The password is stored in MUD_PASSWORD. ` +
@@ -134,7 +133,6 @@ async function start() {
     );
     log.success(`🔐 Login mode active for character: ${username}`);
   } else {
-    // === CHARACTER CREATION MODE (MUST AUTO CREATE) ===
     await memorize(
       `CRITICAL INSTRUCTION: I have no character. I MUST create one immediately. ` +
       `On the main menu I should choose option 2 to create a new character. ` +
@@ -162,24 +160,33 @@ mud.on('data', (data: string) => {
   cleanData.split('\n').forEach(line => {
     const t = line.trim();
     if (t) {
-      currentLine = t;
-      fullBuffer += line + '\n';
+      reactBuffer += line + '\n';     // Accumulate for REACT
+      fullBuffer += line + '\n';      // Keep full buffer for THINK
     }
   });
 });
 
-// ==================== REACT ====================
+// ==================== REACT (500ms cooldown + accumulated input) ====================
 setInterval(async () => {
-  if (!autoMode || !loggedIn || !currentLine) return;
-  if (Date.now() - lastLineTime < 80) return;
+  if (!autoMode || !loggedIn || !reactBuffer.trim()) return;
+
+  // 500ms cooldown
+  if (Date.now() - lastReactTime < 500) return;
+
+  // Skip if buffer is empty or only ANSI/whitespace
+  const cleanReactInput = reactBuffer.trim();
+  if (!cleanReactInput) {
+    reactBuffer = '';
+    return;
+  }
 
   if (debugMode) log.info('⚡ React()');
 
-  const result = await agent.react(currentLine, { ultraShort: ultraShortMemories });
+  const result = await agent.react(cleanReactInput, { ultraShort: ultraShortMemories });
 
   if (result.immediateAction) {
     mud.sendCommand(result.immediateAction);
-  } else if (result.observations) {
+  } else if (result.observations && result.observations.length > 0) {
     for (const obs of result.observations) {
       await memorize(obs, 0.7);
       recentMemories.push(obs);
@@ -187,12 +194,12 @@ setInterval(async () => {
     }
   }
 
-  currentLine = '';
-  lastLineTime = Date.now();
+  reactBuffer = '';           // Clear accumulated REACT buffer
+  lastReactTime = Date.now();
   pruneOldMemories();
 }, 90);
 
-// ==================== THINK (With Automatic Character Creation) ====================
+// ==================== THINK ====================
 setInterval(async () => {
   if (!autoMode || !loggedIn) return;
   if (Date.now() - lastActivity < 1500 || !fullBuffer.trim()) return;
@@ -201,12 +208,10 @@ setInterval(async () => {
 
   const result = await agent.think(fullBuffer.trim(), { recent: recentMemories, persistent: persistentMemories });
 
-  // === NEW: Force character creation when in creation mode ===
   if (isCreationMode && result.current_state === "main_menu") {
     if (result.action) {
       mud.sendCommand(result.action);
     } else {
-      // Proactively trigger Reflect → Decide so the agent can choose to create a character
       await doReflectAndDecide();
     }
   } 

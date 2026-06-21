@@ -42,20 +42,24 @@ const xai = new OpenAI({
 
 export class MUDAgent {
 
-  // ==================== REACT ====================
-  async react(line: string, ctx: any) {
+  // ==================== REACT (Now handles accumulated multi-line input) ====================
+  async react(input: string, ctx: any) {
     const ultraShort = ctx.ultraShort || ctx.ultraShortMemories || [];
 
-    const system = `REACT MODE — ONE LINE ONLY
-You receive only this single line: "${line}"
+    const system = `REACT MODE
+
+You receive recent game output (may contain multiple lines):
+${input}
+
 Last 10 seconds memories: ${ultraShort.length ? ultraShort.join(' | ') : 'none'}
 
 You are playing Achaea.
 
 Rules:
-- If you see a numbered menu (especially 1. Enter, 2. Create, 3. Quit), this is the MAIN MENU. Usually just observe.
+- If the output shows a numbered menu (especially 1. Enter, 2. Create, 3. Quit), this is the MAIN MENU. Usually just observe.
 - Only return "immediateAction" for real immediate danger (attacked, dying, falling, very low health).
-- Otherwise return observations only.
+- Otherwise return observations only if something meaningful happened.
+- Do NOT create observations for repetitive menu lines like "3. Quit."
 
 Respond with valid JSON only.`;
 
@@ -64,7 +68,7 @@ Respond with valid JSON only.`;
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.1,
-        max_tokens: 160
+        max_tokens: 180
       });
 
       const parsed = JSON.parse(res.choices[0]?.message?.content || '{}');
@@ -72,7 +76,7 @@ Respond with valid JSON only.`;
       return parsed;
     } catch (e: any) {
       log.error('React error:', e.message);
-      return { observations: [`Processed: ${line.substring(0, 80)}`] };
+      return { observations: [] };
     }
   }
 
