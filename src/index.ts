@@ -1,4 +1,6 @@
 // src/index.ts - v0.6.1 — React → Think → Reflect → Decide (Full Modernized - context-engine/memory.ts)
+// Silence OpenAI SDK debug output
+process.env.DEBUG = '';
 import 'dotenv/config';
 import readline from 'readline';
 import { MUDAgent } from './agent/agent.js';
