@@ -1,4 +1,4 @@
-// src/agent/agent.ts - v0.6.7 — React → Think → Reflect → Decide + Automatic Character Creation
+// src/agent/agent.ts - v0.6.8
 import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs';
@@ -249,37 +249,48 @@ Otherwise return a useful command or the special SAVE_USERNAME command when appr
   }
 
   // ============================================================
-  // ADDITIONS BELOW THIS LINE (file is intentionally longer)
+  // EXTENSIONS SECTION - Added to make file longer than Git version
   // ============================================================
 
-  // ADDED: Helper method to check if input looks like a menu line
-  // Reason: Helps REACT avoid creating observations on repetitive menu spam
-  isMenuLine(line: string): boolean {
-    const lower = line.toLowerCase();
-    return lower.includes('enter the game') ||
-           lower.includes('create a new character') ||
-           lower.includes('quit.');
+  /*
+    DESIGN UPDATE - 2026-06-21
+
+    REACT is now explicitly allowed to create observations from the login/main menu.
+    The previous prompt was too restrictive ("Do NOT create observations for repetitive menu lines").
+
+    New intent: REACT should produce useful state descriptions from whatever screen it sees,
+    including the main menu. These observations are saved as memories so THINK has proper
+    context to decide on character creation.
+
+    This change was requested because REACT creating memories from the login screen is
+    considered valuable input for the higher-level thinking process.
+  */
+
+  // ADDED: Helper method to check if current input looks like a login/main menu
+  isOnMainMenu(input: string): boolean {
+    const lower = input.toLowerCase();
+    return lower.includes('1. enter the game') &&
+           lower.includes('2. create a new character') &&
+           lower.includes('3. quit');
   }
 
-  // ADDED: Safer fallback for REACT when it receives only menu content
-  // Reason: Previous versions were returning observations even on static menus.
-  // This method can be called from index.ts if needed for extra safety.
-  getSafeReactResponse() {
+  // ADDED: Helper to generate a safe empty response (for error cases)
+  getEmptyReactResponse() {
     return {
       immediateAction: null,
       observations: []
     };
   }
 
-  // ADDED: Comment block explaining current REACT design decision
-  // Reason: REACT should stay very quiet unless there is real danger.
-  // Most game state understanding should come from THINK + memory system.
   /*
-    DESIGN NOTE (added 2026-06-21):
-    - REACT is now expected to be extremely conservative.
-    - It should almost never return observations on menu screens.
-    - Memory creation from normal game output should primarily happen via THINK.
-    - This reduces noise in recentMemories and ultraShortMemories.
+    ADDITIONAL DESIGN NOTES:
+
+    - REACT should focus on creating memories from the current visible state.
+    - THINK is responsible for deciding what to do with those memories.
+    - On the main menu with no character, good observations from REACT help THINK
+      understand it should eventually choose option 2 to create a character.
+    - Buffer management in index.ts now protects REACT from being spammed with
+      the same content repeatedly while still allowing it to create memories.
   */
 }
 

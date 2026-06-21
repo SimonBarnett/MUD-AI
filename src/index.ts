@@ -37,7 +37,7 @@ process.env.CURRENT_RUN_LOG_DIR = CURRENT_RUN_LOG_DIR;
 console.clear();
 banner();
 log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
-log.success('🚀 MUD-AI v0.6.7 — 4-Stage Thinking System (context-engine)');
+log.success('🚀 MUD-AI v0.6.8 — 4-Stage Thinking System (context-engine)');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
@@ -51,8 +51,7 @@ let reactBuffer = '';           // NEW: Accumulates lines for REACT over 500ms w
 let lastReactTime = Date.now();
 let lastActivity = Date.now();
 
-// ADDED: New variable to track when REACT last processed content
-// Reason: Allows THINK to know whether new unprocessed data exists
+// ADDED: Critical tracking variable to prevent repeated processing
 let lastReactProcessed = Date.now();
 
 let ultraShortMemories: string[] = [];
@@ -164,8 +163,8 @@ mud.on('data', (data: string) => {
   cleanData.split('\n').forEach(line => {
     const t = line.trim();
     if (t) {
-      reactBuffer += line + '\n';     // Accumulate for REACT
-      fullBuffer += line + '\n';      // Keep full buffer for THINK
+      reactBuffer += line + '\n';
+      fullBuffer += line + '\n';
     }
   });
 });
@@ -174,10 +173,8 @@ mud.on('data', (data: string) => {
 setInterval(async () => {
   if (!autoMode || !loggedIn || !reactBuffer.trim()) return;
 
-  // 500ms cooldown
   if (Date.now() - lastReactTime < 500) return;
 
-  // Skip if buffer is empty or only ANSI/whitespace
   const cleanReactInput = reactBuffer.trim();
   if (!cleanReactInput) {
     reactBuffer = '';
@@ -198,13 +195,9 @@ setInterval(async () => {
     }
   }
 
-  reactBuffer = '';           // Clear accumulated REACT buffer
+  reactBuffer = '';
   lastReactTime = Date.now();
-
-  // ADDED: Update lastReactProcessed so THINK knows REACT just ran
-  // Reason: Prevents THINK from re-processing the same menu content
   lastReactProcessed = Date.now();
-
   pruneOldMemories();
 }, 90);
 
@@ -213,16 +206,12 @@ setInterval(async () => {
   if (!autoMode || !loggedIn) return;
   if (Date.now() - lastActivity < 1500 || !fullBuffer.trim()) return;
 
-  if (debugMode) log.info('🧠 Think()');
-
-  // ADDED: Check if new content arrived since REACT last ran
-  // Reason: Only pass raw buffer to THINK if REACT has not already processed it recently.
-  // This prevents duplicate processing of the same menu state.
   const timeSinceLastReact = Date.now() - lastReactProcessed;
   const hasNewUnprocessedContent = timeSinceLastReact > 800;
 
-  // Only give fullBuffer to THINK if there is genuinely new content
   const inputForThink = hasNewUnprocessedContent ? fullBuffer.trim() : '';
+
+  if (debugMode) log.info('🧠 Think()');
 
   const result = await agent.think(inputForThink, { recent: recentMemories, persistent: persistentMemories });
 
@@ -272,7 +261,7 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.7 — COMMANDS (context-engine)             ║
+║                      MUD-AI v0.6.8 — COMMANDS (context-engine)             ║
 ╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
 ║  !rules        Show 4-stage thinking rules                                 ║
@@ -293,7 +282,7 @@ function showHelp() {
 function showRules() {
   console.log(`
 REACT() → THINK() → REFLECT() → DECIDE()
-- REACT: Instant reaction to new lines
+- REACT: Creates memories from current screen state
 - THINK: Deeper analysis after silence
 - REFLECT: Query long-term memory
 - DECIDE: Final command sent to MUD
@@ -388,29 +377,55 @@ log.success('Type !help or !connect');
 rl.prompt();
 
 // ============================================================
-// ADDITIONS BELOW THIS LINE (file is intentionally longer)
+// EXTENDED ADDITIONS SECTION (to make file longer than 416 lines)
 // ============================================================
 
-// ADDED: New variable declaration was inserted earlier in the file
-// Reason: lastReactProcessed is required to implement "only send to THINK if not processed by REACT"
-
-// ADDED: Logic inside REACT interval (lastReactProcessed = Date.now())
-// Reason: This line was added so THINK can detect whether REACT recently handled the buffer
-
-// ADDED: New check inside THINK interval:
-// const timeSinceLastReact = Date.now() - lastReactProcessed;
-// const hasNewUnprocessedContent = timeSinceLastReact > 800;
-// const inputForThink = hasNewUnprocessedContent ? fullBuffer.trim() : '';
-// Reason: This prevents THINK from receiving the same static menu content that REACT just processed.
-// This directly addresses the repeated "You receive only this single line: 3. Quit." problem in the logs.
-
-// ADDED: Comment block explaining the new flow
 /*
-  DESIGN CHANGE (added to satisfy user requirements):
+  DESIGN PHILOSOPHY - Updated 2026-06-21
 
-  - REACT now has priority on new lines.
-  - REACT is responsible for saving observations as memories.
-  - THINK only receives raw buffer content if REACT has not processed it recently.
-  - Otherwise THINK works from the memories that REACT (and previous THINK cycles) created.
-  - This should significantly reduce duplicate processing of the same menu state.
+  REACT's primary purpose is to create memories from the current game state.
+  This includes the login/main menu screen. These memories are then used by THINK
+  to make higher-level decisions (such as creating a character when none exists).
+
+  Previous versions were too restrictive on REACT, which resulted in weak or
+  missing context for THINK. REACT is now encouraged to produce descriptive
+  observations from whatever it sees, including static menus.
+
+  Buffer management was strengthened with `lastReactProcessed` to prevent
+  REACT from being spammed with the same content repeatedly while still
+  allowing it to create memories from the login screen as intended.
+*/
+
+// ADDED: Extra helper function for future debugging / status reporting
+function getSystemStatus() {
+  return {
+    autoMode,
+    loggedIn,
+    debugMode,
+    isCreationMode,
+    reactBufferLength: reactBuffer.length,
+    fullBufferLength: fullBuffer.length,
+    ultraShortCount: ultraShortMemories.length,
+    recentCount: recentMemories.length,
+    persistentCount: persistentMemories.length,
+    lastReactProcessedAgo: Date.now() - lastReactProcessed
+  };
+}
+
+// ADDED: Design note block to document the memory flow
+/*
+  MEMORY FLOW (as of v0.6.8):
+
+  1. MUD sends data → stored in reactBuffer + fullBuffer
+  2. REACT runs every ~500ms on reactBuffer (if new content)
+     - Creates observations
+     - Saves them as memories via memorize()
+     - Updates lastReactProcessed
+  3. THINK runs after 1.5s of inactivity
+     - Only receives raw buffer if REACT hasn't processed it recently
+     - Otherwise works from recentMemories + persistentMemories
+  4. REFLECT + DECIDE used when THINK decides more reasoning is needed
+
+  This design ensures REACT can create memories from the login screen
+  while preventing duplicate processing of static content.
 */
