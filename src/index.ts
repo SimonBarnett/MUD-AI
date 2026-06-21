@@ -37,7 +37,7 @@ process.env.CURRENT_RUN_LOG_DIR = CURRENT_RUN_LOG_DIR;
 console.clear();
 banner();
 log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
-log.success('🚀 MUD-AI v0.6.5 — 4-Stage Thinking System (context-engine)');
+log.success('🚀 MUD-AI v0.6.6 — 4-Stage Thinking System (context-engine)');
 
 const agent = new MUDAgent();
 const mud = new MUDClient();
@@ -54,6 +54,40 @@ let lastActivity = Date.now();
 let ultraShortMemories: string[] = [];
 let recentMemories: string[] = [];
 let persistentMemories: string[] = [];
+
+// ==================== ANSI STRIPPER ====================
+function stripAnsi(str: string): string {
+  return str.replace(
+    /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-ntqry=><~]/g,
+    ''
+  );
+}
+
+// ==================== USERNAME PERSISTENCE ====================
+function saveUsernameToEnv(username: string) {
+  const envPath = path.join(process.cwd(), '.env');
+
+  try {
+    let envContent = fs.existsSync(envPath)
+      ? fs.readFileSync(envPath, 'utf8')
+      : '';
+
+    // Remove existing USERNAME line
+    envContent = envContent.replace(/^USERNAME=.*$/m, '').trim();
+
+    // Append new USERNAME
+    envContent += `\nUSERNAME=${username}\n`;
+
+    fs.writeFileSync(envPath, envContent);
+
+    // Update runtime environment
+    process.env.USERNAME = username;
+
+    log.success(`💾 Username saved to .env → USERNAME=${username}`);
+  } catch (e: any) {
+    log.error('Failed to save username to .env:', e.message);
+  }
+}
 
 // ==================== MEMORY ====================
 async function loadPersistentMemories() {
@@ -90,6 +124,29 @@ async function memorize(text: string, importance: number = 0.75) {
 
 // ==================== START / CONNECT ====================
 async function start() {
+  const username = process.env.USERNAME;
+  const fixedPassword = process.env.MUD_PASSWORD || 'DefaultPass123';
+
+  if (username) {
+    // === LOGIN MODE ===
+    await memorize(
+      `My character name is "${username}". ` +
+      `The password is stored in MUD_PASSWORD. ` +
+      `When I see the login prompt or main menu, I must send my character name first, then the password.`,
+      0.95
+    );
+    log.success(`🔐 Login mode active for character: ${username}`);
+  } else {
+    // === CHARACTER CREATION MODE ===
+    await memorize(
+      `I do not have a character yet. I should create a new one from the main menu (choose option 2). ` +
+      `Use the password from MUD_PASSWORD when asked for a password. ` +
+      `After successfully creating a character, output exactly: SAVE_USERNAME:MyNewCharacterName`,
+      0.92
+    );
+    log.info('No USERNAME found in .env — agent will attempt to create a new character');
+  }
+
   await memorize("System: Follow the exact 4-stage thinking system.", 0.9);
   await loadPersistentMemories();
   loggedIn = true;
@@ -102,7 +159,9 @@ mud.on('data', (data: string) => {
   if (!autoMode || !loggedIn) return;
   lastActivity = Date.now();
 
-  data.split('\n').forEach(line => {
+  const cleanData = stripAnsi(data);
+
+  cleanData.split('\n').forEach(line => {
     const t = line.trim();
     if (t) {
       currentLine = t;
@@ -160,9 +219,20 @@ async function doReflectAndDecide() {
   const retrieved = await agent.queryMemories(queries);
   const decision = await agent.decide(retrieved);
 
-  if (decision.command && loggedIn) {
-    mud.sendCommand(decision.command);
+  if (!decision.command || !loggedIn) return;
+
+  // Handle saving new username after character creation
+  if (decision.command.startsWith('SAVE_USERNAME:')) {
+    const newUsername = decision.command.split(':')[1]?.trim();
+    if (newUsername) {
+      saveUsernameToEnv(newUsername);
+      await memorize(`New character created successfully. My name is now ${newUsername}.`, 0.95);
+    }
+    return;
   }
+
+  // Normal game command
+  mud.sendCommand(decision.command);
 }
 
 function pruneOldMemories() {
@@ -174,7 +244,7 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.5 — COMMANDS (context-engine)             ║
+║                      MUD-AI v0.6.6 — COMMANDS (context-engine)             ║
 ╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
 ║  !rules        Show 4-stage thinking rules                                 ║
