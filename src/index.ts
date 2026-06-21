@@ -16,8 +16,8 @@ import path from 'path';
 import { MUDAgent } from './agent/agent.js';
 import { MUDClient } from './mud-client/client.js';
 import {
-  storeMemory,
   getRecentMemories,
+  smartMemorize,
 } from './context-engine/memory.js';
 import { log, banner } from './logger.js';
 
@@ -59,7 +59,7 @@ fs.writeFileSync(DEBUG_LOG_PATH, `=== MUD-AI SESSION STARTED: ${new Date().toISO
 console.clear();
 banner();
 log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
-log.success('🚀 MUD-AI v0.6.25-debug-logging — 4-Stage Thinking System + STRICT React→Think + Dedicated Debug Log');
+log.success('🚀 MUD-AI v0.6.26-goals-support — 4-Stage Thinking System + STRICT React→Think + Goals + Dedicated Debug Log');
 
 // ==================== STRICT REACT-BEFORE-THINK SEQUENCING STATE ====================
 let hasReactedSinceLastThink = false;
@@ -167,9 +167,10 @@ async function loadPersistentMemories() {
   }
 }
 
+// Use smartMemorize for normal observations (better deduplication + importance boosting)
 async function memorize(text: string, importance: number = 0.75) {
   try {
-    await storeMemory(text, importance, []);
+    await smartMemorize(text, importance);
   } catch (e: any) {
     log.error('Failed to store memory:', e.message);
     logDebug(`Failed to store memory: ${e.message}`, 'ERROR');
@@ -182,32 +183,33 @@ async function start() {
   const actualPassword = process.env.MUD_PASSWORD || '';
 
   isCreationMode = !mudCharacter;
-
   persistentMemories = [];
 
   if (mudCharacter) {
-    const imperative = 
+    // Store login as a GOAL (high priority motivation)
+    const goal = 
       `I'm logging on with username ${mudCharacter} and password ${actualPassword}. ` +
       `When I see the main menu, send "1". ` +
       `When I see "Enter an option or enter your character's name.", send my username. ` +
       `Then send the password.`;
 
-    await memorize(imperative, 0.98);
-    persistentMemories.unshift(imperative);
+    await agent.storeGoal(goal);
+    persistentMemories.unshift(goal);
 
     log.success(`🔐 Login mode active for character: ${mudCharacter}`);
     logDebug(`Login mode active for character: ${mudCharacter}`);
   } else {
     const tempName = generateCoolTempName();
 
-    const imperative = 
+    // Store character creation as a GOAL
+    const goal = 
       `I'm creating a char, with username ${tempName} and password ${actualPassword}. ` +
       `On the main menu I must choose option 2. ` +
       `When asked for password and confirm password, send the exact same value. ` +
       `After success, output exactly: SAVE_USERNAME:${tempName}`;
 
-    await memorize(imperative, 0.99);
-    persistentMemories.unshift(imperative);
+    await agent.storeGoal(goal);
+    persistentMemories.unshift(goal);
 
     log.info(`🆕 Creation mode active — temporary name: ${tempName}`);
     logDebug(`Creation mode active — temporary name: ${tempName}`);
@@ -380,7 +382,7 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.25-debug-logging — COMMANDS               ║
+║                      MUD-AI v0.6.26-goals-support — COMMANDS               ║
 ╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
 ║  !rules        Show current rules                                          ║
@@ -403,10 +405,10 @@ function showRules() {
 ══════════════════════════════════════════════════════════════════════════════
 REACT() → THINK() → REFLECT() → DECIDE()
 ══════════════════════════════════════════════════════════════════════════════
+• Login and Creation are now stored as [GOAL] memories (high priority)
+• Goals are automatically prioritized and can be cleared when completed
+• Uses smartMemorize for better deduplication of repeated facts
 • Dedicated debug.log created in each run folder
-• Errors are logged to debug.log with timestamps
-• Uses MUD_CHARACTER from .env (blank = Creation Mode)
-• Actual password value is embedded in the startup imperative
 `);
 }
 
@@ -511,5 +513,5 @@ rl.on('close', () => {
 
 // ==================== BOOT ====================
 showHelp();
-log.success('Type !help or !connect — Dedicated debug.log now active in run folder');
+log.success('Type !help or !connect — Goals system active (Login/Creation stored as [GOAL])');
 rl.prompt();

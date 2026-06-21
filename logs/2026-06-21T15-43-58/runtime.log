@@ -1,0 +1,41 @@
+=== MUD-AI SESSION STARTED: 2026-06-21T15:43:58.596Z ===
+[2026-06-21T15:43:58.596Z] [SUCCESS] 📄 Logs → C:\Users\medatech.si\mud - Copy\logs\2026-06-21T15-43-58
+[2026-06-21T15:43:58.597Z] [SUCCESS] 🚀 MUD-AI v0.6.26-goals-support — 4-Stage Thinking System + STRICT React→Think + Goals + Dedicated Debug Log
+[2026-06-21T15:43:58.604Z] [SUCCESS] Type !help or !connect — Goals system active (Login/Creation stored as [GOAL])
+[2026-06-21T15:44:01.722Z] [INFO] 🆕 Creation mode active — temporary name: stoneWraith
+[2026-06-21T15:44:02.249Z] [SUCCESS] 📦 Loaded 2 persistent memories
+[2026-06-21T15:44:02.255Z] [SUCCESS] 🔌 Connecting to achaea.com:23... (reading from .env)
+[2026-06-21T15:44:02.260Z] [SUCCESS] ✅ Connected — Strong imperative memory active from first THINK
+[2026-06-21T15:44:02.364Z] [SUCCESS] ✅ Connected to achaea.com MUD
+[2026-06-21T15:44:02.460Z] [INFO] 📥 MUD: ����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+[2026-06-21T15:44:02.466Z] [INFO] 📥 MUD: Multi-User License: 100-0000-000
+[2026-06-21T15:44:02.470Z] [INFO] 📥 MUD: [0;37m           [34m******************************************[37m
+[2026-06-21T15:44:02.475Z] [INFO] 📥 MUD:                  [32mAchaea, Dreams of Divine Lands[37m
+[2026-06-21T15:44:02.480Z] [INFO] 📥 MUD:                  [36m"Your fate and fame shall be
+[2026-06-21T15:44:02.486Z] [INFO] 📥 MUD:                an echo and a light unto eternity."
+[2026-06-21T15:44:02.490Z] [INFO] 📥 MUD:            [34m******************************************[37m
+[2026-06-21T15:44:02.495Z] [INFO] 📥 MUD:            Achaea's IP address is 50.31.100.8
+[2026-06-21T15:44:02.497Z] [INFO] 📥 MUD:            For general questions e-mail support@achaea.com.
+[2026-06-21T15:44:02.501Z] [INFO] 📥 MUD:            99 adventurers are currently in the realms.
+[2026-06-21T15:44:02.506Z] [INFO] 📥 MUD:            [32m1.[37m Enter the game.
+[2026-06-21T15:44:02.512Z] [INFO] 📥 MUD:            [32m2.[37m Create a new character.
+[2026-06-21T15:44:02.516Z] [INFO] 📥 MUD:            [32m3.[37m Quit.
+[2026-06-21T15:44:09.612Z] [SUCCESS] ✅ Sent: 2
+[2026-06-21T15:44:09.708Z] [INFO] 📥 MUD: Enter an option or enter your character's name. ����
+[2026-06-21T15:44:09.712Z] [INFO] 📥 MUD: Please be aware that you must be 13 years of age or older to play Achaea.
+[2026-06-21T15:44:09.715Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 1 of 7): Name Selection ***
+[2026-06-21T15:44:09.718Z] [INFO] 📥 MUD: Pick your name with care! This is a fantasy world. Names must sound like 
+[2026-06-21T15:44:09.722Z] [INFO] 📥 MUD: fantasy names, not be taken from extremely famous characters in other places 
+[2026-06-21T15:44:09.726Z] [INFO] 📥 MUD: (real world, books, movies, video games) and musn't be too silly. We reserve 
+[2026-06-21T15:44:09.729Z] [INFO] 📥 MUD: the right to change any name we deem unfit.
+[2026-06-21T15:44:17.104Z] [SUCCESS] ✅ Sent: 2
+[2026-06-21T15:44:17.199Z] [INFO] 📥 MUD: What is the name you wish to use? > ��Your name must have between 3 and 12 letters.
+[2026-06-21T15:44:17.203Z] [INFO] 📥 MUD: Please be aware that you must be 13 years of age or older to play Achaea.
+[2026-06-21T15:44:17.206Z] [INFO] 📥 MUD: *** CHARACTER CREATION (Part 1 of 7): Name Selection ***
+[2026-06-21T15:44:17.209Z] [INFO] 📥 MUD: Pick your name with care! This is a fantasy world. Names must sound like 
+[2026-06-21T15:44:17.213Z] [INFO] 📥 MUD: fantasy names, not be taken from extremely famous characters in other places 
+[2026-06-21T15:44:17.216Z] [INFO] 📥 MUD: (real world, books, movies, video games) and musn't be too silly. We reserve 
+[2026-06-21T15:44:17.219Z] [INFO] 📥 MUD: the right to change any name we deem unfit.
+[2026-06-21T15:44:29.300Z] [INFO] 🔍 Searching memories for 7 queries
+[2026-06-21T15:44:36.506Z] [SUCCESS] ✅ Sent: MyCharacter
+[2026-06-21T15:44:36.721Z] [INFO] 📥 MUD: What is the name you wish to use? > ��

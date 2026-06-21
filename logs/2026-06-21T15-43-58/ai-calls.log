@@ -1,0 +1,476 @@
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:05.305Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.26)
+
+You receive recent game output:
+����������V��F��Rapture Runtime Environment v2.4.9.1 -- (c) 2026 -- Iron Realms Entertainment
+Multi-User License: 100-0000-000
+           ******************************************
+                 Achaea, Dreams of Divine Lands
+                 "Your fate and fame shall be
+               an echo and a light unto eternity."
+           ******************************************
+           Achaea's IP address is 50.31.100.8
+           For general questions e-mail support@achaea.com.
+           99 adventurers are currently in the realms.
+           1. Enter the game.
+           2. Create a new character.
+           3. Quit.
+
+Recent short-term memories (last ~10s):
+none
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1)",
+    "Menu options: 1. Enter the game, 2. Create a new character, 3. Quit",
+    "Server IP: 50.31.100.8",
+    "99 adventurers currently online",
+    "Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment"
+  ]
+}
+USAGE: {"prompt_tokens":397,"completion_tokens":103,"total_tokens":762,"prompt_tokens_details":{"text_tokens":397,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":262,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":12743500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:09.611Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + GOALS + MENU RULES (v0.6.26)
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+
+
+Recent memories (from REACT):
+Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1)
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+Server IP: 50.31.100.8
+99 adventurers currently online
+Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment
+Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1)
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+Server IP: 50.31.100.8
+99 adventurers currently online
+Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+[GOAL] I'm creating a char, with username stoneWraith and password MySecretPassword. On the main menu I must choose option 2. When asked for password and confirm password, send the exact same value. After success, output exactly: SAVE_USERNAME:stoneWraith
+
+You must choose exactly one of two paths:
+
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
+
+FORBIDDEN: Returning neither or both.
+
+=== GOALS vs FACTS ===
+
+- Memories starting with [GOAL] are active motivations/quests. Treat them as high priority.
+- Normal memories are facts about the world.
+- If a [GOAL] memory exists (e.g. login), you should work toward completing it.
+
+=== CRITICAL STATE DISTINCTION ===
+
+1. MAIN MENU STATE
+   - You see: "1. Enter the game", "2. Create a new character", "3. Quit"
+   - Login Mode → send "1"
+   - Creation Mode → send "2"
+
+2. NAME PROMPT STATE (VERY IMPORTANT)
+   - You see: "Enter an option or enter your character's name."
+   - This is **NOT** the main menu anymore.
+   - In Login Mode: You MUST now send your character name.
+   - Do NOT send "1" or "2" here.
+
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name, use exactly that name during creation.
+- Never send your Windows login name.
+- When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
+
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
+
+Output ONLY valid JSON.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "action": "2",
+  "current_state": "unknown",
+  "observations": []
+}
+USAGE: {"prompt_tokens":711,"completion_tokens":9,"total_tokens":1033,"prompt_tokens_details":{"text_tokens":711,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":313,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":15593500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:12.801Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.26)
+
+You receive recent game output:
+Enter an option or enter your character's name. ����
+Please be aware that you must be 13 years of age or older to play Achaea.
+*** CHARACTER CREATION (Part 1 of 7): Name Selection ***
+Pick your name with care! This is a fantasy world. Names must sound like 
+fantasy names, not be taken from extremely famous characters in other places 
+(real world, books, movies, video games) and musn't be too silly. We reserve 
+the right to change any name we deem unfit.
+
+Recent short-term memories (last ~10s):
+Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1) | Menu options: 1. Enter the game, 2. Create a new character, 3. Quit | Server IP: 50.31.100.8 | 99 adventurers currently online | Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "Entered character creation Part 1 of 7: Name Selection screen",
+    "Name rules: must be fantasy-style, not from famous real-world/books/movies/games characters, not silly; admin may change unfit names",
+    "Age requirement reminder: must be 13+ to play Achaea",
+    "Still connected to Achaea MUD server 50.31.100.8 via Rapture RTE v2.4.9.1"
+  ]
+}
+USAGE: {"prompt_tokens":443,"completion_tokens":110,"total_tokens":811,"prompt_tokens_details":{"text_tokens":443,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":258,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":13393500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:17.102Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + GOALS + MENU RULES (v0.6.26)
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+
+
+Recent memories (from REACT):
+Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1)
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+Server IP: 50.31.100.8
+99 adventurers currently online
+Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment
+Entered character creation Part 1 of 7: Name Selection screen
+Name rules: must be fantasy-style, not from famous real-world/books/movies/games characters, not silly; admin may change unfit names
+Age requirement reminder: must be 13+ to play Achaea
+Still connected to Achaea MUD server 50.31.100.8 via Rapture RTE v2.4.9.1
+Entered character creation Part 1 of 7: Name Selection screen
+Name rules: must be fantasy-style, not from famous real-world/books/movies/games characters, not silly; admin may change unfit names
+Age requirement reminder: must be 13+ to play Achaea
+Still connected to Achaea MUD server 50.31.100.8 via Rapture RTE v2.4.9.1
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+[GOAL] I'm creating a char, with username stoneWraith and password MySecretPassword. On the main menu I must choose option 2. When asked for password and confirm password, send the exact same value. After success, output exactly: SAVE_USERNAME:stoneWraith
+
+You must choose exactly one of two paths:
+
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
+
+FORBIDDEN: Returning neither or both.
+
+=== GOALS vs FACTS ===
+
+- Memories starting with [GOAL] are active motivations/quests. Treat them as high priority.
+- Normal memories are facts about the world.
+- If a [GOAL] memory exists (e.g. login), you should work toward completing it.
+
+=== CRITICAL STATE DISTINCTION ===
+
+1. MAIN MENU STATE
+   - You see: "1. Enter the game", "2. Create a new character", "3. Quit"
+   - Login Mode → send "1"
+   - Creation Mode → send "2"
+
+2. NAME PROMPT STATE (VERY IMPORTANT)
+   - You see: "Enter an option or enter your character's name."
+   - This is **NOT** the main menu anymore.
+   - In Login Mode: You MUST now send your character name.
+   - Do NOT send "1" or "2" here.
+
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name, use exactly that name during creation.
+- Never send your Windows login name.
+- When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
+
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
+
+Output ONLY valid JSON.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "action": "2",
+  "current_state": "unknown",
+  "observations": []
+}
+USAGE: {"prompt_tokens":806,"completion_tokens":9,"total_tokens":1127,"prompt_tokens_details":{"text_tokens":806,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":312,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":16756000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:20.391Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.26)
+
+You receive recent game output:
+What is the name you wish to use? > ��Your name must have between 3 and 12 letters.
+Please be aware that you must be 13 years of age or older to play Achaea.
+*** CHARACTER CREATION (Part 1 of 7): Name Selection ***
+Pick your name with care! This is a fantasy world. Names must sound like 
+fantasy names, not be taken from extremely famous characters in other places 
+(real world, books, movies, video games) and musn't be too silly. We reserve 
+the right to change any name we deem unfit.
+
+Recent short-term memories (last ~10s):
+Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1) | Menu options: 1. Enter the game, 2. Create a new character, 3. Quit | Server IP: 50.31.100.8 | 99 adventurers currently online | Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment | Entered character creation Part 1 of 7: Name Selection screen | Name rules: must be fantasy-style, not from famous real-world/books/movies/games characters, not silly; admin may change unfit names | Age requirement reminder: must be 13+ to play Achaea | Still connected to Achaea MUD server 50.31.100.8 via Rapture RTE v2.4.9.1
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "Currently in Achaea character creation Part 1 of 7: Name Selection screen",
+    "Name must be 3-12 letters long and sound like a fantasy name",
+    "Names cannot be taken from famous real-world, book, movie, or game characters and must not be silly",
+    "Administrators reserve the right to change any name deemed unfit",
+    "Player must confirm being 13 years of age or older to proceed with playing Achaea"
+  ]
+}
+USAGE: {"prompt_tokens":541,"completion_tokens":113,"total_tokens":961,"prompt_tokens_details":{"text_tokens":541,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":307,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":15918500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:25.121Z] STAGE: THINK
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + GOALS + MENU RULES (v0.6.26)
+
+You are controlling a character in Achaea.
+
+Current game buffer:
+
+
+Recent memories (from REACT):
+Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1)
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+Server IP: 50.31.100.8
+99 adventurers currently online
+Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment
+Entered character creation Part 1 of 7: Name Selection screen
+Name rules: must be fantasy-style, not from famous real-world/books/movies/games characters, not silly; admin may change unfit names
+Age requirement reminder: must be 13+ to play Achaea
+Still connected to Achaea MUD server 50.31.100.8 via Rapture RTE v2.4.9.1
+Currently in Achaea character creation Part 1 of 7: Name Selection screen
+Name must be 3-12 letters long and sound like a fantasy name
+Names cannot be taken from famous real-world, book, movie, or game characters and must not be silly
+Administrators reserve the right to change any name deemed unfit
+Player must confirm being 13 years of age or older to proceed with playing Achaea
+Currently in Achaea character creation Part 1 of 7: Name Selection screen
+Name must be 3-12 letters long and sound like a fantasy name
+Names cannot be taken from famous real-world, book, movie, or game characters and must not be silly
+Administrators reserve the right to change any name deemed unfit
+Player must confirm being 13 years of age or older to proceed with playing Achaea
+
+Persistent / long-term memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+[GOAL] I'm creating a char, with username stoneWraith and password MySecretPassword. On the main menu I must choose option 2. When asked for password and confirm password, send the exact same value. After success, output exactly: SAVE_USERNAME:stoneWraith
+
+You must choose exactly one of two paths:
+
+PATH A — Set "action": "exact command"
+PATH B — Set "shouldReflect": true
+
+FORBIDDEN: Returning neither or both.
+
+=== GOALS vs FACTS ===
+
+- Memories starting with [GOAL] are active motivations/quests. Treat them as high priority.
+- Normal memories are facts about the world.
+- If a [GOAL] memory exists (e.g. login), you should work toward completing it.
+
+=== CRITICAL STATE DISTINCTION ===
+
+1. MAIN MENU STATE
+   - You see: "1. Enter the game", "2. Create a new character", "3. Quit"
+   - Login Mode → send "1"
+   - Creation Mode → send "2"
+
+2. NAME PROMPT STATE (VERY IMPORTANT)
+   - You see: "Enter an option or enter your character's name."
+   - This is **NOT** the main menu anymore.
+   - In Login Mode: You MUST now send your character name.
+   - Do NOT send "1" or "2" here.
+
+TEMP NAME + PASSWORD RULES (MANDATORY):
+- If persistent memory says you are using a temporary name, use exactly that name during creation.
+- Never send your Windows login name.
+- When asked for password and confirm password, send the exact same value from MUD_PASSWORD both times.
+
+After successful character creation, output exactly: SAVE_USERNAME:YourTempName
+
+Output ONLY valid JSON.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "action": null,
+  "current_state": "unknown",
+  "observations": [
+    "Repeated failed action — forcing reflection"
+  ],
+  "shouldReflect": true
+}
+USAGE: {"prompt_tokens":894,"completion_tokens":6,"total_tokens":1303,"prompt_tokens_details":{"text_tokens":894,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":403,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":20056000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:29.299Z] STAGE: REFLECT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REFLECT MODE
+
+Recent memories:
+Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1)
+Menu options: 1. Enter the game, 2. Create a new character, 3. Quit
+Server IP: 50.31.100.8
+99 adventurers currently online
+Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment
+Entered character creation Part 1 of 7: Name Selection screen
+Name rules: must be fantasy-style, not from famous real-world/books/movies/games characters, not silly; admin may change unfit names
+Age requirement reminder: must be 13+ to play Achaea
+Still connected to Achaea MUD server 50.31.100.8 via Rapture RTE v2.4.9.1
+Currently in Achaea character creation Part 1 of 7: Name Selection screen
+Name must be 3-12 letters long and sound like a fantasy name
+Names cannot be taken from famous real-world, book, movie, or game characters and must not be silly
+Administrators reserve the right to change any name deemed unfit
+Player must confirm being 13 years of age or older to proceed with playing Achaea
+
+Persistent memories:
+System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.
+[GOAL] I'm creating a char, with username stoneWraith and password MySecretPassword. On the main menu I must choose option 2. When asked for password and confirm password, send the exact same value. After success, output exactly: SAVE_USERNAME:stoneWraith
+
+Return ONLY a valid JSON array of 4-7 useful memory queries.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+[
+  "Achaea server IP and Rapture RTE version",
+  "Achaea main menu options and current player count",
+  "Achaea character creation name rules and age requirement",
+  "Target username stoneWraith and password MySecretPassword for new character",
+  "Required menu choice 2 for character creation",
+  "Post-creation output instruction SAVE_USERNAME:stoneWraith",
+  "Password confirmation must use identical value"
+]
+USAGE: {"prompt_tokens":481,"completion_tokens":81,"total_tokens":1022,"prompt_tokens_details":{"text_tokens":481,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":460,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":18193500}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:36.505Z] STAGE: DECIDE
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+DECIDE MODE — FINAL ACTION + GOALS (v0.6.26)
+
+Fresh memories from Reflect:
+No useful memories retrieved
+
+You are playing Achaea.
+
+MANDATORY RULES:
+1. You MUST return a command. Never return null.
+2. [GOAL] memories represent active motivations. Prioritize completing them when possible.
+3. If you see "Enter an option or enter your character's name.", send the character name.
+4. If you see the main menu with options 1/2/3, follow menu rules.
+5. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
+
+Return a valid JSON object with a "command" field.
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "command": "MyCharacter"
+}
+USAGE: {"prompt_tokens":274,"completion_tokens":7,"total_tokens":1081,"prompt_tokens_details":{"text_tokens":274,"audio_tokens":0,"image_tokens":0,"cached_tokens":256},"completion_tokens_details":{"reasoning_tokens":800,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":20912000}
+══════════════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════════════
+[2026-06-21T15:44:40.064Z] STAGE: REACT
+──────────────────────────────────────────────────────────────────────────────
+SYSTEM PROMPT:
+REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.26)
+
+You receive recent game output:
+What is the name you wish to use? > ��
+
+Recent short-term memories (last ~10s):
+Currently at Achaea main menu (Rapture Runtime Environment v2.4.9.1) | Menu options: 1. Enter the game, 2. Create a new character, 3. Quit | Server IP: 50.31.100.8 | 99 adventurers currently online | Game is Achaea, Dreams of Divine Lands by Iron Realms Entertainment | Entered character creation Part 1 of 7: Name Selection screen | Name rules: must be fantasy-style, not from famous real-world/books/movies/games characters, not silly; admin may change unfit names | Age requirement reminder: must be 13+ to play Achaea | Still connected to Achaea MUD server 50.31.100.8 via Rapture RTE v2.4.9.1 | Currently in Achaea character creation Part 1 of 7: Name Selection screen | Name must be 3-12 letters long and sound like a fantasy name | Names cannot be taken from famous real-world, book, movie, or game characters and must not be silly | Administrators reserve the right to change any name deemed unfit | Player must confirm being 13 years of age or older to proceed with playing Achaea
+
+You are playing Achaea (MUD).
+
+PRIMARY JOB: Generate useful, savable observations.
+
+CRITICAL RULE: You must almost NEVER return immediateAction.
+Only return it for REAL immediate danger.
+On menus, login screens, and character creation: produce observations only.
+
+Respond with valid JSON only:
+{
+  "immediateAction": "command string or null",
+  "observations": ["observation 1", "observation 2", ...]
+}
+──────────────────────────────────────────────────────────────────────────────
+RESPONSE:
+{
+  "immediateAction": null,
+  "observations": [
+    "Currently at name selection prompt in Achaea character creation (Part 1 of 7)",
+    "Game is prompting for desired character name with cursor ready for input"
+  ]
+}
+USAGE: {"prompt_tokens":518,"completion_tokens":52,"total_tokens":862,"prompt_tokens_details":{"text_tokens":518,"audio_tokens":0,"image_tokens":0,"cached_tokens":128},"completion_tokens_details":{"reasoning_tokens":292,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0},"num_sources_used":0,"cost_in_usd_ticks":13731000}
+══════════════════════════════════════════════════════════════════════════════

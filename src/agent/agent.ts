@@ -1,9 +1,13 @@
-// src/agent/agent.ts - v0.6.25-debug-logging
+// src/agent/agent.ts - v0.6.26-goals-support
 import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
-import { searchMemories } from '../context-engine/memory.js';
+import { 
+  searchMemories, 
+  storeGoal, 
+  clearCompletedGoal 
+} from '../context-engine/memory.js';
 import { log } from '../logger.js';
 
 const getLogDir = (): string => {
@@ -61,10 +65,40 @@ export class MUDAgent {
   private lastActions: string[] = [];
   private consecutiveSameActions = 0;
 
+  // ==================== GOAL MANAGEMENT ====================
+
+  /**
+   * Store a high-priority goal / motivation.
+   * These are treated differently from normal facts.
+   */
+  async storeGoal(goal: string): Promise<void> {
+    try {
+      await storeGoal(goal);
+      logDebug(`Stored goal: ${goal}`);
+    } catch (e: any) {
+      logDebug(`Failed to store goal: ${e.message}`, 'ERROR');
+    }
+  }
+
+  /**
+   * Remove a completed goal from memory.
+   * Call this once the agent has successfully achieved the goal.
+   */
+  async clearCompletedGoal(goalDescription: string): Promise<void> {
+    try {
+      await clearCompletedGoal(goalDescription);
+      logDebug(`Cleared completed goal: ${goalDescription}`);
+    } catch (e: any) {
+      logDebug(`Failed to clear goal: ${e.message}`, 'ERROR');
+    }
+  }
+
+  // ==================== REACT ====================
+
   async react(input: string, ctx: any) {
     const ultraShort = ctx.ultraShort || ctx.ultraShortMemories || [];
 
-    const system = `REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.25)
+    const system = `REACT MODE — MEMORY GENERATION ONLY (STRICT RULES v0.6.26)
 
 You receive recent game output:
 ${input}
@@ -115,11 +149,13 @@ Respond with valid JSON only:
     return { immediateAction: null, observations: ["Screen state unclear"] };
   }
 
+  // ==================== THINK ====================
+
   async think(buffer: string, ctx: any) {
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
 
-    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + MENU vs NAME PROMPT RULES (v0.6.25)
+    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + GOALS + MENU RULES (v0.6.26)
 
 You are controlling a character in Achaea.
 
@@ -138,6 +174,12 @@ PATH A — Set "action": "exact command"
 PATH B — Set "shouldReflect": true
 
 FORBIDDEN: Returning neither or both.
+
+=== GOALS vs FACTS ===
+
+- Memories starting with [GOAL] are active motivations/quests. Treat them as high priority.
+- Normal memories are facts about the world.
+- If a [GOAL] memory exists (e.g. login), you should work toward completing it.
 
 === CRITICAL STATE DISTINCTION ===
 
@@ -166,7 +208,7 @@ Output ONLY valid JSON.`;
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.15,
-        max_tokens: 820
+        max_tokens: 860
       });
 
       let parsed = JSON.parse(res.choices[0]?.message?.content || '{}');
@@ -221,6 +263,8 @@ Output ONLY valid JSON.`;
     return { observations: ["Error — defaulting to reflection"], current_state: "unknown", shouldReflect: true };
   }
 
+  // ==================== REFLECT ====================
+
   async reflect(ctx: any) {
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
@@ -259,12 +303,14 @@ Return ONLY a valid JSON array of 4-7 useful memory queries.`;
     }
   }
 
+  // ==================== DECIDE ====================
+
   async decide(retrievedMemories: any[]) {
     const memoriesText = retrievedMemories
       .map((m, i) => `${i + 1}. ${m.content || m}`)
       .join('\n');
 
-    const system = `DECIDE MODE — FINAL ACTION (v0.6.25)
+    const system = `DECIDE MODE — FINAL ACTION + GOALS (v0.6.26)
 
 Fresh memories from Reflect:
 ${memoriesText || 'No useful memories retrieved'}
@@ -273,9 +319,10 @@ You are playing Achaea.
 
 MANDATORY RULES:
 1. You MUST return a command. Never return null.
-2. If you see "Enter an option or enter your character's name.", send the character name.
-3. If you see the main menu with options 1/2/3, follow menu rules.
-4. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
+2. [GOAL] memories represent active motivations. Prioritize completing them when possible.
+3. If you see "Enter an option or enter your character's name.", send the character name.
+4. If you see the main menu with options 1/2/3, follow menu rules.
+5. After successful character creation, output exactly: { "command": "SAVE_USERNAME:YourTempName" }
 
 Return a valid JSON object with a "command" field.`;
 
@@ -284,7 +331,7 @@ Return a valid JSON object with a "command" field.`;
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.12,
-        max_tokens: 280
+        max_tokens: 300
       });
 
       let content = res.choices[0]?.message?.content || '';
@@ -313,6 +360,8 @@ Return a valid JSON object with a "command" field.`;
     }
   }
 
+  // ==================== QUERY MEMORIES ====================
+
   async queryMemories(queries: string[]) {
     log.info(`🔍 Searching memories for ${queries.length} queries`);
 
@@ -325,6 +374,8 @@ Return a valid JSON object with a "command" field.`;
       return [];
     }
   }
+
+  // ==================== HELPERS ====================
 
   isOnMainMenu(input: string): boolean {
     const lower = input.toLowerCase();

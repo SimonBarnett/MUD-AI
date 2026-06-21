@@ -1,0 +1,5 @@
+=== MUD-AI SESSION STARTED: 2026-06-21T15:39:35.266Z ===
+[2026-06-21T15:39:50.973Z] [INFO] Stored goal: I'm logging on with username frostroot and password MySecretPassword. When I see the main menu, send "1". When I see "Enter an option or enter your character's name.", send my username. Then send the password.
+[2026-06-21T15:39:50.974Z] [INFO] Login mode active for character: frostroot
+[2026-06-21T15:39:51.478Z] [INFO] Loaded 30 persistent memories
+[2026-06-21T15:39:51.485Z] [INFO] Connected to MUD — Strong imperative memory active
