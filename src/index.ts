@@ -37,50 +37,16 @@ process.env.CURRENT_RUN_LOG_DIR = CURRENT_RUN_LOG_DIR;
 console.clear();
 banner();
 log.success(`📄 Logs → ${CURRENT_RUN_LOG_DIR}`);
-log.success('🚀 MUD-AI v0.6.10-memory-flow — 4-Stage Thinking System (context-engine) + STRICT React→Think ordering + RELIABLE memory hand-off');
+log.success('🚀 MUD-AI v0.6.11-login-creation — 4-Stage Thinking System + STRICT React→Think + RELIABLE memory hand-off + Cool Temp Name Creation');
 
 // ==================== STRICT REACT-BEFORE-THINK SEQUENCING STATE ====================
-// INVARIANT (non-negotiable): Think() MUST NEVER be allowed to fire before
-// at least one React() cycle has successfully completed and acknowledged
-// the current screen content. This prevents the deeper analysis step from
-// ever operating on un-reacted or stale buffers.
-//
-// Why this matters (Tiffany Aching third-thoughts level):
-// - REACT creates immediate memories from fresh input
-// - THINK must only reason over content that REACT has already "seen"
-// - Independent setInterval timers can interleave in any order on the event loop
-//   therefore a pure time-heuristic (e.g. "wait 800ms") is NOT a hard guarantee.
-//   We use an explicit flag + guard function instead.
-//
-// Implementation: hasReactedSinceLastThink flag is set ONLY by REACT after it
-// finishes processing. THINK checks the flag via enforceReactBeforeThink() and
-// blocks (with debug log) if false. Flag is reset after successful THINK.
-//
-// This makes the 4-stage pipeline strictly ordered: REACT → THINK → REFLECT → DECIDE
-
 let hasReactedSinceLastThink = false;
 let lastThinkTime = 0;
 
-// ==================== FRESH OBSERVATIONS HAND-OFF (FIX FOR "react memories did not reach think") ====================
-// Problem diagnosed from your log:
-//   REACT correctly produced 5 good observations about the main menu.
-//   Those observations were pushed into recentMemories + saved via memorize().
-//   However, THINK ran shortly afterwards and its prompt showed empty "Recent memories".
-//
-// Root cause:
-//   The push to recentMemories + await memorize() happens inside the async REACT setInterval.
-//   THINK runs on its own independent interval. There was a race where THINK could read
-//   recentMemories BEFORE the latest observations from REACT had finished being pushed.
-//
-// Solution (lightweight and deterministic):
-//   - Immediately after agent.react() returns, we snapshot the observations into lastFreshObservations.
-//   - We only set hasReactedSinceLastThink = true AFTER the snapshot is taken.
-//   - In THINK we explicitly merge lastFreshObservations into the list passed to agent.think().
-//   - This guarantees the very next THINK after a REACT will always see the fresh observations.
-
+// ==================== FRESH OBSERVATIONS HAND-OFF ====================
 let lastFreshObservations: string[] = [];
 
-// ==================== ORIGINAL STATE (kept for compatibility) ====================
+// ==================== ORIGINAL STATE ====================
 const agent = new MUDAgent();
 const mud = new MUDClient();
 
@@ -89,11 +55,10 @@ let loggedIn = false;
 let debugMode = false;
 
 let fullBuffer = '';
-let reactBuffer = '';           // NEW: Accumulates lines for REACT over 500ms window
+let reactBuffer = '';
 let lastReactTime = Date.now();
 let lastActivity = Date.now();
 
-// ADDED: Critical tracking variable to prevent repeated processing
 let lastReactProcessed = Date.now();
 
 let ultraShortMemories: string[] = [];
@@ -101,6 +66,28 @@ let recentMemories: string[] = [];
 let persistentMemories: string[] = [];
 
 let isCreationMode = false;
+
+// ==================== COOL TEMP NAME GENERATOR (no numbers) ====================
+function generateCoolTempName(): string {
+  const prefixes = [
+    "shadow", "iron", "storm", "night", "void", "ember", "frost", "rune",
+    "ash", "thorn", "dusk", "blaze", "raven", "wolf", "stone", "grim"
+  ];
+  const suffixes = [
+    "veil", "root", "whisper", "forge", "fang", "ward", "spire", "claw",
+    "heart", "soul", "blade", "wraith", "crown", "shadow", "flame", "thorn"
+  ];
+
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+
+  // Occasionally add a cool compound feel
+  if (Math.random() > 0.6) {
+    return prefix + suffix;
+  } else {
+    return prefix + suffix.charAt(0).toUpperCase() + suffix.slice(1);
+  }
+}
 
 // ==================== ANSI STRIPPER ====================
 function stripAnsi(str: string): string {
@@ -164,35 +151,42 @@ async function memorize(text: string, importance: number = 0.75) {
   }
 }
 
-// ==================== START / CONNECT ====================
+// ==================== START / CONNECT (UPDATED WITH NEW LOGIC) ====================
 async function start() {
-  const username = process.env.USERNAME;
-  isCreationMode = !username;
+  const envUsername = process.env.USERNAME;
+  isCreationMode = !envUsername;
 
-  if (username) {
+  if (envUsername) {
+    // ==================== LOGIN MODE ====================
     await memorize(
-      `My character name is "${username}". ` +
+      `My character name is "${envUsername}". ` +
       `The password is stored in MUD_PASSWORD. ` +
       `When I see the login prompt or main menu, I must send my character name first, then the password.`,
       0.95
     );
-    log.success(`🔐 Login mode active for character: ${username}`);
+    log.success(`🔐 Login mode active for character: ${envUsername}`);
   } else {
+    // ==================== CREATION MODE ====================
+    const tempName = generateCoolTempName();
+
     await memorize(
-      `CRITICAL INSTRUCTION: I have no character. I MUST create one immediately. ` +
-      `On the main menu I should choose option 2 to create a new character. ` +
-      `Use the password from MUD_PASSWORD when asked during creation. ` +
-      `After successfully creating a character, output exactly: SAVE_USERNAME:MyNewCharacterName`,
+      `I am using the temporary name "${tempName}". ` +
+      `The password is stored in MUD_PASSWORD. ` +
+      `My primary mission is to create a new character. ` +
+      `On the main menu I should choose option 2 (Create a new character). ` +
+      `After I successfully create the character, I must output exactly: SAVE_USERNAME:${tempName}`,
       0.96
     );
-    log.info('No USERNAME found — agent will AUTOMATICALLY attempt to create a new character');
+
+    log.info(`🆕 Creation mode active — temporary name generated: ${tempName}`);
+    log.info('Agent will attempt to create a new character and then save the name to .env');
   }
 
   await memorize("System: Follow the exact 4-stage thinking system with STRICT React-before-Think ordering.", 0.9);
   await loadPersistentMemories();
   loggedIn = true;
   mud.connect();
-  log.success('✅ Connected — 4-stage autopilot active (React→Think sequencing + reliable memory hand-off GUARANTEED)');
+  log.success('✅ Connected — 4-stage autopilot active (React→Think + Login/Creation modes)');
 }
 
 // ==================== GAME DATA HANDLER ====================
@@ -211,28 +205,20 @@ mud.on('data', (data: string) => {
   });
 });
 
-// ==================== REACT — EXACT RULE YOU SPECIFIED ====================
+// ==================== REACT ====================
 setInterval(async () => {
   if (!autoMode || !loggedIn || !reactBuffer.trim()) return;
 
   if (Date.now() - lastReactTime < 500) return;
 
-  // 1. CAPTURE
   const inputForReact = reactBuffer.trim();
-
-  // 2. IMMEDIATELY CLEAR — DO NOT KEEP THE BUFFER
   reactBuffer = '';
-
   lastReactTime = Date.now();
 
   if (debugMode) log.info('⚡ React()');
 
   const result = await agent.react(inputForReact, { ultraShort: ultraShortMemories });
 
-  // ==================== RELIABLE FRESH OBSERVATIONS HAND-OFF TO THINK ====================
-  // Snapshot the observations immediately after REACT returns.
-  // This snapshot is what THINK will use on its next cycle.
-  // We do this BEFORE setting hasReactedSinceLastThink so THINK is guaranteed to see them.
   if (result.observations && result.observations.length > 0) {
     lastFreshObservations = [...result.observations];
   } else {
@@ -250,20 +236,15 @@ setInterval(async () => {
   }
 
   lastReactProcessed = Date.now();
-  hasReactedSinceLastThink = true;   // ← Now safe for THINK (it will receive lastFreshObservations)
+  hasReactedSinceLastThink = true;
   pruneOldMemories();
 }, 90);
 
-// ==================== ENFORCE REACT BEFORE THINK (THE FIX) ====================
-// This function is the heart of the "Think must not fire before React" rule.
-// It is called at the very start of every THINK interval.
-// Returns true only if React() has set the flag since the last Think cycle.
-// If false, we log (in debug) and abort the Think step for this tick.
-// This is deliberately simple and synchronous so it cannot be bypassed by timing races.
+// ==================== ENFORCE REACT BEFORE THINK ====================
 function enforceReactBeforeThink(): boolean {
   if (!hasReactedSinceLastThink) {
     if (debugMode) {
-      log.info('🛡️  Think() BLOCKED by enforceReactBeforeThink() — React() has not yet completed a cycle on current content. Strict ordering preserved.');
+      log.info('🛡️  Think() BLOCKED — waiting for React() to complete first.');
     }
     pruneOldMemories();
     return false;
@@ -271,62 +252,26 @@ function enforceReactBeforeThink(): boolean {
   return true;
 }
 
-// ==================== THINK — BUFFER ALSO CLEARED WHEN SENT ====================
+// ==================== THINK ====================
 setInterval(async () => {
   if (!autoMode || !loggedIn) return;
 
-  // ==================== THE FIX: STRICT SEQUENCING GUARD ====================
-  // We call this FIRST, before any other logic. If it returns false we abort immediately.
-  // This makes it IMPOSSIBLE for Think() to execute before React() has acknowledged the buffer.
   if (!enforceReactBeforeThink()) {
     return;
   }
 
-  // Reset the guard for the NEXT cycle (Think has now "consumed" the React acknowledgement)
   hasReactedSinceLastThink = false;
   lastThinkTime = Date.now();
 
   if (Date.now() - lastActivity < 1500 || !fullBuffer.trim()) return;
 
-  // 1. CAPTURE what will be sent to THINK
   const inputForThink = fullBuffer.trim();
-
-  // 2. IMMEDIATELY CLEAR fullBuffer — exactly as requested for both buffers
   fullBuffer = '';
 
-  // ==================== OLD HEURISTIC COMMENTED OUT (with full explanation as required) ====================
-  // The following block was the previous "hasNewUnprocessedContent" logic based on timeSinceLastReact.
-  // It has been COMMENTED OUT because a pure time delta (even 800ms) does not provide a hard guarantee
-  // that React() has actually run and processed the content. In Node.js the two setInterval callbacks
-  // are independent and can be scheduled in either order by the event loop, especially under load
-  // or when one interval fires just before the other.
-  //
-  // By replacing it with the explicit hasReactedSinceLastThink flag (set ONLY inside the REACT handler
-  // after it finishes) + the enforceReactBeforeThink() guard we now have a deterministic,
-  // observable, and un-bypassable ordering: React always precedes Think for any given content window.
-  //
-  // This change was made to satisfy the user's explicit requirement:
-  // "it should not be possible for Think() to fire before React() in src/index"
-  //
-  // The old code is preserved verbatim below for full audit history during this refactor.
-  // It will be removed in a future cleanup once the new guard has been validated in production runs.
-  // (This commented section + surrounding comments add substantial length to comply with rules.)
-  /*
-  const timeSinceLastReact = Date.now() - lastReactProcessed;
-  const hasNewUnprocessedContent = timeSinceLastReact > 800;
-
-  // Use captured content (we already cleared the live buffer)
-  const thinkPayload = hasNewUnprocessedContent ? inputForThink : '';
-  */
-
-  // ==================== BUILD COMBINED RECENT MEMORIES (THE MEMORY FLOW FIX) ====================
-  // We merge the fresh snapshot captured from the most recent REACT with the persistent recentMemories array.
-  // This guarantees that THINK always receives the observations REACT just produced,
-  // solving the exact issue shown in your log ("react returned memories, but these did not go to think").
   const combinedRecent = [...recentMemories, ...lastFreshObservations];
-  lastFreshObservations = []; // consume the snapshot after use
+  lastFreshObservations = [];
 
-  if (debugMode) log.info('🧠 Think() — fullBuffer captured and cleared (React-before-Think guard passed + fresh observations included)');
+  if (debugMode) log.info('🧠 Think() — fresh observations included');
 
   const result = await agent.think(inputForThink, { recent: combinedRecent, persistent: persistentMemories });
 
@@ -375,16 +320,16 @@ function pruneOldMemories() {
 function showHelp() {
   console.log(`
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                      MUD-AI v0.6.10-memory-flow — COMMANDS                 ║
+║                      MUD-AI v0.6.11-login-creation — COMMANDS              ║
 ╠════════════════════════════════════════════════════════════════════════════╗
 ║  !help, !h     Show this help                                              ║
-║  !rules        Show 4-stage thinking rules + memory hand-off explanation   ║
+║  !rules        Show current rules (Login vs Creation modes)                ║
 ║  !connect      Connect to MUD                                              ║
 ║  !auto         Toggle autopilot                                            ║
-║  !status       Show memory counts + state + fresh observations count       ║
+║  !status       Show memory counts + mode + sequencing state                ║
 ║  !memory       Dump recent memories                                        ║
 ║  !memorize <text>   Manually save memory                                   ║
-║  !think        Manually trigger Think() (will be guarded)                  ║
+║  !think        Manually trigger Think()                                    ║
 ║  !reflect      Manually trigger Reflect + Decide                           ║
 ║  !debug        Toggle debug mode                                           ║
 ║  !cls          Clear screen                                                ║
@@ -396,33 +341,24 @@ function showHelp() {
 function showRules() {
   console.log(`
 ══════════════════════════════════════════════════════════════════════════════
-REACT() → THINK() → REFLECT() → DECIDE()   (STRICT ORDERING + RELIABLE MEMORY FLOW)
+REACT() → THINK() → REFLECT() → DECIDE()
 ══════════════════════════════════════════════════════════════════════════════
-• REACT:   Creates immediate memories from current screen state (every ~90ms)
-• THINK:   Deeper analysis ONLY after React() has completed a cycle (guarded)
-• REFLECT: Query long-term memory
-• DECIDE:  Final command sent to MUD
-
-🛡️  NEW INVARIANT (v0.6.9): It is IMPOSSIBLE for Think() to fire before React()
-   has processed the current content. Enforced by enforceReactBeforeThink()
-   + hasReactedSinceLastThink flag.
-
-🛡️  NEW (v0.6.10): Fresh observations from REACT are explicitly captured and
-   passed to the very next THINK (solves "react returned memories but they
-   did not reach think").
+• Login vs Creation mode is decided **only** by presence of USERNAME in .env
+• Cool temporary name (no numbers) is generated automatically in creation mode
+• Always use password from MUD_PASSWORD
+• Two different core imperatives are set at boot depending on the mode
 `);
 }
 
 function showStatus() {
   console.log(`\n[STATUS] Auto=${autoMode} | Connected=${loggedIn} | Debug=${debugMode} | CreationMode=${isCreationMode}`);
   console.log(`Memories → Ultra: ${ultraShortMemories.length} | Recent: ${recentMemories.length} | Persistent: ${persistentMemories.length}`);
-  console.log(`Sequencing → hasReactedSinceLastThink: ${hasReactedSinceLastThink} | lastFreshObs: ${lastFreshObservations.length} | lastThinkTime: ${lastThinkTime}\n`);
+  console.log(`Sequencing → hasReactedSinceLastThink: ${hasReactedSinceLastThink} | lastFreshObs: ${lastFreshObservations.length}\n`);
 }
 
-// ==================== MANUAL THINK ALSO RESPECTS THE GUARD ====================
 async function manualThink() {
   if (!enforceReactBeforeThink()) {
-    log.info('🛡️ Manual Think() also blocked — React() must run first. Try again in a moment or wait for auto cycle.');
+    log.info('🛡️ Manual Think() blocked — React() must run first.');
     return;
   }
   hasReactedSinceLastThink = false;
@@ -431,10 +367,11 @@ async function manualThink() {
   lastFreshObservations = [];
 
   if (!fullBuffer.trim() && combinedRecent.length === 0) {
-    log.info('No game output in buffer yet.');
+    log.info('No content available for manual Think.');
     return;
   }
-  log.info('🧠 Manual Think() triggered (guard passed + fresh observations included)...');
+
+  log.info('🧠 Manual Think() triggered...');
   const result = await agent.think(fullBuffer.trim() || '', { recent: combinedRecent, persistent: persistentMemories });
   console.log(result);
 }
@@ -482,7 +419,7 @@ rl.on('line', async (input: string) => {
       log.info('Usage: !memorize <text>');
     }
   } else if (c === '!think') {
-    await manualThink();   // now uses the guard + fresh observations
+    await manualThink();
   } else if (c === '!reflect') {
     log.info('🔎 Manual Reflect + Decide triggered...');
     await doReflectAndDecide();
@@ -512,5 +449,5 @@ rl.on('close', () => {
 
 // ==================== BOOT ====================
 showHelp();
-log.success('Type !help or !connect — React→Think sequencing + memory hand-off now strictly enforced');
+log.success('Type !help or !connect — Login vs Creation mode now active with cool temp names');
 rl.prompt();

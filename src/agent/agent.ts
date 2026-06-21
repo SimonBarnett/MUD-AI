@@ -1,4 +1,4 @@
-// src/agent/agent.ts - v0.6.9-strict-contract
+// src/agent/agent.ts - v0.6.10-login-creation
 import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs';
@@ -43,29 +43,26 @@ const xai = new OpenAI({
 export class MUDAgent {
 
   // ============================================================
-  // DESIGN PHILOSOPHY (v0.6.9 - STRICT MEMORY + ACTION CONTRACT)
+  // DESIGN PHILOSOPHY (v0.6.10 - LOGIN vs CREATION MODES)
   // ============================================================
   /*
-    REACT RESPONSIBILITY (strengthened):
-      - Primary job: Generate rich, savable observations / memories from whatever
-        the current screen shows (including login screens and main menus).
-      - Only return immediateAction when there is REAL immediate danger
-        (being attacked, dying, falling, critically low health, etc.).
-      - Observations created here are the foundation for THINK.
-      - React should be "eager" to describe state so higher cognition has context.
+    There are now TWO distinct operational modes, determined **only** by
+    whether a real character name exists in the environment at startup:
 
-    THINK RESPONSIBILITY (new hard contract):
-      - You MUST choose ONE of two paths. Never both, never neither:
-        a) Return a concrete, ready-to-send "action" (the exact command string), OR
-        b) Set "shouldReflect": true  (so the system pulls more long-term memory
-           via Reflect + Decide and then acts).
-      - If you have enough information and context to act safely → return action.
-      - If you are unsure, the situation is complex, you need more history,
-        or you are on a menu and creation/login logic should decide → shouldReflect: true.
-      - This eliminates the previous "do nothing" failure mode.
+    1. LOGIN MODE (USERNAME exists in .env)
+       - The agent has a real character.
+       - Core imperative: "Log in with my name + password from MUD_PASSWORD."
+       - THINK should prefer returning an `action` to progress login.
 
-    The index.ts sequencing guard (React must run before Think) + this contract
-    together guarantee the 4-stage loop always makes progress.
+    2. CREATION MODE (no USERNAME in .env)
+       - The agent must create a new character using a cool temporary name.
+       - Core imperative: "Create an account on the main menu (usually option 2).
+         Use the password from MUD_PASSWORD. After success output SAVE_USERNAME:MyTempName."
+       - THINK should be more willing to use `shouldReflect: true` or choose
+         creation actions when on the main menu.
+
+    REACT remains unchanged in responsibility (generate observations).
+    THINK must still obey the strict "ACTION or REFLECT" contract in both modes.
   */
 
   // ==================== REACT (Memory generation focused) ====================
@@ -85,18 +82,16 @@ You are playing Achaea (MUD).
 YOUR PRIMARY JOB:
 Generate useful, savable observations that describe the current game state.
 These observations will be stored as memories and fed to THINK later.
-Good observations = "I see a shopkeeper", "Health is at 87%", "I am in a forest clearing with a path north", "There is a sign that says 'Welcome to Achaea'".
 
 SECONDARY JOB (only when truly needed):
-If the output shows REAL immediate danger (you are being attacked, health is critically low, you are falling, dying, poisoned badly, etc.) then return an "immediateAction" with the exact command to survive (e.g. "flee", "drink health vial", "cast heal").
+If the output shows REAL immediate danger (you are being attacked, health is critically low, you are falling, dying, poisoned badly, etc.) then return an "immediateAction" with the exact command to survive.
 
 STRICT RULES:
 - On login / main menu screens: Describe what you see (menu options, prompts). Do NOT treat repetitive lines as noise — they are state.
 - Only use immediateAction for genuine emergencies. Prefer observations in all other cases.
 - Never invent danger that isn't there.
-- Observations should be concise but informative so they are good for long-term memory.
 
-Respond with valid JSON only in this shape:
+Respond with valid JSON only:
 {
   "immediateAction": "command string or null",
   "observations": ["observation 1", "observation 2", ...]
@@ -111,7 +106,7 @@ Respond with valid JSON only in this shape:
       });
 
       let parsed = JSON.parse(res.choices[0]?.message?.content || '{}');
-      parsed = this.ensureObservations(parsed); // guarantee observations array exists
+      parsed = this.ensureObservations(parsed);
       logAICall('REACT', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
@@ -120,15 +115,10 @@ Respond with valid JSON only in this shape:
     }
   }
 
-  // Helper: ensure observations array always exists (makes memory saving reliable)
   private ensureObservations(result: any) {
     if (!result) result = {};
-    if (!Array.isArray(result.observations)) {
-      result.observations = [];
-    }
-    if (result.immediateAction === undefined) {
-      result.immediateAction = null;
-    }
+    if (!Array.isArray(result.observations)) result.observations = [];
+    if (result.immediateAction === undefined) result.immediateAction = null;
     return result;
   }
 
@@ -139,80 +129,68 @@ Respond with valid JSON only in this shape:
     };
   }
 
-  // ==================== THINK (STRICT ACTION OR REFLECT CONTRACT) ====================
+  // ==================== THINK (STRICT ACTION OR REFLECT + LOGIN/CREATION AWARENESS) ====================
   async think(buffer: string, ctx: any) {
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
 
-    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT (v0.6.9)
+    const system = `THINK MODE — STRICT "ACTION OR REFLECT" CONTRACT + LOGIN/CREATION AWARENESS (v0.6.10)
 
 You are controlling a character in Achaea.
 
-Current game buffer (what you can see right now):
+Current game buffer:
 ${buffer}
 
-Recent memories (from REACT and short-term):
+Recent memories (from REACT):
 ${recent.length ? recent.join('\n') : 'none'}
 
 Persistent / long-term memories:
 ${persistent.length ? persistent.join('\n') : 'none'}
 
 ══════════════════════════════════════════════════════════════════════════════
-CRITICAL CONTRACT — YOU MUST OBEY THIS OR THE AGENT CAN GET STUCK
+CRITICAL CONTRACT — YOU MUST OBEY THIS
 ══════════════════════════════════════════════════════════════════════════════
 
 You have exactly TWO valid response paths. Choose ONE:
 
 PATH A — RETURN AN ACTION
-  If you have enough context, know what to do, and it is safe/reasonable:
-  → Set "action": "the exact command string to send to the MUD"
-  → Do NOT set shouldReflect (or set it false)
+  If you have enough context and it is reasonable/safe:
+  → Set "action": "the exact command to send"
 
-PATH B — REQUEST MORE MEMORY / DEEPER THINKING
-  If you are unsure, the screen is complex, you need long-term memory,
-  you are on a menu and creation/login logic should decide, or you want
-  to search past experiences:
+PATH B — REQUEST DEEPER THINKING
+  If you need more long-term memory, the situation is ambiguous, or you are on
+  the main menu in creation mode:
   → Set "shouldReflect": true
-  → Do NOT set an action (or set action to null)
 
-FORBIDDEN:
-- Returning neither action nor shouldReflect (this leaves the agent doing nothing)
-- Returning both a weak action and shouldReflect at the same time (confusing)
+FORBIDDEN: Returning neither action nor shouldReflect.
 
-EXAMPLES:
+══════════════════════════════════════════════════════════════════════════════
+LOGIN vs CREATION MODE (determined only by persistent memories)
+══════════════════════════════════════════════════════════════════════════════
 
-Good (Action path):
-{
-  "observations": ["I see a goblin attacking me"],
-  "current_state": "combat",
-  "action": "flee"
-}
+- If persistent memories contain a real character name (e.g. "My character name is X"):
+    → You are in LOGIN MODE. Your job is to log in.
+    → Prefer returning an action to progress login when possible.
 
-Good (Reflect path - on main menu with no character):
-{
-  "observations": ["I am on the main menu. I have no character yet."],
-  "current_state": "main_menu",
-  "shouldReflect": true
-}
+- If persistent memories say you have no character and must create one:
+    → You are in CREATION MODE. Your job is to create an account.
+    → On the main menu you should usually choose option 2 (create character).
+    → After successful creation you must output exactly: SAVE_USERNAME:YourTempName
 
-Bad (forbidden - would cause do-nothing):
-{
-  "observations": ["I see trees"],
-  "current_state": "exploring"
-}
+Be decisive but safe. Never return neither action nor shouldReflect.
 
-Output ONLY valid JSON matching the schema below.`;
+Output ONLY valid JSON.`;
 
     try {
       const res = await xai.chat.completions.create({
         model: "grok-4",
         messages: [{ role: "system", content: system }],
         temperature: 0.15,
-        max_tokens: 550
+        max_tokens: 580
       });
 
       let parsed = JSON.parse(res.choices[0]?.message?.content || '{}');
-      parsed = this.validateAndEnforceThinkContract(parsed); // ← THE FIX
+      parsed = this.validateAndEnforceThinkContract(parsed);
       logAICall('THINK', system, parsed, res.usage);
       return parsed;
     } catch (e: any) {
@@ -221,9 +199,7 @@ Output ONLY valid JSON matching the schema below.`;
     }
   }
 
-  // ============================================================
-  // NEW: CONTRACT ENFORCEMENT (makes "action OR shouldReflect" impossible to violate)
-  // ============================================================
+  // Contract enforcement (unchanged but still critical)
   private validateAndEnforceThinkContract(result: any): any {
     if (!result) result = {};
 
@@ -231,22 +207,15 @@ Output ONLY valid JSON matching the schema below.`;
     const hasReflect = result.shouldReflect === true;
 
     if (!hasAction && !hasReflect) {
-      // VIOLATION DETECTED — force the safe path
       result.shouldReflect = true;
       if (!Array.isArray(result.observations)) result.observations = [];
-      result.observations.push("THINK contract violation detected — forced shouldReflect: true to avoid doing nothing");
-      if (process.env.DEBUG) {
-        log.info('🛡️  THINK CONTRACT ENFORCED: no action + no shouldReflect → defaulted to shouldReflect');
-      }
+      result.observations.push("THINK contract violation — forced shouldReflect: true");
     }
 
-    // Clean up contradictory state
     if (hasAction && hasReflect) {
-      // Prefer action when both are present (agent should act if it knows what to do)
       result.shouldReflect = false;
     }
 
-    // Ensure required fields exist
     if (!result.current_state) result.current_state = "unknown";
     if (!Array.isArray(result.observations)) result.observations = [];
 
@@ -257,18 +226,16 @@ Output ONLY valid JSON matching the schema below.`;
     return {
       observations: ["Error during THINK — defaulting to reflection for safety"],
       current_state: "unknown",
-      shouldReflect: true   // safe default — never "do nothing"
+      shouldReflect: true
     };
   }
 
-  // ==================== REFLECT (Robust) ====================
+  // ==================== REFLECT ====================
   async reflect(ctx: any) {
     const recent = ctx.recent || ctx.recentMemories || [];
     const persistent = ctx.persistent || ctx.persistentMemories || [];
 
     const system = `REFLECT MODE
-
-You are an AI playing Achaea.
 
 Recent memories:
 ${recent.length ? recent.join('\n') : 'none'}
@@ -277,9 +244,8 @@ Persistent memories:
 ${persistent.length ? persistent.join('\n') : 'none'}
 
 Return ONLY a valid JSON array of 4-7 useful memory queries.
-Example: ["What do I know about my current location?", "What is my current goal?"]
 
-Do not add any explanation or text outside the JSON array.`;
+Example: ["What do I know about my current location?", "What is my current goal?"]`;
 
     try {
       const res = await xai.chat.completions.create({
@@ -291,7 +257,6 @@ Do not add any explanation or text outside the JSON array.`;
 
       const content = res.choices[0]?.message?.content || '[]';
       let parsed: string[];
-
       try {
         parsed = JSON.parse(content);
         if (!Array.isArray(parsed)) parsed = [];
@@ -315,7 +280,7 @@ Do not add any explanation or text outside the JSON array.`;
     }
   }
 
-  // ==================== DECIDE (With Login & Character Creation Support) ====================
+  // ==================== DECIDE ====================
   async decide(retrievedMemories: any[]) {
     const memoriesText = retrievedMemories
       .map((m, i) => `${i + 1}. ${m.content || m}`)
@@ -328,14 +293,10 @@ ${memoriesText || 'No useful memories retrieved'}
 
 You are playing Achaea.
 
-Special Commands:
-- If you have successfully created a new character, output: SAVE_USERNAME:NewCharacterName
-- If you need to log in, just send normal commands (character name, then password).
+Special rule: If you have successfully created a new character, you MUST output:
+{ "command": "SAVE_USERNAME:YourNewName" }
 
-If you have no good information or context, return:
-{ "command": null, "reasoning": "insufficient information" }
-
-Otherwise return a useful command or the special SAVE_USERNAME command when appropriate.`;
+Otherwise return a normal command or null if you have insufficient information.`;
 
     try {
       const res = await xai.chat.completions.create({
@@ -368,59 +329,13 @@ Otherwise return a useful command or the special SAVE_USERNAME command when appr
     }
   }
 
-  // ============================================================
-  // EXTENSIONS & DESIGN NOTES (greatly expanded to satisfy length rule)
-  // ============================================================
-
-  /*
-    HISTORICAL NOTE - WHY WE ADDED THE STRICT THINK CONTRACT
-
-    Before v0.6.9 it was possible for THINK to return a result with:
-      { observations: [...], current_state: "..." }
-    with neither "action" nor "shouldReflect": true.
-
-    When this happened, the calling code in index.ts had no clear path:
-    - No action to send
-    - shouldReflect was falsy → doReflectAndDecide() was not called
-    Result: agent could sit idle even when it should be doing something.
-
-    The new contract + runtime enforcement (validateAndEnforceThinkContract)
-    closes this hole permanently. THINK now always produces a decision
-    that moves the 4-stage loop forward.
-  */
-
-  /*
-    REACT MEMORY PHILOSOPHY
-
-    REACT is intentionally "dumb but thorough". Its job is not to decide
-    what to do long-term — its job is to turn raw screen text into
-    structured, memorable facts that THINK (and later REFLECT) can use.
-
-    This is why we now encourage REACT to create observations even on
-    the main menu / login screens. Those observations become the trigger
-    for character creation logic higher up the stack.
-  */
-
-  // ADDED: Helper to check if current input looks like a login/main menu
+  // ==================== HELPERS ====================
   isOnMainMenu(input: string): boolean {
     const lower = input.toLowerCase();
     return lower.includes('1. enter the game') &&
            lower.includes('2. create a new character') &&
            lower.includes('3. quit');
   }
-
-  // ADDITIONAL DESIGN NOTES (expanded):
-  /*
-    - REACT should focus on creating memories from the current visible state.
-    - THINK is responsible for deciding what to do with those memories
-      under the strict "action OR shouldReflect" contract.
-    - On the main menu with no character, good observations from REACT help THINK
-      understand it should eventually choose option 2 to create a character.
-    - Buffer management in index.ts now protects REACT from being spammed with
-      the same content repeatedly while still allowing it to create memories.
-    - The combination of index.ts sequencing guard + agent.ts contract
-      gives us a robust, observable, and hard-to-break 4-stage cognitive loop.
-  */
 }
 
 export default MUDAgent;
